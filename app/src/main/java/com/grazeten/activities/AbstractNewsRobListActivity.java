@@ -802,7 +802,7 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
     //    if (!shouldActionBarBeHidden())
     //    {
     //        findViewById(R.id.control_panel_stub).setVisibility(View.VISIBLE);
-    setupButtons();
+    // setupButtons(); // Disabled because custom view is commented out
     //    }
 
     //    final ViewGroup parent = findViewById(R.id.ad_parent);
