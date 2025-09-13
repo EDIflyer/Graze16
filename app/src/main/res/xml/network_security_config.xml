@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <!-- Allow cleartext traffic for specific domains if needed -->
-        <!-- Add specific domains here if the app needs to communicate with HTTP endpoints -->
-    </domain-config>
-    <base-config cleartextTrafficPermitted="false" />
+    <base-config cleartextTrafficPermitted="true" />
 </network-security-config>

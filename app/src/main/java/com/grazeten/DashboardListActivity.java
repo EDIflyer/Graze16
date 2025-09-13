@@ -319,11 +319,21 @@ public class DashboardListActivity extends AbstractNewsRobListActivity
   @Override
   protected void onCreate(Bundle savedInstanceState)
   {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.dashboard_list);
+    try {
+      android.util.Log.d(TAG, "DashboardListActivity.onCreate() - starting");
+      super.onCreate(savedInstanceState);
+      android.util.Log.d(TAG, "DashboardListActivity.onCreate() - super.onCreate completed");
+      
+      setContentView(R.layout.dashboard_list);
+      android.util.Log.d(TAG, "DashboardListActivity.onCreate() - setContentView completed");
 
-    initialize(getIntent());
+      initialize(getIntent());
+      android.util.Log.d(TAG, "DashboardListActivity.onCreate() - initialize completed");
 
+    } catch (Exception e) {
+      android.util.Log.e(TAG, "Fatal error in DashboardListActivity.onCreate()", e);
+      throw e;
+    }
   }
 
   @Override

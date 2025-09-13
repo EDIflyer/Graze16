@@ -435,12 +435,7 @@ public class EntriesRetriever implements BackendProvider
 
     assertSessionAvailable();
 
-    NewsRobHttpRequest acquireTokenRequest;
-    try {
-      acquireTokenRequest = NewsRobHttpClient.createHttpGet(getGoogleHost() + "/reader/api/0/token?client=" + CLIENT_NAME);
-    } catch (java.net.URISyntaxException e) {
-      throw new IOException("Invalid URL", e);
-    }
+    NewsRobHttpRequest acquireTokenRequest = NewsRobHttpClient.createHttpGet(getGoogleHost() + "/reader/api/0/token?client=" + CLIENT_NAME);
     setAuthInRequest(acquireTokenRequest);
 
     NewsRobHttpResponse response = httpClient.execute(acquireTokenRequest);
@@ -478,12 +473,7 @@ public class EntriesRetriever implements BackendProvider
     NewsRobHttpClient httpClient = NewsRobHttpClient.newInstance(false, context);
     try
     {
-      NewsRobHttpRequest authenticateRequest;
-      try {
-        authenticateRequest = NewsRobHttpClient.createHttpPost("https://www.google.com/accounts/ClientLogin"); // ?client="
-      } catch (java.net.URISyntaxException e) {
-        throw new IOException("Invalid URL", e);
-      }
+      NewsRobHttpRequest authenticateRequest = NewsRobHttpClient.createHttpPost("https://www.google.com/accounts/ClientLogin"); // ?client="
       // +
       // CLIENT_NAME);
 
@@ -634,12 +624,7 @@ public class EntriesRetriever implements BackendProvider
 
     url += (url.indexOf("?") == -1 ? "?" : "&") + "client=" + CLIENT_NAME;
 
-      NewsRobHttpRequest readingListRequest;
-      try {
-        readingListRequest = NewsRobHttpClient.createHttpGet(url);
-      } catch (java.net.URISyntaxException e) {
-        throw new IOException("Invalid URL", e);
-      }    setAuthInRequest(readingListRequest);
+      NewsRobHttpRequest readingListRequest = NewsRobHttpClient.createHttpGet(url);    setAuthInRequest(readingListRequest);
 
     Log.d(TAG, "Accessing Google Reader service.");
     return readingListRequest;
@@ -954,12 +939,7 @@ public class EntriesRetriever implements BackendProvider
 
       String url = getGoogleHost() + "/reader/api/0/stream/items/contents?output=atom&xt=" + GOOGLE_STATE_READ + "&client=" + CLIENT_NAME;
 
-      NewsRobHttpRequest getNewArticlesRequest;
-      try {
-        getNewArticlesRequest = NewsRobHttpClient.createHttpPost(url);
-      } catch (java.net.URISyntaxException e) {
-        throw new IOException("Invalid URL", e);
-      }
+      NewsRobHttpRequest getNewArticlesRequest = NewsRobHttpClient.createHttpPost(url);
 
       Map<String, String> keyValuePairs = new HashMap<>();
       for (String unreadId : atomIds)
@@ -1943,12 +1923,7 @@ public class EntriesRetriever implements BackendProvider
     {
       Timing t = new Timing("EntriesRetriever.unsubcribeFeed()", context);
 
-      NewsRobHttpRequest editApiRequest;
-      try {
-        editApiRequest = NewsRobHttpRequest.createPost(getGoogleHost() + "/reader/api/0/subscription/edit?client=" + CLIENT_NAME);
-      } catch (java.net.URISyntaxException e) {
-        throw new IOException("Invalid URL", e);
-      }
+      NewsRobHttpRequest editApiRequest = NewsRobHttpClient.createHttpPost(getGoogleHost() + "/reader/api/0/subscription/edit?client=" + CLIENT_NAME);
       java.util.Map<String, String> formData = new java.util.HashMap<>();
 
       formData.put("s", feedAtomId);

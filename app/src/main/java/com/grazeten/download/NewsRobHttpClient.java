@@ -65,14 +65,22 @@ public class NewsRobHttpClient
   }
 
   // Static factory methods for easier Apache HttpClient compatibility
-  public static NewsRobHttpRequest createHttpGet(String url) throws java.net.URISyntaxException
+  public static NewsRobHttpRequest createHttpGet(String url)
   {
-    return NewsRobHttpRequest.createGet(url);
+    try {
+      return NewsRobHttpRequest.createGet(url);
+    } catch (java.net.URISyntaxException e) {
+      throw new RuntimeException("Invalid URL: " + url, e);
+    }
   }
 
-  public static NewsRobHttpRequest createHttpPost(String url) throws java.net.URISyntaxException
+  public static NewsRobHttpRequest createHttpPost(String url)
   {
-    return NewsRobHttpRequest.createPost(url);
+    try {
+      return NewsRobHttpRequest.createPost(url);
+    } catch (java.net.URISyntaxException e) {
+      throw new RuntimeException("Invalid URL: " + url, e);
+    }
   }
 
   @Override

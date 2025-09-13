@@ -314,11 +314,14 @@ public class NewsRob extends Application
   @Override
   public void onCreate()
   {
-    super.onCreate();
+    try {
+      super.onCreate();
 
-    Log.d(TAG, "NewsRob.onCreate()");
+      Log.d(TAG, "NewsRob.onCreate() - starting");
 
-    installNewsRobDefaultExceptionHandler(this);
+      installNewsRobDefaultExceptionHandler(this);
+      
+      Log.d(TAG, "NewsRob.onCreate() - exception handler installed");
 
     enableStrictMode();
 
@@ -343,6 +346,12 @@ public class NewsRob extends Application
     entryManager.maintainPremiumDependencies();
     entryManager.maintainFirstInstalledVersion();
     entryManager.migrateSyncType();
+    
+      Log.d(TAG, "NewsRob.onCreate() - completed successfully");
+    } catch (Exception e) {
+      Log.e(TAG, "Fatal error in NewsRob.onCreate()", e);
+      throw e;
+    }
   }
 
   @Override
