@@ -1,30 +1,48 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    namespace 'com.grazeten'
+    compileSdk 36
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "com.grazeten"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 36
+        versionCode 316
+        versionName "3.1.6"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+        }
+    }
+
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/DEPENDENCIES', 'META-INF/LICENSE', 'META-INF/LICENSE.txt', 'META-INF/license.txt', 'META-INF/NOTICE', 'META-INF/NOTICE.txt', 'META-INF/notice.txt', 'META-INF/ASL2.0']
         }
     }
 }
 
 dependencies {
-    implementation 'com.android.support:appcompat-v7:22.1.0'
-    implementation 'com.google.code.gson:gson:2.2.3'
-    implementation 'com.flurry.android:analytics:6.2.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.0.0'
-    implementation 'com.squareup.okio:okio:1.0.1'
-    implementation 'com.squareup.retrofit:retrofit:1.7.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.core:core:1.13.1'
+    implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'com.flurry.android:analytics:16.3.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'com.squareup.okio:okio:3.9.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.11.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.11.0'
     implementation files('libs/GoogleAdView.jar')
 }

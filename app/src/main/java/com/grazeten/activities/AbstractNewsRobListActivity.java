@@ -2,7 +2,7 @@ package com.grazeten.activities;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ListActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,6 +36,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
+import android.widget.ListView;
 
 import com.grazeten.BackendProvider;
 import com.grazeten.DBQuery;
@@ -58,10 +59,26 @@ import com.grazeten.util.SDK11Helper;
 import com.grazeten.util.Timing;
 import com.grazeten.util.U;
 
-public abstract class AbstractNewsRobListActivity extends ListActivity
+public abstract class AbstractNewsRobListActivity extends AppCompatActivity
     implements IEntryModelUpdateListener, View.OnLongClickListener
 {
   private static final String TAG                         = AbstractNewsRobListActivity.class.getSimpleName();
+
+  protected ListView listView;
+
+  protected ListView getListView()
+  {
+    if (listView == null)
+    {
+      listView = findViewById(android.R.id.list);
+    }
+    return listView;
+  }
+
+  protected void setListAdapter(CursorAdapter adapter)
+  {
+    getListView().setAdapter(adapter);
+  }
 
   private static final int    MENU_ITEM_REFRESH_ID        = 1;
   private static final int    MENU_ITEM_SETTINGS_ID       = 2;

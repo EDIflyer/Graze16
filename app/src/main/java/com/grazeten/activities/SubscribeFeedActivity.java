@@ -1,13 +1,16 @@
 package com.grazeten.activities;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.view.KeyEvent;
@@ -101,74 +104,83 @@ public class SubscribeFeedActivity extends Activity
     }
   }
 
-  class SubscribeFeedTask extends AsyncTask<String, Void, Void>
+  class SubscribeFeedTask
   {
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
-    private Exception exception;
-
-    @Override
-    protected Void doInBackground(String... feedUrls)
+    public void execute(String... feedUrls)
     {
+      mainHandler.post(() -> showProgressMonitor());
+      
+      executorService.execute(() -> {
+        Exception exception = null;
+        
+        for (String feedUrl : feedUrls)
+          try
+          {
+            EntryManager.getInstance(SubscribeFeedActivity.this).getSyncInterface().submitSubscribe(feedUrl);
+          }
+          catch (SyncAPIException e)
+          {
+            exception = e;
+            e.printStackTrace();
+            break;
+          }
+        
+        final Exception finalException = exception;
+        mainHandler.post(() -> {
+          showList();
 
-      for (String feedUrl : feedUrls)
-        try
-        {
-          EntryManager.getInstance(SubscribeFeedActivity.this).getSyncInterface().submitSubscribe(feedUrl);
-        }
-        catch (SyncAPIException e)
-        {
-          exception = e;
-          e.printStackTrace();
-          break;
-        }
-
-      return null;
+          if (finalException != null)
+            Toast.makeText(SubscribeFeedActivity.this, finalException.getClass().getSimpleName() + ": " + finalException.getMessage(), Toast.LENGTH_LONG)
+                .show();
+          else
+            Toast.makeText(SubscribeFeedActivity.this, "Feed subscribed.\nSync/Refresh to fetch articles.", Toast.LENGTH_LONG).show();
+        });
+      });
     }
 
-    @Override
-    protected void onPostExecute(Void result)
+    public void shutdown()
     {
-      super.onPostExecute(result);
-
-      showList();
-
-      if (exception != null)
-        Toast.makeText(SubscribeFeedActivity.this, exception.getClass().getSimpleName() + ": " + exception.getMessage(), Toast.LENGTH_LONG)
-            .show();
-      else
-        Toast.makeText(SubscribeFeedActivity.this, "Feed subscribed.\nSync/Refresh to fetch articles.", Toast.LENGTH_LONG).show();
-
+      if (executorService != null && !executorService.isShutdown())
+      {
+        executorService.shutdown();
+      }
     }
-
-    @Override
-    protected void onPreExecute()
-    {
-      super.onPreExecute();
-
-      showProgressMonitor();
-    }
-
   }
 
-  class DiscoverFeedsTask extends AsyncTask<String, Void, List<DiscoveredFeed>>
+  class DiscoverFeedsTask
   {
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
-    private Exception exception;
-
-    @Override
-    protected void onPreExecute()
+    public void execute(String... params)
     {
-      super.onPreExecute();
+      mainHandler.post(() -> showProgressMonitor());
+      
+      executorService.execute(() -> {
+        List<DiscoveredFeed> result = null;
+        Exception exception = null;
 
-      showProgressMonitor();
+        try
+        {
+          result = EntryManager.getInstance(SubscribeFeedActivity.this).getSyncInterface().discoverFeeds(params[0]);
+        }
+        catch (Exception e)
+        {
+          exception = e;
+        }
+        
+        final List<DiscoveredFeed> finalResult = result;
+        final Exception finalException = exception;
+        
+        mainHandler.post(() -> onPostExecute(finalResult, finalException));
+      });
     }
 
-    @Override
-    protected void onPostExecute(final List<DiscoveredFeed> result)
+    private void onPostExecute(final List<DiscoveredFeed> result, Exception exception)
     {
-
-      super.onPostExecute(result);
-
       if (result == null)
       {
         progressMonitor.setVisibility(View.GONE);
@@ -187,7 +199,14 @@ public class SubscribeFeedActivity extends Activity
 
         showList();
       }
+    }
 
+    public void shutdown()
+    {
+      if (executorService != null && !executorService.isShutdown())
+      {
+        executorService.shutdown();
+      }
     }
 
     private ArrayAdapter<DiscoveredFeed> populateList(final List<DiscoveredFeed> result)
@@ -245,22 +264,6 @@ public class SubscribeFeedActivity extends Activity
         }
       };
       return listAdapter;
-    }
-
-    @Override
-    protected List<DiscoveredFeed> doInBackground(String... params)
-    {
-      List<DiscoveredFeed> result = null;
-
-      try
-      {
-        result = EntryManager.getInstance(SubscribeFeedActivity.this).getSyncInterface().discoverFeeds(params[0]);
-      }
-      catch (Exception e)
-      {
-        this.exception = e;
-      }
-      return result;
     }
 
   }

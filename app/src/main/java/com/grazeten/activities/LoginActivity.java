@@ -4,9 +4,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -35,64 +36,45 @@ import com.grazeten.util.U;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class LoginActivity extends Activity implements OnClickListener
 {
-  private class LoginTask extends AsyncTask<LoginParameters, Void, Object>
+  private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+  private final Handler mainHandler = new Handler(Looper.getMainLooper());
+
+  private void executeLoginTask(EntryManager entryManager, LoginParameters credentials)
   {
-
-    private EntryManager entryManager;
-
-    LoginTask(EntryManager em)
-    {
-      this.entryManager = em;
-    }
-
-    @Override
-    protected Object doInBackground(LoginParameters... uc)
-    {
+    showProgress();
+    
+    executorService.execute(() -> {
       Object result = null;
-
-      if (uc.length != 1)
-      {
-        throw new RuntimeException("Need to pass in one instance of UserCredentials.");
-      }
       try
       {
-
-        entryManager.doLogin(entryManager.getContext(), uc[0].email, uc[0].password, uc[0].loginToken, uc[0].loginCaptcha);
-
+        entryManager.doLogin(entryManager.getContext(), credentials.email, credentials.password, credentials.loginToken, credentials.loginCaptcha);
       }
       catch (Exception e)
       {
         result = e;
       }
-      return result;
-    }
-
-    @Override
-    protected void onPostExecute(Object result)
-    {
-      super.onPostExecute(result);
-      hideProgress();
-      runningTask = null;
-      captchaToken = null;
-      if (result instanceof Exception)
-      {
-        onError((Exception) result);
-      }
-      else
-      {
-        // changed user
-        LoginActivity.this.onSuccess();
-      }
-    }
-
-    @Override
-    public void onPreExecute()
-    {
-      showProgress();
-    }
+      
+      final Object finalResult = result;
+      mainHandler.post(() -> {
+        hideProgress();
+        isLoginRunning = false;
+        captchaToken = null;
+        if (finalResult instanceof Exception)
+        {
+          onError((Exception) finalResult);
+        }
+        else
+        {
+          // changed user
+          LoginActivity.this.onSuccess();
+        }
+      });
+    });
   }
 
   static void onSuccess(EntryManager entryManager, String googleAccountUsed)
@@ -139,7 +121,7 @@ public class LoginActivity extends Activity implements OnClickListener
   private CheckBox                                 shouldRememberPasswordCheckBox;
   private ProgressBar                              mProgress;
   private Button                                   loginButton;
-  private AsyncTask<LoginParameters, Void, Object> runningTask;
+  private boolean                                  isLoginRunning = false;
   private EditText                                 captchaAnswerEditText;
   private TextView                                 descriptionTextView;
   private TextView                                 serverNameTextView;
@@ -213,7 +195,8 @@ public class LoginActivity extends Activity implements OnClickListener
       getEntryManager().saveEmail(credentials.email);
     }
 
-    runningTask = new LoginTask(getEntryManager()).execute(credentials);
+    isLoginRunning = true;
+    executeLoginTask(getEntryManager(), credentials);
   }
 
   @Override
@@ -355,13 +338,19 @@ public class LoginActivity extends Activity implements OnClickListener
   protected void onPause()
   {
     super.onPause();
+    
+    // Note: ExecutorService tasks cannot be cancelled as easily as AsyncTask
+    // Consider implementing proper cancellation if needed
+  }
 
-    AsyncTask<LoginParameters, Void, Object> task = runningTask;
-    if (task != null)
+  @Override
+  protected void onDestroy()
+  {
+    super.onDestroy();
+    if (executorService != null && !executorService.isShutdown())
     {
-      task.cancel(false);
+      executorService.shutdown();
     }
-
   }
 
   @Override

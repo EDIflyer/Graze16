@@ -362,7 +362,7 @@ public class EntryManager implements SharedPreferences.OnSharedPreferenceChangeL
     isMarkAllReadPossibleCache = new HashMap<DBQuery, Boolean>();
     contentCountCache = new HashMap<DBQuery, Integer>();
 
-    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    sharedPreferences = context.getSharedPreferences("com.grazeten_preferences", Context.MODE_PRIVATE);
 
     newsRobSettings = new NewsRobSettings(this, sharedPreferences);
     ctx = context;

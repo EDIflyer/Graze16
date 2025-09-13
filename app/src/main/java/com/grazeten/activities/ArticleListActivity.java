@@ -5,6 +5,8 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +14,9 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils.TruncateAt;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -698,19 +701,29 @@ public class ArticleListActivity extends AbstractNewsRobListActivity implements 
 
 }
 
-class UnsubscribeFeedTask extends AsyncTask<String, Void, Void>
+class UnsubscribeFeedTask
 {
   private EntryManager entryManager;
+  private ExecutorService executorService;
 
   public UnsubscribeFeedTask(EntryManager entryManager)
   {
     this.entryManager = entryManager;
+    this.executorService = Executors.newSingleThreadExecutor();
   }
 
-  @Override
-  protected Void doInBackground(String... params)
+  public void execute(String... params)
   {
-    entryManager.doUnsubscribeFeed(params[0]);
-    return null;
+    executorService.execute(() -> {
+      entryManager.doUnsubscribeFeed(params[0]);
+    });
+  }
+
+  public void shutdown()
+  {
+    if (executorService != null && !executorService.isShutdown())
+    {
+      executorService.shutdown();
+    }
   }
 }
