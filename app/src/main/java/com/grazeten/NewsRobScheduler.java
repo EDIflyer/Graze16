@@ -118,7 +118,14 @@ class NewsRobScheduler
     {
       i.setFlags(PendingIntent.FLAG_NO_CREATE);
     }
-    PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, noCreate ? PendingIntent.FLAG_NO_CREATE : 0);
+    
+    // Android 12+ (API 31+) requires FLAG_IMMUTABLE or FLAG_MUTABLE for PendingIntent
+    int flags = noCreate ? PendingIntent.FLAG_NO_CREATE : 0;
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+      flags |= PendingIntent.FLAG_IMMUTABLE;
+    }
+    
+    PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, flags);
     return pi;
   }
 

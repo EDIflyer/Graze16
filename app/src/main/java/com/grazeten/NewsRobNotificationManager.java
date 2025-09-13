@@ -71,7 +71,8 @@ public class NewsRobNotificationManager implements IEntryModelUpdateListener
       .setWhen(new Date().getTime())
       .setContentTitle("GrazeTEN has been updated")
       .setContentText("Tap to open release notes.")
-      .setContentIntent(PendingIntent.getActivity(context, 0, i, 0));
+      .setContentIntent(PendingIntent.getActivity(context, 0, i, 
+        android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S ? PendingIntent.FLAG_IMMUTABLE : 0));
     Notification n = builder.build();
     n.flags |= Notification.FLAG_AUTO_CANCEL;
     nm.notify(9292, n);
@@ -87,7 +88,8 @@ public class NewsRobNotificationManager implements IEntryModelUpdateListener
       intent.putExtra(EntryManager.EXTRA_CAPTCHA_TOKEN, captchaToken);
       intent.putExtra(EntryManager.EXTRA_CAPTCHA_URL, captchaUrl);
     }
-    PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+    PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 
+      android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S ? PendingIntent.FLAG_IMMUTABLE : 0);
 //    Notification n = new Notification(R.drawable.gen_auto_notification_sync_problem, U.t(context, R.string.login_to_google_needed),
 //        new Date().getTime());
 //    // Notification n = new Notification(R.drawable.sync_problem,
@@ -134,7 +136,8 @@ public class NewsRobNotificationManager implements IEntryModelUpdateListener
                                                    : R.string.synchronization_running_notification_title))
         .setContentText(U.t(context, fastSyncOnly ? R.string.fast_synchronization_running_notification_summary
                                                   : R.string.synchronization_running_notification_summary))
-        .setContentIntent(PendingIntent.getActivity(context, 0, intent, 0));
+        .setContentIntent(PendingIntent.getActivity(context, 0, intent, 
+          android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S ? PendingIntent.FLAG_IMMUTABLE : 0));
     Notification n = builder.build();
     n.flags = Notification.FLAG_ONGOING_EVENT;
     return n;
@@ -156,11 +159,13 @@ public class NewsRobNotificationManager implements IEntryModelUpdateListener
 
     Intent cancelSyncIntent = new Intent("com.grazerss.CANCEL_SYNC");
     cancelSyncIntent.setClass(context, FireReceiver.class);
-    PendingIntent pendingCancelSyncIntent = PendingIntent.getBroadcast(context, 0, cancelSyncIntent, 0);
+    PendingIntent pendingCancelSyncIntent = PendingIntent.getBroadcast(context, 0, cancelSyncIntent, 
+      android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S ? PendingIntent.FLAG_IMMUTABLE : 0);
     contentView.setOnClickPendingIntent(R.id.cancel_sync, pendingCancelSyncIntent);
 
     Intent showDashboardIntent = new Intent(context, DashboardListActivity.class);
-    PendingIntent showDashboardPendingIntent = PendingIntent.getActivity(context, 0, showDashboardIntent, 0);
+    PendingIntent showDashboardPendingIntent = PendingIntent.getActivity(context, 0, showDashboardIntent, 
+      android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S ? PendingIntent.FLAG_IMMUTABLE : 0);
     n.contentIntent = pendingCancelSyncIntent;// showDashboardPendingIntent;
 
     updateContentView(entryManager, contentView);
@@ -206,7 +211,8 @@ public class NewsRobNotificationManager implements IEntryModelUpdateListener
   public void createSyncSpaceExceededProblemNotification(int reservedSpaceInMB)
   {
     Intent intent = new Intent(context, DashboardListActivity.class);
-    PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+    PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 
+      android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S ? PendingIntent.FLAG_IMMUTABLE : 0);
     String message = "Not enough space left to download articles.\n<" + reservedSpaceInMB + " MB free.";
 //    Notification n = new Notification(R.drawable.gen_auto_notification_sync_problem, message, new Date().getTime());
 ////     Notification n = new Notification(R.drawable.sync_problem,
@@ -281,7 +287,8 @@ public class NewsRobNotificationManager implements IEntryModelUpdateListener
     intent.putExtra(UIHelper.EXTRA_KEY_TITLE, "New Articles");
     UIHelper.addExtrasFromDBQuery(intent, dbq);
 
-    PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+    PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 
+      android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S ? PendingIntent.FLAG_IMMUTABLE : 0);
 //    Notification n = new Notification(R.drawable.gen_auto_notification_icon,
 //        noOfNewArticles + " new " + U.pluralize(noOfNewArticles, "article"), System.currentTimeMillis());
 //    n.setLatestEventInfo(context, "New articles!",

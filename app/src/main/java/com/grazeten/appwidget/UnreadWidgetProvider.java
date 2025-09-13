@@ -92,7 +92,8 @@ public class UnreadWidgetProvider extends AppWidgetProvider
       // | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
       UIHelper.addExtrasFromDBQuery(intent, wp.getDBQuery());
-      PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0); //
+      PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 
+        android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S ? PendingIntent.FLAG_IMMUTABLE : 0); //
       // | Intent.FLAG_DEBUG_LOG_RESOLUTION
 
       updateViews.setOnClickPendingIntent(R.id.container, pendingIntent);
