@@ -70,7 +70,12 @@ public class SdCardStorageAdapter extends AbstractStorageAdapter
         }
       };
 
-      getContext().registerReceiver(myBroadcastReceiver, intentFilter);
+      // Android 14+ requires RECEIVER_EXPORTED or RECEIVER_NOT_EXPORTED flag
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+        getContext().registerReceiver(myBroadcastReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
+      } else {
+        getContext().registerReceiver(myBroadcastReceiver, intentFilter);
+      }
     }
   }
 
