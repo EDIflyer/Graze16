@@ -69,7 +69,7 @@
         </activity>
         <activity
             android:name="com.grazeten.activities.ArticleListActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/AppTheme.NoActionBar"
             android:clearTaskOnLaunch="true"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:exported="true"
@@ -83,14 +83,14 @@
         </activity>
         <activity
             android:name="com.grazeten.activities.FeedListActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/AppTheme.NoActionBar"
             android:clearTaskOnLaunch="true"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:exported="true"
             android:label="@string/feed_list_label" />
         <activity
             android:name="com.grazeten.activities.ShowArticleActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:exported="true"
             android:label="@string/show_article"
@@ -114,7 +114,7 @@
         </activity>
         <activity
             android:name="com.grazeten.activities.AccountListActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/AppTheme.NoActionBar"
             android:clearTaskOnLaunch="true"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:label="Accounts" >

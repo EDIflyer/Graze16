@@ -803,10 +803,8 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
             Intent intent = new Intent(this, DashboardListActivity.class);
             // Prevent auto-skip to feeds - stay on dashboard home view
             intent.putExtra("skip", false);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            // Remove task-switching flags to behave like regular navigation
             startActivity(intent);
-            // Use custom transition to avoid white flash
-            overridePendingTransition(0, 0);
             finish(); // Close current activity to prevent back stack issues
         } else {
             Log.d("HomeNavigation", "Already on Dashboard, doing nothing");
@@ -1456,4 +1454,5 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
     TextView controlPanelTitle = (TextView) findViewById(R.id.control_panel_title);
     controlPanelTitle.setText(getDefaultStatusBarTitle());
   }
+
 }
