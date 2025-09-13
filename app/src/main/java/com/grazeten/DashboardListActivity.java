@@ -30,8 +30,8 @@ public class DashboardListActivity extends AbstractNewsRobListActivity
 
   static final String      TAG                               = DashboardListActivity.class.getSimpleName();
 
-  private static final int DIALOG_SHOW_LICENSE               = 200;
-  private static final int DIALOG_SHOW_USAGE_DATA_COLLECTION = 201;
+  private static final int DIALOG_MARK_ALL_AS_READ     = 200;
+  private static final int DIALOG_SHOW_LICENSE               = 201;
   private static final int DIALOG_SHOW_REINSTALL_NEWSROB     = 202;
 
   public static Dialog createShowReinstallDialog(final EntryManager entryManager, final Activity enclosingActivity)
@@ -57,31 +57,7 @@ public class DashboardListActivity extends AbstractNewsRobListActivity
         .setPositiveButton("Install", negativeListener).setNegativeButton("Later", negativeListener).create();
   }
 
-  public static Dialog createUsageDataCollectionPermissionDialog(final EntryManager entryManager, final Activity enclosingActivity)
-  {
-    DialogInterface.OnClickListener negativeListener = new DialogInterface.OnClickListener()
-    {
-      public void onClick(DialogInterface dialog, int which)
-      {
-        if (which == DialogInterface.BUTTON1)
-        {
-          entryManager.saveUsageDataCollectionPermission(true);
-        }
-        else
-        {
-          entryManager.saveUsageDataCollectionPermission(false);
-        }
-        if (enclosingActivity.getClass() != DashboardListActivity.class)
-        {
-          enclosingActivity.finish();
-        }
-      }
-    };
 
-    return new AlertDialog.Builder(enclosingActivity).setIcon(android.R.drawable.ic_dialog_info)
-        .setMessage(enclosingActivity.getResources().getText(R.string.usage_data_collection_text)).setTitle(R.string.usage_data_collection)
-        .setPositiveButton("Allow", negativeListener).setNegativeButton("Deny", negativeListener).create();
-  }
 
   SimpleCursorAdapter sca;
 
@@ -197,6 +173,19 @@ public class DashboardListActivity extends AbstractNewsRobListActivity
 
     Cursor c = getEntryManager().getDashboardContentCursor(dbQuery);
     startManagingCursor(c);
+    
+    android.util.Log.d(TAG, "Dashboard cursor count: " + (c != null ? c.getCount() : "null"));
+    if (c != null && c.getCount() > 0) {
+      android.util.Log.d(TAG, "Cursor has " + c.getCount() + " items");
+      
+      // Force hide empty view when we have dashboard items
+      View emptyView = findViewById(android.R.id.empty);
+      if (emptyView != null) {
+        android.util.Log.d(TAG, "Dashboard: Hiding empty view - we have " + c.getCount() + " items");
+        emptyView.setVisibility(View.GONE);
+      }
+      getListView().setVisibility(View.VISIBLE);
+    }
 
     final int readIndicator = getEntryManager().isLightColorSchemeSelected() ? R.drawable.read_indicator : R.drawable.read_indicator_dark;
     sca = new SimpleCursorAdapter(this, R.layout.dashboard_list_row, c, new String[] { "_id", "frequency", "sum_unread_freq" }, new int[] {
@@ -253,6 +242,19 @@ public class DashboardListActivity extends AbstractNewsRobListActivity
       android.util.Log.d(TAG, "ListView onItemClick triggered: position=" + position + ", id=" + id);
       onListItemClick(getListView(), view, position, id);
     });
+    
+    // Force hide empty view if we have data
+    if (c != null && c.getCount() > 0) {
+      android.util.Log.d(TAG, "Hiding empty view - we have " + c.getCount() + " items");
+      View emptyView = findViewById(android.R.id.empty);
+      if (emptyView != null) {
+        emptyView.setVisibility(View.GONE);
+      }
+      // Ensure ListView is visible
+      getListView().setVisibility(View.VISIBLE);
+    } else {
+      android.util.Log.d(TAG, "No data in cursor, keeping empty view visible");
+    }
 
     if (!getEntryManager().isLicenseAccepted())
     {
@@ -261,10 +263,7 @@ public class DashboardListActivity extends AbstractNewsRobListActivity
     else
     {
 
-      if ((getEntryManager().getDaysInstalled() >= 3) && getEntryManager().shouldAskForUsageDataCollectionPermission())
-      {
-        showDialog(DIALOG_SHOW_USAGE_DATA_COLLECTION);
-      }
+
 
       // Skip this activity when now labels are displayed
       if ((sca.getCount() == 1) && i.getBooleanExtra("skip", true))
@@ -406,10 +405,6 @@ public class DashboardListActivity extends AbstractNewsRobListActivity
           .setTitle(R.string.license).setPositiveButton(android.R.string.ok, negativeListener)
           .setNegativeButton(android.R.string.cancel, negativeListener).create();
 
-    }
-    else if (DIALOG_SHOW_USAGE_DATA_COLLECTION == id)
-    {
-      return createUsageDataCollectionPermissionDialog(getEntryManager(), this);
     }
     else if (DIALOG_SHOW_REINSTALL_NEWSROB == id)
     {

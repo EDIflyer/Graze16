@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import com.grazeten.DashboardListActivity;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -25,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.animation.ObjectAnimator;
 import android.widget.AbsoluteLayout;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -139,7 +141,38 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
     {
       progressIndicator.setVisibility(View.VISIBLE);
     }
-    if (refreshButton != null)
+    else
+    {
+      // If control panel progress indicator isn't available, show the main data update progress
+      View dataUpdateProgress = findViewById(R.id.data_update_progress);
+      if (dataUpdateProgress != null)
+      {
+        dataUpdateProgress.setVisibility(View.VISIBLE);
+      }
+    }
+
+    // Show progress container if available
+    if (progressContainer != null)
+    {
+      progressContainer.setVisibility(View.VISIBLE);
+    }
+
+    // Update refresh button to show as active sync
+    if (refreshButton != null && progressIndicator == null)
+    {
+      // When using menu-based system without control panel, change refresh icon to indicate syncing
+      refreshButton.setImageResource(android.R.drawable.ic_popup_sync);
+      refreshButton.setEnabled(false); // Disable to prevent multiple sync requests
+      
+      // Create a continuous rotation animation
+      ObjectAnimator rotationAnimator = ObjectAnimator.ofFloat(refreshButton, "rotation", 0f, 360f);
+      rotationAnimator.setDuration(1000);
+      rotationAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+      rotationAnimator.setRepeatMode(ObjectAnimator.RESTART);
+      rotationAnimator.start();
+      refreshButton.setTag(rotationAnimator); // Store animator reference for later cancellation
+    }
+    else if (refreshButton != null)
     {
       refreshButton.setVisibility(View.GONE);
     }
@@ -203,18 +236,46 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
   protected void deactivateProgressIndicator()
   {
     PL.log("AbstractNewsRobList.deactivateProgressIndicator(" + progressIndicator + ")", this);
-    if (progressIndicator == null)
-    {
-      return;
-    }
-
+    
     if (!shouldActionBarBeHidden())
     {
-      progressIndicator.setVisibility(View.GONE);
-      if (refreshButton != null)
+      if (progressIndicator != null)
       {
-        refreshButton.setVisibility(View.VISIBLE);
+        progressIndicator.setVisibility(View.GONE);
+        if (refreshButton != null)
+        {
+          refreshButton.setVisibility(View.VISIBLE);
+        }
       }
+      else
+      {
+        // Hide alternative progress indicators
+        View dataUpdateProgress = findViewById(R.id.data_update_progress);
+        if (dataUpdateProgress != null)
+        {
+          dataUpdateProgress.setVisibility(View.INVISIBLE);
+        }
+        
+        // Restore refresh button to normal state  
+        if (refreshButton != null)
+        {
+          // Cancel any ObjectAnimator animation
+          ObjectAnimator animator = (ObjectAnimator) refreshButton.getTag();
+          if (animator != null) {
+            animator.cancel();
+          }
+          refreshButton.animate().cancel(); // Stop any ViewPropertyAnimator animation
+          refreshButton.setRotation(0); // Reset rotation to 0
+          refreshButton.setImageResource(R.drawable.ic_sync_white_32dp);
+          refreshButton.setEnabled(true);
+        }
+      }
+    }
+
+    // Hide progress container
+    if (progressContainer != null)
+    {
+      progressContainer.setVisibility(View.GONE);
     }
 
     setTitle(getDefaultStatusBarTitle());
@@ -395,9 +456,18 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
           if (succeeded.getNoOfEntriesUpdated() > 0)
           {
             refreshUI();
+            Toast.makeText(AbstractNewsRobListActivity.this, 
+                "Sync complete - " + succeeded.getNoOfEntriesUpdated() + " articles updated",
+                Toast.LENGTH_SHORT).show();
             // Toast.makeText(AbstractNewsRobListActivity.this,
             // succeeded.getMessage(),
             // Toast.LENGTH_LONG).show(); // I18N
+          }
+          else
+          {
+            Toast.makeText(AbstractNewsRobListActivity.this, 
+                "Sync complete - no new articles",
+                Toast.LENGTH_SHORT).show();
           }
         }
         else if (result instanceof ClearModelSucceeded)
@@ -726,15 +796,26 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
   public boolean onOptionsItemSelected(MenuItem item)
   {
     if (item.getItemId() == android.R.id.home) {
-        // Handle home/logo button click - navigate to dashboard
-        Intent intent = new Intent(this, DashboardListActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
+        // Handle home/logo button click - navigate to dashboard only if not already there
+        Log.d("HomeNavigation", "Home button pressed from " + this.getClass().getSimpleName());
+        if (!(this instanceof DashboardListActivity)) {
+            Log.d("HomeNavigation", "Not on Dashboard, navigating to DashboardListActivity");
+            Intent intent = new Intent(this, DashboardListActivity.class);
+            // Prevent auto-skip to feeds - stay on dashboard home view
+            intent.putExtra("skip", false);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            // Use custom transition to avoid white flash
+            overridePendingTransition(0, 0);
+            finish(); // Close current activity to prevent back stack issues
+        } else {
+            Log.d("HomeNavigation", "Already on Dashboard, doing nothing");
+        }
         return true;
     } else if (item.getItemId() == R.id.menu_sync) {
         // Trigger sync functionality
         requestRefresh();
-        Toast.makeText(this, "Refresh", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Syncing articles...", Toast.LENGTH_SHORT).show();
         return true;
     } else if (item.getItemId() == R.id.menu_mark_all_read) {
         // Trigger mark all read functionality
@@ -748,14 +829,6 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
         // Update the icon based on current state
         boolean shouldHideReadItems = getDbQuery().shouldHideReadItems();
         item.setIcon(shouldHideReadItems ? R.drawable.ic_dot_white_32dp : R.drawable.ic_circle_white_32dp);
-        return true;
-    } else if (item.getItemId() == android.R.id.home) {
-        Toast.makeText(AbstractNewsRobListActivity.this, "-> Home", Toast.LENGTH_SHORT).show();
-        Intent i = new Intent(AbstractNewsRobListActivity.this, DashboardListActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        i.putExtra("skip", false);
-        finish();
-        startActivity(i);
         return true;
     } else if (item.getItemId() == R.id.menu_subscribe_feed) {
         Intent intent = new Intent().setClass(this, SubscribeFeedActivity.class);
@@ -1040,6 +1113,9 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
     {
       PL.log("ANRLA: User requested refresh manually.", this);
     }
+
+    // Show progress immediately when user taps refresh
+    activateProgressIndicator();
 
     if (getEntryManager().needsSession())
     {

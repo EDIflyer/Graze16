@@ -75,6 +75,14 @@ public class FeedListActivity extends AbstractNewsRobListActivity
     });
 
     setListAdapter(sca);
+    
+    // Ensure ListView is clickable
+    getListView().setClickable(true);
+    getListView().setOnItemClickListener((parent, view, position, id) -> {
+      android.util.Log.d("FeedListActivity", "ListView onItemClick triggered: position=" + position + ", id=" + id);
+      onListItemClick(getListView(), view, position, id);
+    });
+    
     int noOfListRows = getListView().getAdapter().getCount();
     if (noOfListRows < 3 || dbQuery.getFilterFeedId() != null)
     {
@@ -115,11 +123,14 @@ public class FeedListActivity extends AbstractNewsRobListActivity
 
   protected void onListItemClick(ListView l, View v, int position, long id)
   {
+    android.util.Log.d("FeedListActivity", "onListItemClick: position=" + position + ", id=" + id);
 
     Cursor c = (Cursor) getListView().getAdapter().getItem(position);
 
     Long filterFeedId = c.getLong(c.getColumnCount() - 1);
     int frequency = c.getInt(1);
+    
+    android.util.Log.d("FeedListActivity", "Feed click: filterFeedId=" + filterFeedId + ", frequency=" + frequency);
 
     DBQuery dbq = new DBQuery(getDbQuery());
     dbq.setFilterFeedId(filterFeedId);
@@ -136,6 +147,7 @@ public class FeedListActivity extends AbstractNewsRobListActivity
       // + new SimpleDateFormat("yyMMdd-hh:mm:ss").format(new
       // Date()).replace(':', '-'));
 
+      android.util.Log.d("FeedListActivity", "Launching ArticleListActivity for feed " + filterFeedId);
       Intent intent = new Intent(this, ArticleListActivity.class);
       UIHelper.addExtrasFromDBQuery(intent, dbq);
       startActivity(intent);
@@ -146,6 +158,21 @@ public class FeedListActivity extends AbstractNewsRobListActivity
   @Override
   void refreshUI()
   {
+    // Force hide empty view when we have feeds
+    ListView listView = getListView();
+    int feedCount = listView.getAdapter().getCount();
+    
+    android.util.Log.d(TAG, "FeedList RefreshUI: Feed count = " + feedCount);
+    
+    if (feedCount > 0) {
+        View emptyView = findViewById(android.R.id.empty);
+        if (emptyView != null) {
+            android.util.Log.d(TAG, "FeedList: Hiding empty view - we have " + feedCount + " feeds");
+            emptyView.setVisibility(View.GONE);
+        }
+        listView.setVisibility(View.VISIBLE);
+    }
+    
     if (!isTaskRoot() && getListView().getAdapter().getCount() == 1)
       finish();
     else

@@ -75,20 +75,6 @@ public class SettingsActivity extends PreferenceActivity implements IEntryModelU
       }
     }
 
-    final Preference p = getPreferenceScreen().findPreference(EntryManager.SETTINGS_USAGE_DATA_PERMISSION_GRANTED);
-
-    p.setOnPreferenceClickListener(new OnPreferenceClickListener()
-    {
-
-      @Override
-      public boolean onPreferenceClick(Preference preference)
-      {
-        Dialog dialog = DashboardListActivity.createUsageDataCollectionPermissionDialog(em, SettingsActivity.this);
-        dialog.show();
-        return true;
-      }
-    });
-
   }
 
   private void disableSetting(EntryManager em, String keyOfPref)

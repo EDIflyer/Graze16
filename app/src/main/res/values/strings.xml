@@ -35,16 +35,6 @@
     
     <string name="explain_fullscreen_toggle_title">Full Screen Mode</string>
     <string name="explain_fullscreen_toggle_message"><h2><b><i><u>Tip:</u></i></b></h2>\n\nYou can enter / leave the <pre>full screen mode</pre> by tapping twice in the content area (the article body).\n</string>
-    
-    <string name="usage_data_collection">Usage Data Collection</string>
-    <string name="usage_data_collection_text">GrazeTEN would like to anonymously collect your usage data using flurry.com. This data will help the developer understand how you use GrazeTEN so that he can improve it.\n
-\nThis data collection is strictly opt-in, so if you do not approve no data will be collected. The application will continue to function normally regardless of this setting.\n
-\nCurrently, only general data will be collected: what device you use, your GrazeTEN and Android versions, which country you are in, which GrazeTEN screens you use and how long you use each screen.\n
-\nIn the future, more specific data may be collected, such as which menu options you use most frequently, GrazeTEN configuration information, etc. Before this happens however, this dialog will appear again and ask you again to allow this data to be gathered.\n
-\nAt any time you may open the settings and enable or disable the data collection.\n
-\n<b><u>Tip:</u></b>\n
-\nIt is recommended to enable the usage data collection.\nIf you use GrazeTEN in any unusual way, or use a rare device or Android version, this is your opportunity to make the developer aware of it so that he can better support you.\n
-    </string>
  
     <string name="newsrob_three_to_six">Please Re-Install</string>
     <string name="newsrob_three_to_six_text">NewsRob kept compatibility with old Android versions for quite some time and to some extent will continue to do so.\n

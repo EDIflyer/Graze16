@@ -214,10 +214,6 @@ public class EntryManager implements SharedPreferences.OnSharedPreferenceChangeL
 
   public static final String  SETTINGS_UI_THEME                                    = "settings_ui_theme";
 
-  private static final String SETTINGS_USAGE_DATA_COLLECTION_PERMISSION_VERSION    = "usage_data_collection_version";
-
-  public static final String  SETTINGS_USAGE_DATA_PERMISSION_GRANTED               = "usage_data_permission_granted";
-
   private static final String SETTINGS_VIBRATE_FIRST_LAST_ENABLED                  = "settings_vibrate_first_last_enabled";
 
   static final String         SETTINGS_VOLUME_CONTROL_NAVIGATION_ENABLED           = "settings_volume_control_navigation_enabled";
@@ -1866,10 +1862,7 @@ public class EntryManager implements SharedPreferences.OnSharedPreferenceChangeL
     return getSharedPreferences().getBoolean(SETTINGS_FORCE_TEXT_REFLOW_ON_ZOOM, false);
   }
 
-  public boolean isUsageDataCollectionPermitted()
-  {
-    return getSharedPreferences().getBoolean(SETTINGS_USAGE_DATA_PERMISSION_GRANTED, false);
-  }
+
 
   public boolean isVolumeControlNavigationEnabled()
   {
@@ -2009,18 +2002,7 @@ public class EntryManager implements SharedPreferences.OnSharedPreferenceChangeL
     }
 
     // When the setting is changed from the settings dialog also maintain
-    // the version code here
-    if (SETTINGS_USAGE_DATA_PERMISSION_GRANTED.equals(key))
-    {
-      SDK9Helper.apply(getSharedPreferences().edit().putInt(SETTINGS_USAGE_DATA_COLLECTION_PERMISSION_VERSION, getMyVersionCode()));
 
-      PL.log(
-          "EntryManager: Usage Data Collection Permission changed from the settings dialog. New setting="
-              + getSharedPreferences().getBoolean(SETTINGS_USAGE_DATA_PERMISSION_GRANTED, false) + " version="
-              + getSharedPreferences().getInt(SETTINGS_USAGE_DATA_COLLECTION_PERMISSION_VERSION, -99) + " collectionPermitted="
-              + isUsageDataCollectionPermitted(), ctx);
-
-    }
 
     if (SETTINGS_AUTOMATIC_REFRESHING_ENABLED.equals(key))
     {
@@ -2385,16 +2367,7 @@ public class EntryManager implements SharedPreferences.OnSharedPreferenceChangeL
     SDK9Helper.apply(getSharedPreferences().edit().putLong(SETTINGS_LAST_SUCCESSFUL_LOGIN, new Date().getTime()));
   }
 
-  public void saveUsageDataCollectionPermission(boolean permitted)
-  {
 
-    Editor editor = getSharedPreferences().edit();
-    editor.putInt(SETTINGS_USAGE_DATA_COLLECTION_PERMISSION_VERSION, getMyVersionCode());
-    editor.putBoolean(SETTINGS_USAGE_DATA_PERMISSION_GRANTED, permitted);
-    SDK9Helper.apply(editor);
-
-    Log.d(TAG, "User Data Collection preference saved: Permitted? " + permitted);
-  }
 
   public void saveWidgetPreferences(int appWidgetId, WidgetPreferences wp)
   {
@@ -2556,17 +2529,7 @@ public class EntryManager implements SharedPreferences.OnSharedPreferenceChangeL
     return getSharedPreferences().getBoolean(SETTINGS_ALWAYS_USE_SSL, true);
   }
 
-  public boolean shouldAskForUsageDataCollectionPermission()
-  {
-    SharedPreferences sp = getSharedPreferences();
-    if (!sp.contains(SETTINGS_USAGE_DATA_COLLECTION_PERMISSION_VERSION))
-    {
-      return true;
-    }
 
-    return false;
-
-  }
 
   public boolean shouldHideReadItems()
   {

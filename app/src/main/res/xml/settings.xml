@@ -294,10 +294,6 @@
             android:title="Article Hardware Acceleration" />
     </PreferenceScreen>
 
-    <com.grazeten.preference.CheckBoxPreference
-        android:defaultValue="false"
-        android:key="usage_data_permission_granted"
-        android:summary="Allow GrazeTEN to collect anonymous usage data."
-        android:title="Usage Data Collection" />
+
 
 </PreferenceScreen>

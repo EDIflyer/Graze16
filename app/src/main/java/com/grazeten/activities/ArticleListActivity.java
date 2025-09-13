@@ -126,7 +126,24 @@ public class ArticleListActivity extends AbstractNewsRobListActivity implements 
     listAdapter = new MyListAdapter();
     setListAdapter(listAdapter);
 
+    // Set up explicit click listener for article navigation
+    ListView listView = getListView();
+    listView.setOnItemClickListener((parent, view, position, id) -> {
+      Log.d(TAG, "Article item clicked at position: " + position);
+      startShowEntryActivityForPosition(position, dbQuery);
+    });
+
     updateCursor();
+
+    // Force hide empty view if we have articles
+    if (listAdapter != null && listAdapter.getCount() > 0) {
+        View emptyView = findViewById(android.R.id.empty);
+        if (emptyView != null) {
+            Log.d(TAG, "Initialize: Hiding empty view - we have " + listAdapter.getCount() + " articles");
+            emptyView.setVisibility(View.GONE);
+        }
+        listView.setVisibility(View.VISIBLE);
+    }
 
   }
 
@@ -153,6 +170,16 @@ public class ArticleListActivity extends AbstractNewsRobListActivity implements 
         t.stop();
       // listAdapter.notifyDataSetChanged();
 
+      // Force hide empty view after cursor change if we have articles
+      if (cursor.getCount() > 0) {
+        View emptyView = findViewById(android.R.id.empty);
+        if (emptyView != null) {
+          Log.d(TAG, "UpdateCursor: Hiding empty view after cursor change - we have " + cursor.getCount() + " articles");
+          emptyView.setVisibility(View.GONE);
+        }
+        getListView().setVisibility(View.VISIBLE);
+      }
+
     }
     else
     {
@@ -162,6 +189,17 @@ public class ArticleListActivity extends AbstractNewsRobListActivity implements 
       // listAdapter.notifyDataSetChanged(); doesn't work. use requery
       // instead
       listAdapter.getCursor().requery();
+
+      // Force hide empty view after requery if we have articles
+      Cursor cursor = listAdapter.getCursor();
+      if (cursor.getCount() > 0) {
+        View emptyView = findViewById(android.R.id.empty);
+        if (emptyView != null) {
+          Log.d(TAG, "Requery: Hiding empty view after requery - we have " + cursor.getCount() + " articles");
+          emptyView.setVisibility(View.GONE);
+        }
+        getListView().setVisibility(View.VISIBLE);
+      }
 
       if (t != null)
         t.stop();
@@ -460,6 +498,22 @@ public class ArticleListActivity extends AbstractNewsRobListActivity implements 
   void refreshUI()
   {
     super.refreshUI();
+    
+    // Force hide empty view when we have articles
+    ListView listView = getListView();
+    int articleCount = listView.getAdapter().getCount();
+    
+    Log.d(TAG, "RefreshUI: Article count = " + articleCount);
+    
+    if (articleCount > 0) {
+        View emptyView = findViewById(android.R.id.empty);
+        if (emptyView != null) {
+            Log.d(TAG, "Hiding empty view - we have " + articleCount + " articles");
+            emptyView.setVisibility(View.GONE);
+        }
+        listView.setVisibility(View.VISIBLE);
+    }
+    
     if (getListView().getAdapter().getCount() == 0 && !isTaskRoot())
       finish();
   }
