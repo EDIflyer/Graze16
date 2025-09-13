@@ -6,6 +6,7 @@
 
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:fitsSystemWindows="true"
 
     android:orientation="vertical">
 
@@ -64,7 +65,7 @@
         android:theme="@style/CustomToolBar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:fitsSystemWindows="true"
+        android:background="?attr/colorPrimary"
         android:elevation="4dp"/>
 
 <!--    <ViewStub-->

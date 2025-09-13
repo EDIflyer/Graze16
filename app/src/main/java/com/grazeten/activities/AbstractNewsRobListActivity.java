@@ -292,7 +292,9 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
     {
       return;
     }
-    toggleOrderButton.setVisibility(View.GONE);
+    if (toggleOrderButton != null) {
+      toggleOrderButton.setVisibility(View.GONE);
+    }
   }
 
   protected void instantiateMarkAllReadDialog()
@@ -633,6 +635,14 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
     super.onCreateOptionsMenu(menu);
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.menu_main, menu);
+    
+    // Set the correct initial icon for show/hide toggle
+    MenuItem showHideItem = menu.findItem(R.id.menu_show_hide);
+    if (showHideItem != null) {
+      boolean shouldHideReadItems = getDbQuery().shouldHideReadItems();
+      showHideItem.setIcon(shouldHideReadItems ? R.drawable.ic_dot_white_32dp : R.drawable.ic_circle_white_32dp);
+    }
+    
     return true;
 
     // if the action bar is not shown the actions that would go into the bar
@@ -716,6 +726,30 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
   public boolean onOptionsItemSelected(MenuItem item)
   {
     if (item.getItemId() == android.R.id.home) {
+        // Handle home/logo button click - navigate to dashboard
+        Intent intent = new Intent(this, DashboardListActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        return true;
+    } else if (item.getItemId() == R.id.menu_sync) {
+        // Trigger sync functionality
+        requestRefresh();
+        Toast.makeText(this, "Refresh", Toast.LENGTH_SHORT).show();
+        return true;
+    } else if (item.getItemId() == R.id.menu_mark_all_read) {
+        // Trigger mark all read functionality
+        instantiateMarkAllReadDialog();
+        return true;
+    } else if (item.getItemId() == R.id.menu_show_hide) {
+        // Trigger show/hide functionality
+        requestToggleHideItems();
+        String toastText = getDbQuery().shouldHideReadItems() ? "Unread Articles only" : "All Articles";
+        Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
+        // Update the icon based on current state
+        boolean shouldHideReadItems = getDbQuery().shouldHideReadItems();
+        item.setIcon(shouldHideReadItems ? R.drawable.ic_dot_white_32dp : R.drawable.ic_circle_white_32dp);
+        return true;
+    } else if (item.getItemId() == android.R.id.home) {
         Toast.makeText(AbstractNewsRobListActivity.this, "-> Home", Toast.LENGTH_SHORT).show();
         Intent i = new Intent(AbstractNewsRobListActivity.this, DashboardListActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -790,19 +824,15 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
     getSupportActionBar().setTitle("GrazeTEN");
     getSupportActionBar().setHomeAsUpIndicator(R.drawable.gen_logo_32dp);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    // Temporarily disable custom view to allow overflow menu to show
-    // getSupportActionBar().setDisplayShowCustomEnabled(true);
-    // View panel = getLayoutInflater().inflate(R.layout.control_panel, null);
-    // getSupportActionBar().setCustomView(panel, new androidx.appcompat.widget.Toolbar.LayoutParams(androidx.appcompat.widget.Toolbar.LayoutParams.WRAP_CONTENT,
-    //                                                              androidx.appcompat.widget.Toolbar.LayoutParams.MATCH_PARENT));
-    boolean isLightTheme = getEntryManager().isLightColorSchemeSelected();
     toolbar.setTitleTextColor(Color.WHITE);
+    // Set gradient background
+    boolean isLightTheme = getEntryManager().isLightColorSchemeSelected();
     toolbar.setBackgroundResource(isLightTheme ? R.drawable.list_header_background : R.drawable.list_header_background_dark);
 
     //    if (!shouldActionBarBeHidden())
     //    {
     //        findViewById(R.id.control_panel_stub).setVisibility(View.VISIBLE);
-    // setupButtons(); // Disabled because custom view is commented out
+    // setupButtons(); // Using menu buttons instead of custom view
     //    }
 
     //    final ViewGroup parent = findViewById(R.id.ad_parent);
@@ -825,15 +855,17 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
 
     //    if (!shouldActionBarBeHidden()) {
     progressIndicator = findViewById(R.id.background_progress);
-    progressIndicator.setOnClickListener(new View.OnClickListener()
-    {
-      @Override
-      public void onClick(View v)
+    if (progressIndicator != null) {
+      progressIndicator.setOnClickListener(new View.OnClickListener()
       {
-        toggleProgressBarVisibility();
-        progressIndicator.postInvalidateDelayed(150);
-      }
-    });
+        @Override
+        public void onClick(View v)
+        {
+          toggleProgressBarVisibility();
+          progressIndicator.postInvalidateDelayed(150);
+        }
+      });
+    }
     progressBar = findViewById(R.id.progress_bar);
     progressDescription = findViewById(R.id.status_text);
     progressContainer = findViewById(R.id.progress_container);
@@ -845,7 +877,10 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
     currentActionBarLocation = getEntryManager().getActionBarLocation();
 
     Drawable d = getResources().getDrawable(R.drawable.progress_small_white);
-    ((ProgressBar) findViewById(R.id.progress_status_bar)).setIndeterminateDrawable(d);
+    ProgressBar statusProgressBar = findViewById(R.id.progress_status_bar);
+    if (statusProgressBar != null) {
+      statusProgressBar.setIndeterminateDrawable(d);
+    }
     TextView controlPanelText = findViewById(R.id.control_panel_text);
     if (controlPanelText != null) {
       controlPanelText.setText(getDefaultControlPanelTitle());
@@ -857,9 +892,7 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
           Toast.makeText(AbstractNewsRobListActivity.this, getToastMessage(), Toast.LENGTH_LONG).show();
         }
       });
-    }
-
-//    View newsRobLogo = findViewById(R.id.newsrob_logo);
+    }//    View newsRobLogo = findViewById(R.id.newsrob_logo);
 //    if (newsRobLogo != null) {
 //      newsRobLogo.setOnClickListener(new View.OnClickListener()
 //      {
@@ -1096,32 +1129,38 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
     });
 
     showHideButton = findViewById(R.id.show_hide_button);
-    showHideButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        requestToggleHideItems();
-        String toastText = getDbQuery().shouldHideReadItems() ? "Unread Articles only" : "All Articles";
-        Toast.makeText(AbstractNewsRobListActivity.this, toastText, Toast.LENGTH_SHORT).show();
-      }
-    });
+    if (showHideButton != null) {
+      showHideButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          requestToggleHideItems();
+          String toastText = getDbQuery().shouldHideReadItems() ? "Unread Articles only" : "All Articles";
+          Toast.makeText(AbstractNewsRobListActivity.this, toastText, Toast.LENGTH_SHORT).show();
+        }
+      });
+    }
 
     markAllReadButton = findViewById(R.id.mark_all_read_button);
-    markAllReadButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        AbstractNewsRobListActivity.this.instantiateMarkAllReadDialog();
-      }
-    });
+    if (markAllReadButton != null) {
+      markAllReadButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          AbstractNewsRobListActivity.this.instantiateMarkAllReadDialog();
+        }
+      });
+    }
 
     toggleOrderButton = findViewById(R.id.toggle_order_button);
-    toggleOrderButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        requestToggleSortOrder();
-        String toastText = getDbQuery().isSortOrderAscending() ? "Oldest first" : "Newest first";
-        Toast.makeText(AbstractNewsRobListActivity.this, toastText, Toast.LENGTH_SHORT).show();
-      }
-    });
+    if (toggleOrderButton != null) {
+      toggleOrderButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          requestToggleSortOrder();
+          String toastText = getDbQuery().isSortOrderAscending() ? "Oldest first" : "Newest first";
+          Toast.makeText(AbstractNewsRobListActivity.this, toastText, Toast.LENGTH_SHORT).show();
+        }
+      });
+    }
     updateButtons();
   }
 
@@ -1314,18 +1353,26 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
       }
     }
 
-    refreshButton.setTag("Refresh");
-    refreshButton.setImageResource(R.drawable.gen_toolbar_icon_sync);
-    refreshButton.setEnabled(shouldRefreshButtonBeEnabled());
-    refreshButton.setFocusable(refreshButton.isEnabled());
+    if (refreshButton != null) {
+      refreshButton.setTag("Refresh");
+      refreshButton.setImageResource(R.drawable.gen_toolbar_icon_sync);
+      refreshButton.setEnabled(shouldRefreshButtonBeEnabled());
+      refreshButton.setFocusable(refreshButton.isEnabled());
+    }
 
     DBQuery dbq = getDbQuery();
     boolean shouldHideReadItems = dbq.shouldHideReadItems();
-    showHideButton.setImageResource(shouldHideReadItems ? R.drawable.ic_dot_white_32dp : R.drawable.ic_circle_white_32dp);
-    toggleOrderButton.setImageResource(getDbQuery().isSortOrderAscending() ? R.drawable.ic_arrow_up_white_32dp
-        : R.drawable.ic_arrow_down_white_32dp);
-    markAllReadButton.setEnabled(shouldMarkAllReadButtonBeEnabled());
-    markAllReadButton.setFocusable(markAllReadButton.isEnabled());
+    if (showHideButton != null) {
+      showHideButton.setImageResource(shouldHideReadItems ? R.drawable.ic_dot_white_32dp : R.drawable.ic_circle_white_32dp);
+    }
+    if (toggleOrderButton != null) {
+      toggleOrderButton.setImageResource(getDbQuery().isSortOrderAscending() ? R.drawable.ic_arrow_up_white_32dp
+          : R.drawable.ic_arrow_down_white_32dp);
+    }
+    if (markAllReadButton != null) {
+      markAllReadButton.setEnabled(shouldMarkAllReadButtonBeEnabled());
+      markAllReadButton.setFocusable(markAllReadButton.isEnabled());
+    }
   }
 
   private void updateControlPanelTitle()

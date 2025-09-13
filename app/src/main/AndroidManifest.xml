@@ -56,7 +56,7 @@
 
         <activity
             android:name="com.grazeten.DashboardListActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:theme="@style/AppTheme.NoActionBar"
             android:clearTaskOnLaunch="true"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:exported="true"

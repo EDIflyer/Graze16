@@ -3,4 +3,5 @@
         <dimen name="article_list_snippet">12dp</dimen>
         <dimen name="article_list_title">16dp</dimen>
         <dimen name="article_list_feed_title">13dp</dimen>
+        <dimen name="status_bar_height">24dp</dimen>
 </resources>

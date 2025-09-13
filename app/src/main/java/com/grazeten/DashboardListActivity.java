@@ -247,6 +247,13 @@ public class DashboardListActivity extends AbstractNewsRobListActivity
 
     setListAdapter(sca);
 
+    // Ensure ListView is clickable
+    getListView().setClickable(true);
+    getListView().setOnItemClickListener((parent, view, position, id) -> {
+      android.util.Log.d(TAG, "ListView onItemClick triggered: position=" + position + ", id=" + id);
+      onListItemClick(getListView(), view, position, id);
+    });
+
     if (!getEntryManager().isLicenseAccepted())
     {
       showDialog(DIALOG_SHOW_LICENSE);
@@ -337,6 +344,13 @@ public class DashboardListActivity extends AbstractNewsRobListActivity
   }
 
   @Override
+  protected void onResume() {
+    super.onResume();
+    // Refresh the list when returning to this activity (e.g., after sync)
+    initialize(getIntent());
+  }
+
+  @Override
   protected void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo, int selectedPosition)
   {
 
@@ -410,6 +424,7 @@ public class DashboardListActivity extends AbstractNewsRobListActivity
    */
   protected void onListItemClick(ListView l, View v, int position, long id)
   {
+    android.util.Log.d(TAG, "onListItemClick: position=" + position + ", id=" + id);
 
     final boolean goToArticleList = id == -99l;
 
@@ -419,6 +434,8 @@ public class DashboardListActivity extends AbstractNewsRobListActivity
     int frequency = c.getInt(1);
 
     int ord = c.getInt(3);
+    
+    android.util.Log.d(TAG, "Clicked item: labelName=" + labelName + ", frequency=" + frequency + ", ord=" + ord);
 
     boolean showOnlyNotes = (ord == -7) && "notes".equals(labelName);
     Long feedId = null;
