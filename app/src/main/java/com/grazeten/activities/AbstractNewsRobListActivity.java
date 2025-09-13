@@ -35,7 +35,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.widget.ListView;
 
 import com.grazeten.BackendProvider;
@@ -630,7 +630,7 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
   @Override
   public boolean onCreateOptionsMenu(Menu menu)
   {
-//    boolean result = super.onCreateOptionsMenu(menu);
+    super.onCreateOptionsMenu(menu);
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.menu_main, menu);
     return true;
@@ -786,14 +786,15 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
   {
     super.onPostCreate(savedInstanceState);
     Toolbar toolbar = findViewById(R.id.activity_actionbar);
-    setActionBar(toolbar);
-    getActionBar().setTitle("");
-    getActionBar().setHomeAsUpIndicator(R.drawable.gen_logo_32dp);
-    getActionBar().setDisplayHomeAsUpEnabled(true);
-    getActionBar().setDisplayShowCustomEnabled(true);
-    View panel = getLayoutInflater().inflate(R.layout.control_panel, null);
-    getActionBar().setCustomView(panel, new Toolbar.LayoutParams(Toolbar.LayoutParams.MATCH_PARENT,
-                                                                 Toolbar.LayoutParams.MATCH_PARENT));
+    setSupportActionBar(toolbar);
+    getSupportActionBar().setTitle("GrazeTEN");
+    getSupportActionBar().setHomeAsUpIndicator(R.drawable.gen_logo_32dp);
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    // Temporarily disable custom view to allow overflow menu to show
+    // getSupportActionBar().setDisplayShowCustomEnabled(true);
+    // View panel = getLayoutInflater().inflate(R.layout.control_panel, null);
+    // getSupportActionBar().setCustomView(panel, new androidx.appcompat.widget.Toolbar.LayoutParams(androidx.appcompat.widget.Toolbar.LayoutParams.WRAP_CONTENT,
+    //                                                              androidx.appcompat.widget.Toolbar.LayoutParams.MATCH_PARENT));
     boolean isLightTheme = getEntryManager().isLightColorSchemeSelected();
     toolbar.setTitleTextColor(Color.WHITE);
     toolbar.setBackgroundResource(isLightTheme ? R.drawable.list_header_background : R.drawable.list_header_background_dark);

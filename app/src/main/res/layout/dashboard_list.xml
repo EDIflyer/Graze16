@@ -59,11 +59,13 @@
         layout="@layout/control_panel" />
     -->
 
-    <android.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/activity_actionbar"
         android:theme="@style/CustomToolBar"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"/>
+        android:layout_height="?actionBarSize"
+        android:fitsSystemWindows="true"
+        android:elevation="4dp"/>
 
 <!--    <ViewStub-->
 <!--        android:id="@+id/control_panel_stub"-->
