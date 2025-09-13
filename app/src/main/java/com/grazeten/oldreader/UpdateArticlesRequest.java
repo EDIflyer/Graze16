@@ -1,15 +1,12 @@
 package com.grazeten.oldreader;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import retrofit.mime.TypedOutput;
-
-public class UpdateArticlesRequest implements TypedOutput
+public class UpdateArticlesRequest
 {
   public enum MarkType
   {
@@ -21,7 +18,7 @@ public class UpdateArticlesRequest implements TypedOutput
   private static final String         READ_ID     = "a";
   private static final String         UNREAD_ID   = "r";
 
-  private final ByteArrayOutputStream content     = new ByteArrayOutputStream();
+  private Map<String, String>         fields      = new HashMap<>();
   private List<String>                ids         = new ArrayList<String>();
 
   public UpdateArticlesRequest(MarkType markType) throws IOException
@@ -54,23 +51,7 @@ public class UpdateArticlesRequest implements TypedOutput
     {
       throw new NullPointerException("value");
     }
-    if (content.size() > 0)
-    {
-      content.write('&');
-    }
-    try
-    {
-      name = URLEncoder.encode(name, "UTF-8");
-      value = URLEncoder.encode(value, "UTF-8");
-
-      content.write(name.getBytes("UTF-8"));
-      content.write('=');
-      content.write(value.getBytes("UTF-8"));
-    }
-    catch (IOException e)
-    {
-      throw new RuntimeException(e);
-    }
+    fields.put(name, value);
   }
 
   public void addId(String id)
@@ -79,32 +60,13 @@ public class UpdateArticlesRequest implements TypedOutput
     addField("i", id);
   }
 
-  @Override
-  public String fileName()
+  public Map<String, String> getFields()
   {
-    return null;
+    return fields;
   }
 
   public List<String> getIds()
   {
     return ids;
-  }
-
-  @Override
-  public long length()
-  {
-    return content.size();
-  }
-
-  @Override
-  public String mimeType()
-  {
-    return "application/x-www-form-urlencoded; charset=UTF-8";
-  }
-
-  @Override
-  public void writeTo(OutputStream out) throws IOException
-  {
-    out.write(content.toByteArray());
   }
 }

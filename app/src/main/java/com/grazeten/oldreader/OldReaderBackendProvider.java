@@ -21,7 +21,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.http.client.ClientProtocolException;
 import org.xml.sax.SAXException;
 
-import retrofit.client.Response;
+import retrofit2.Response;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

@@ -5,8 +5,9 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.List;
 
-import retrofit.RestAdapter;
-import retrofit.client.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.Response;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -16,7 +17,11 @@ import com.grazeten.EntryManager;
 
 public class FeedlyManager implements FeedlyKey
 {
-  private FeedlyApi     api = new RestAdapter.Builder().setEndpoint(FeedlyApi.BASE_URL).build().create(FeedlyApi.class);
+  private FeedlyApi     api = new Retrofit.Builder()
+      .baseUrl(FeedlyApi.BASE_URL)
+      .addConverterFactory(GsonConverterFactory.create())
+      .build()
+      .create(FeedlyApi.class);
   private final Context context;
   private String        userId;
   private String        accessCode;
@@ -91,20 +96,28 @@ public class FeedlyManager implements FeedlyKey
 
   public boolean deleteSubscription(String feedId)
   {
-    Response resp = api.deleteSubscription(getAuthHeader(), feedId);
-
-    return (resp.getStatus() == 200);
+    try {
+      Response<okhttp3.ResponseBody> resp = api.deleteSubscription(getAuthHeader(), feedId).execute();
+      return resp.isSuccessful();
+    } catch (Exception e) {
+      return false;
+    }
   }
 
   public boolean getAccessToken(String authCode)
   {
-    ExchangeCodeResponse resp = api.getAccessToken(authCode, FeedlyApi.CLIENT_ID, CLIENT_SECRET, FeedlyApi.REDIRECT_URI, "",
-        "authorization_code");
-
-    if ((resp != null) && (resp.access_token != null))
-    {
-      storeTokenResponse(resp);
-      return true;
+    try {
+      Response<ExchangeCodeResponse> response = api.getAccessToken(authCode, FeedlyApi.CLIENT_ID, CLIENT_SECRET, FeedlyApi.REDIRECT_URI, "",
+          "authorization_code").execute();
+      
+      ExchangeCodeResponse resp = response.body();
+      if ((resp != null) && (resp.access_token != null))
+      {
+        storeTokenResponse(resp);
+        return true;
+      }
+    } catch (Exception e) {
+      // Handle error
     }
 
     return false;
@@ -117,47 +130,86 @@ public class FeedlyManager implements FeedlyKey
 
   public String getCategories()
   {
-    Response resp = api.getCategories(getAuthHeader());
-    return responseToString(resp);
+    try {
+      Response<okhttp3.ResponseBody> resp = api.getCategories(getAuthHeader()).execute();
+      return responseToString(resp);
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   public LatestRead getLatestRead(Long newerThan)
   {
-    return api.getLatestRead(getAuthHeader(), newerThan);
+    try {
+      Response<LatestRead> response = api.getLatestRead(getAuthHeader(), newerThan).execute();
+      return response.body();
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   public StreamIdsResponse getPinnedIds(boolean newestFirst, Long lastUpdate, Integer maxItems, String continuation)
   {
-    String ranked = newestFirst ? "newest" : "oldest";
-    return api.getStreamIds(getAuthHeader(), buildPinnedTag(), maxItems, ranked, true, lastUpdate, continuation);
+    try {
+      String ranked = newestFirst ? "newest" : "oldest";
+      Response<StreamIdsResponse> response = api.getStreamIds(getAuthHeader(), buildPinnedTag(), maxItems, ranked, true, lastUpdate, continuation).execute();
+      return response.body();
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   public StreamContentResponse getSaved(boolean newestFirst, Long lastUpdate, Integer maxItems, String continuation)
   {
-    String ranked = newestFirst ? "newest" : "oldest";
-    return api.getStreamContent(getAuthHeader(), buildStarTag(), maxItems, ranked, false, lastUpdate, continuation);
+    try {
+      String ranked = newestFirst ? "newest" : "oldest";
+      Response<StreamContentResponse> response = api.getStreamContent(getAuthHeader(), buildStarTag(), maxItems, ranked, false, lastUpdate, continuation).execute();
+      return response.body();
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   public List<Subscriptions> getSubscriptions()
   {
-    return api.getSubscriptions(getAuthHeader());
+    try {
+      Response<List<Subscriptions>> response = api.getSubscriptions(getAuthHeader()).execute();
+      return response.body();
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   public StreamContentResponse getUnread(boolean newestFirst, Long lastUpdate, Integer maxItems, String continuation)
   {
-    String ranked = newestFirst ? "newest" : "oldest";
-    return api.getStreamContent(getAuthHeader(), "user/" + userId + "/category/global.all", maxItems, ranked, true, lastUpdate, continuation);
+    try {
+      String ranked = newestFirst ? "newest" : "oldest";
+      Response<StreamContentResponse> response = api.getStreamContent(getAuthHeader(), "user/" + userId + "/category/global.all", maxItems, ranked, true, lastUpdate, continuation).execute();
+      return response.body();
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   public UnreadCountResponse getUnreadCounts()
   {
-    return api.getUnreadCounts(getAuthHeader());
+    try {
+      Response<UnreadCountResponse> response = api.getUnreadCounts(getAuthHeader()).execute();
+      return response.body();
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   public StreamContentResponse getUnreadGrazeRSSOnly(boolean newestFirst, Long lastUpdate, Integer maxItems, String continuation)
   {
-    String ranked = newestFirst ? "newest" : "oldest";
-    return api.getStreamContent(getAuthHeader(), "user/" + userId + "/category/grazeten", maxItems, ranked, true, lastUpdate, continuation);
+    try {
+      String ranked = newestFirst ? "newest" : "oldest";
+      Response<StreamContentResponse> response = api.getStreamContent(getAuthHeader(), "user/" + userId + "/category/grazeten", maxItems, ranked, true, lastUpdate, continuation).execute();
+      return response.body();
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   public boolean isTokenExpired()
@@ -191,56 +243,73 @@ public class FeedlyManager implements FeedlyKey
 
   public boolean markItemsPinned(List<String> entryIds)
   {
-    Response resp = api.tagItems(getAuthHeader(), buildPinnedTag(), new TagRequest(entryIds));
-
-    return (resp.getStatus() == 200);
+    try {
+      Response<okhttp3.ResponseBody> resp = api.tagItems(getAuthHeader(), buildPinnedTag(), new TagRequest(entryIds)).execute();
+      return resp.isSuccessful();
+    } catch (Exception e) {
+      return false;
+    }
   }
 
   public boolean markRead(List<String> ids)
   {
-    MarkRequest data = new MarkRequest();
-    data.action = "markAsRead";
-    data.type = "entries";
-    data.entryIds = ids;
+    try {
+      MarkRequest data = new MarkRequest();
+      data.action = "markAsRead";
+      data.type = "entries";
+      data.entryIds = ids;
 
-    Response resp = api.markItems(getAuthHeader(), data);
+      Response<okhttp3.ResponseBody> resp = api.markItems(getAuthHeader(), data).execute();
 
-    return (resp.getStatus() == 200);
+      return resp.isSuccessful();
+    } catch (Exception e) {
+      return false;
+    }
   }
 
   public boolean markUnRead(List<String> ids)
   {
-    MarkRequest data = new MarkRequest();
-    data.action = "keepUnread";
-    data.type = "entries";
-    data.entryIds = ids;
+    try {
+      MarkRequest data = new MarkRequest();
+      data.action = "keepUnread";
+      data.type = "entries";
+      data.entryIds = ids;
 
-    Response resp = api.markItems(getAuthHeader(), data);
+      Response<okhttp3.ResponseBody> resp = api.markItems(getAuthHeader(), data).execute();
 
-    return (resp.getStatus() == 200);
+      return resp.isSuccessful();
+    } catch (Exception e) {
+      return false;
+    }
   }
 
   public boolean refreshToken()
   {
-    ExchangeCodeResponse resp = api.refreshToken(refreshToken, FeedlyApi.CLIENT_ID, CLIENT_SECRET, "refresh_token");
+    try {
+      Response<ExchangeCodeResponse> response = api.refreshToken(refreshToken, FeedlyApi.CLIENT_ID, CLIENT_SECRET, "refresh_token").execute();
+      ExchangeCodeResponse resp = response.body();
 
-    if ((resp != null) && (resp.access_token != null))
-    {
-      storeTokenResponse(resp);
-      return true;
+      if ((resp != null) && (resp.access_token != null))
+      {
+        storeTokenResponse(resp);
+        return true;
+      }
+    } catch (Exception e) {
+      // Handle error
     }
 
     return false;
   }
 
-  private String responseToString(Response resp)
+  private String responseToString(Response<okhttp3.ResponseBody> resp)
   {
     try
     {
-      InputStream in = resp.getBody().in();
-      byte[] buffer = new byte[(int) resp.getBody().length()];
-      in.read(buffer);
-      return new String(buffer);
+      if (resp.body() != null)
+      {
+        return resp.body().string();
+      }
+      return null;
     }
     catch (IOException e)
     {
@@ -250,14 +319,22 @@ public class FeedlyManager implements FeedlyKey
 
   public SearchFeedsResponse searchFeeds(String searchString)
   {
-    return api.searchFeeds(getAuthHeader(), searchString, 50);
+    try {
+      Response<SearchFeedsResponse> response = api.searchFeeds(getAuthHeader(), searchString, 50).execute();
+      return response.body();
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   public boolean starItems(List<String> entryIds)
   {
-    Response resp = api.tagItems(getAuthHeader(), buildStarTag(), new TagRequest(entryIds));
-
-    return (resp.getStatus() == 200);
+    try {
+      Response<okhttp3.ResponseBody> resp = api.tagItems(getAuthHeader(), buildStarTag(), new TagRequest(entryIds)).execute();
+      return resp.isSuccessful();
+    } catch (Exception e) {
+      return false;
+    }
   }
 
   private void storeTokenResponse(ExchangeCodeResponse response)
@@ -282,22 +359,31 @@ public class FeedlyManager implements FeedlyKey
 
   public boolean subscribeToFeed(String feedId, String title, List<Categories> categories)
   {
-    Response resp = api.subscribeToFeed(getAuthHeader(), new SubscribeFeedRequest(feedId, title, categories));
-
-    return (resp.getStatus() == 200);
+    try {
+      Response<okhttp3.ResponseBody> resp = api.subscribeToFeed(getAuthHeader(), new SubscribeFeedRequest(feedId, title, categories)).execute();
+      return resp.isSuccessful();
+    } catch (Exception e) {
+      return false;
+    }
   }
 
   public boolean unPinItems(List<String> entryIds)
   {
-    Response resp = api.unTagItems(getAuthHeader(), buildUnpinString(entryIds));
-
-    return (resp.getStatus() == 200);
+    try {
+      Response<okhttp3.ResponseBody> resp = api.unTagItems(getAuthHeader(), buildUnpinString(entryIds)).execute();
+      return resp.isSuccessful();
+    } catch (Exception e) {
+      return false;
+    }
   }
 
   public boolean unStarItems(List<String> entryIds)
   {
-    Response resp = api.unTagItems(getAuthHeader(), buildUnstarString(entryIds));
-
-    return (resp.getStatus() == 200);
+    try {
+      Response<okhttp3.ResponseBody> resp = api.unTagItems(getAuthHeader(), buildUnstarString(entryIds)).execute();
+      return resp.isSuccessful();
+    } catch (Exception e) {
+      return false;
+    }
   }
 }

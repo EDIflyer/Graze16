@@ -2,16 +2,17 @@ package com.grazeten.feedly;
 
 import java.util.List;
 
-import retrofit.client.Response;
-import retrofit.http.Body;
-import retrofit.http.DELETE;
-import retrofit.http.EncodedPath;
-import retrofit.http.GET;
-import retrofit.http.Header;
-import retrofit.http.POST;
-import retrofit.http.PUT;
-import retrofit.http.Path;
-import retrofit.http.Query;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.http.Body;
+import retrofit2.http.DELETE;
+import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface FeedlyApi
 {
@@ -29,51 +30,51 @@ public interface FeedlyApi
   public static final String SHPREF_KEY_TOKEN_EXPIRE   = "Feedly_Access_Token_Expire";
 
   @DELETE("/v3/subscriptions/{feedId}")
-  public Response deleteSubscription(@Header("Authorization") String authToken, @Path("feedId") String feedId);
+  public Call<ResponseBody> deleteSubscription(@Header("Authorization") String authToken, @Path("feedId") String feedId);
 
   @POST("/v3/auth/token")
-  public ExchangeCodeResponse getAccessToken(@Query("code") String authCode, @Query("client_id") String clientId,
+  public Call<ExchangeCodeResponse> getAccessToken(@Query("code") String authCode, @Query("client_id") String clientId,
       @Query("client_secret") String clientSecret, @Query("redirect_uri") String redirectUri, @Query("state") String state,
       @Query("grant_type") String grantType);
 
   @GET("/v3/categories")
-  public Response getCategories(@Header("Authorization") String authToken);
+  public Call<ResponseBody> getCategories(@Header("Authorization") String authToken);
 
   @GET("/v3/markers/reads")
-  public LatestRead getLatestRead(@Header("Authorization") String authToken, @Query("newerThan") Long newerThan);
+  public Call<LatestRead> getLatestRead(@Header("Authorization") String authToken, @Query("newerThan") Long newerThan);
 
   @GET("/v3/streams/contents")
-  public StreamContentResponse getStreamContent(@Header("Authorization") String authToken, @Query("streamId") String streamId,
+  public Call<StreamContentResponse> getStreamContent(@Header("Authorization") String authToken, @Query("streamId") String streamId,
       @Query("count") Integer count, @Query("ranked") String ranked, @Query("unreadOnly") Boolean unreadOnly,
       @Query("newerThan") Long timestamp, @Query("continuation") String continuation);
 
   @GET("/v3/streams/ids")
-  public StreamIdsResponse getStreamIds(@Header("Authorization") String authToken, @Query("streamId") String streamId,
+  public Call<StreamIdsResponse> getStreamIds(@Header("Authorization") String authToken, @Query("streamId") String streamId,
       @Query("count") Integer count, @Query("ranked") String ranked, @Query("unreadOnly") Boolean unreadOnly,
       @Query("newerThan") Long timestamp, @Query("continuation") String continuation);
 
   @GET("/v3/subscriptions")
-  public List<Subscriptions> getSubscriptions(@Header("Authorization") String authToken);
+  public Call<List<Subscriptions>> getSubscriptions(@Header("Authorization") String authToken);
 
   @GET("/v3/markers/counts")
-  public UnreadCountResponse getUnreadCounts(@Header("Authorization") String authToken);
+  public Call<UnreadCountResponse> getUnreadCounts(@Header("Authorization") String authToken);
 
   @POST("/v3/markers")
-  public Response markItems(@Header("Authorization") String authToken, @Body MarkRequest data);
+  public Call<ResponseBody> markItems(@Header("Authorization") String authToken, @Body MarkRequest data);
 
   @POST("/v3/auth/token")
-  public ExchangeCodeResponse refreshToken(@Query("refresh_token") String refreshToken, @Query("client_id") String clientId,
+  public Call<ExchangeCodeResponse> refreshToken(@Query("refresh_token") String refreshToken, @Query("client_id") String clientId,
       @Query("client_secret") String clientSecret, @Query("grant_type") String grantType);
 
   @GET("/v3/search/feeds")
-  public SearchFeedsResponse searchFeeds(@Header("Authorization") String authToken, @Query("q") String searchString, @Query("n") Integer count);
+  public Call<SearchFeedsResponse> searchFeeds(@Header("Authorization") String authToken, @Query("q") String searchString, @Query("n") Integer count);
 
   @POST("/v3/subscriptions")
-  public Response subscribeToFeed(@Header("Authorization") String authToken, @Body SubscribeFeedRequest request);
+  public Call<ResponseBody> subscribeToFeed(@Header("Authorization") String authToken, @Body SubscribeFeedRequest request);
 
   @PUT("/v3/tags/{tagList}")
-  public Response tagItems(@Header("Authorization") String authToken, @Path("tagList") String tagList, @Body TagRequest tagRequest);
+  public Call<ResponseBody> tagItems(@Header("Authorization") String authToken, @Path("tagList") String tagList, @Body TagRequest tagRequest);
 
   @DELETE("/v3/tags/{tagList}")
-  public Response unTagItems(@Header("Authorization") String authToken, @EncodedPath("tagList") String tagList);
+  public Call<ResponseBody> unTagItems(@Header("Authorization") String authToken, @Path("tagList") String tagList);
 }
