@@ -142,7 +142,7 @@
 			android:padding="10sp">
 
 			<TextView
-				android:id="@+id/feed_label"
+				android:id="@+id/widget_name_label"
 
 				android:layout_height="wrap_content"
 				android:layout_width="fill_parent"

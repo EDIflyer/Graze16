@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.http.HttpStatus;
+// HttpStatus replaced with direct status code numbers
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -57,7 +57,7 @@ public class APIManager
     values.put(APIConstants.PARAMETER_USERNAME, username);
     values.put(APIConstants.PARAMETER_PASSWORD, password);
     final APIResponse response = client.post(APIConstants.URL_LOGIN, values);
-    if (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (response.responseCode == 200 && !response.hasRedirected)
     {
       loginResponse = gson.fromJson(response.responseString, LoginResponse.class);
       cookie = response.cookie;
@@ -75,7 +75,7 @@ public class APIManager
     ContentValues values = new ContentValues();
     values.put("autofollow_friends", autofollow ? "true" : "false");
     final APIResponse response = client.post(APIConstants.URL_AUTOFOLLOW_PREF, values);
-    return (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected);
+    return (response.responseCode == 200 && !response.hasRedirected);
   }
 
   public boolean addCategories(ArrayList<String> categories)
@@ -87,7 +87,7 @@ public class APIManager
       values.put(APIConstants.PARAMETER_CATEGORY, URLEncoder.encode(category));
     }
     final APIResponse response = client.post(APIConstants.URL_ADD_CATEGORIES, values, false);
-    return (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected);
+    return (response.responseCode == 200 && !response.hasRedirected);
   }
 
   public boolean markFeedAsRead(final String[] feedIds)
@@ -99,7 +99,7 @@ public class APIManager
       values.put(APIConstants.PARAMETER_FEEDID, feedId);
     }
     final APIResponse response = client.post(APIConstants.URL_MARK_FEED_AS_READ, values, false);
-    if (!response.isOffline && response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (!response.isOffline && response.responseCode == 200 && !response.hasRedirected)
     {
       return true;
     }
@@ -115,7 +115,7 @@ public class APIManager
     final ValueMultimap values = new ValueMultimap();
     values.put(APIConstants.PARAMETER_DAYS, "0");
     final APIResponse response = client.post(APIConstants.URL_MARK_ALL_AS_READ, values, false);
-    if (!response.isOffline && response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (!response.isOffline && response.responseCode == 200 && !response.hasRedirected)
     {
       return true;
     }
@@ -131,7 +131,7 @@ public class APIManager
     final ContentValues values = new ContentValues();
     values.put(APIConstants.PARAMETER_MARKSOCIAL_JSON, updateJson);
     final APIResponse response = client.post(APIConstants.URL_MARK_SOCIALSTORY_AS_READ, values);
-    if (!response.isOffline && response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (!response.isOffline && response.responseCode == 200 && !response.hasRedirected)
     {
       return true;
     }
@@ -148,7 +148,7 @@ public class APIManager
     values.put(APIConstants.PARAMETER_FEEDID, feedId);
     values.put(APIConstants.PARAMETER_STORYID, storyId);
     final APIResponse response = client.post(APIConstants.URL_MARK_STORY_AS_STARRED, values, false);
-    if (!response.isOffline && response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (!response.isOffline && response.responseCode == 200 && !response.hasRedirected)
     {
       return true;
     }
@@ -165,7 +165,7 @@ public class APIManager
     values.put(APIConstants.PARAMETER_FEEDID, feedId);
     values.put(APIConstants.PARAMETER_STORYID, storyId);
     final APIResponse response = client.post(APIConstants.URL_MARK_STORY_AS_UNSTARRED, values, false);
-    if (!response.isOffline && response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (!response.isOffline && response.responseCode == 200 && !response.hasRedirected)
     {
       return true;
     }
@@ -182,7 +182,7 @@ public class APIManager
     values.put(APIConstants.PARAMETER_FEEDID, feedId);
     values.put(APIConstants.PARAMETER_STORYID, storyId);
     final APIResponse response = client.post(APIConstants.URL_MARK_STORY_AS_UNREAD, values, false);
-    if (!response.isOffline && response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (!response.isOffline && response.responseCode == 200 && !response.hasRedirected)
     {
       return true;
     }
@@ -196,7 +196,7 @@ public class APIManager
   {
     final APIClient client = new APIClient(context, cookie);
     final APIResponse response = client.get(APIConstants.URL_CATEGORIES);
-    if (!response.isOffline && response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (!response.isOffline && response.responseCode == 200 && !response.hasRedirected)
     {
       return gson.fromJson(response.responseString, CategoriesResponse.class);
     }
@@ -214,7 +214,7 @@ public class APIManager
     values.put(APIConstants.PARAMETER_PASSWORD, password);
     values.put(APIConstants.PARAMETER_EMAIL, email);
     final APIResponse response = client.post(APIConstants.URL_SIGNUP, values);
-    if (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (response.responseCode == 200 && !response.hasRedirected)
     {
       LoginResponse loginResponse = gson.fromJson(response.responseString, LoginResponse.class);
       // PrefsUtils.saveLogin(context, username, response.cookie);
@@ -237,7 +237,7 @@ public class APIManager
   {
     final APIClient client = new APIClient(context, cookie);
     final APIResponse response = client.get(APIConstants.URL_MY_PROFILE);
-    if (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (response.responseCode == 200 && !response.hasRedirected)
     {
       ProfileResponse profileResponse = gson.fromJson(response.responseString, ProfileResponse.class);
       // PrefsUtils.saveUserDetails(context, profileResponse.user);
@@ -263,7 +263,7 @@ public class APIManager
     // Uri storyUri =
     // FeedProvider.FEED_STORIES_URI.buildUpon().appendPath(feedId).build();
 
-    if (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (response.responseCode == 200 && !response.hasRedirected)
     {
       // if (TextUtils.equals(pageNumber, "1")) {
       // contentResolver.delete(storyUri, null, null);
@@ -314,7 +314,7 @@ public class APIManager
     final APIResponse response = client.get(APIConstants.URL_RIVER_STORIES, values);
 
     StoriesResponse storiesResponse = gson.fromJson(response.responseString, StoriesResponse.class);
-    if (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (response.responseCode == 200 && !response.hasRedirected)
     {
       // if (TextUtils.equals(pageNumber,"1")) {
       // Uri storyUri = FeedProvider.ALL_STORIES_URI;
@@ -353,7 +353,7 @@ public class APIManager
     final APIResponse response = client.get(APIConstants.URL_RIVER_STORIES, values);
 
     StoriesResponse storiesResponse = gson.fromJson(response.responseString, StoriesResponse.class);
-    if (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (response.responseCode == 200 && !response.hasRedirected)
     {
       return storiesResponse;
     }
@@ -381,7 +381,7 @@ public class APIManager
 
     UnreadHashResponse unreadResponse = new UnreadHashResponse(response.responseString, gson);
 
-    if (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (response.responseCode == 200 && !response.hasRedirected)
     {
       return unreadResponse;
     }
@@ -402,7 +402,7 @@ public class APIManager
     final APIResponse response = client.get(APIConstants.URL_STARRED_STORIES, values);
 
     StoriesResponse storiesResponse = gson.fromJson(response.responseString, StoriesResponse.class);
-    if (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (response.responseCode == 200 && !response.hasRedirected)
     {
       // if (TextUtils.equals(pageNumber,"1")) {
       // contentResolver.delete(FeedProvider.STARRED_STORIES_URI, null,
@@ -440,7 +440,7 @@ public class APIManager
     final APIResponse response = client.get(APIConstants.URL_SHARED_RIVER_STORIES, values);
 
     SocialFeedResponse storiesResponse = gson.fromJson(response.responseString, SocialFeedResponse.class);
-    if (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (response.responseCode == 200 && !response.hasRedirected)
     {
 
       // // If we've successfully retrieved the latest stories for all
@@ -495,7 +495,7 @@ public class APIManager
     Uri feedUri = Uri.parse(APIConstants.URL_SOCIALFEED_STORIES).buildUpon().appendPath(userId).appendPath(username).build();
     final APIResponse response = client.get(feedUri.toString(), values);
     SocialFeedResponse socialFeedResponse = gson.fromJson(response.responseString, SocialFeedResponse.class);
-    if (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (response.responseCode == 200 && !response.hasRedirected)
     {
       //
       // Uri storySocialUri =
@@ -569,7 +569,7 @@ public class APIManager
     final ContentValues values = new ContentValues();
     values.put(APIConstants.PARAMETER_USERID, userId);
     final APIResponse response = client.post(APIConstants.URL_FOLLOW, values);
-    if (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (response.responseCode == 200 && !response.hasRedirected)
     {
       return true;
     }
@@ -585,7 +585,7 @@ public class APIManager
     final ContentValues values = new ContentValues();
     values.put(APIConstants.PARAMETER_USERID, userId);
     final APIResponse response = client.post(APIConstants.URL_UNFOLLOW, values);
-    if (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (response.responseCode == 200 && !response.hasRedirected)
     {
       return true;
     }
@@ -611,7 +611,7 @@ public class APIManager
     values.put(APIConstants.PARAMETER_STORYID, storyId);
 
     final APIResponse response = client.post(APIConstants.URL_SHARE_STORY, values);
-    if (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (response.responseCode == 200 && !response.hasRedirected)
     {
       return true;
     }
@@ -636,7 +636,7 @@ public class APIManager
     final APIResponse response = client.get(APIConstants.URL_FEEDS, params);
     final FeedFolderResponse feedUpdate = new FeedFolderResponse(response.responseString, gson);
 
-    if (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (response.responseCode == 200 && !response.hasRedirected)
     {
       //
       // // if the response says we aren't logged in, clear the DB and
@@ -796,7 +796,7 @@ public class APIManager
 
     final APIClient client = new APIClient(context, cookie);
     final APIResponse response = client.post(APIConstants.URL_CLASSIFIER_SAVE, values);
-    return (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected);
+    return (response.responseCode == 200 && !response.hasRedirected);
   }
 
   public ProfileResponse getUser(String userId)
@@ -805,7 +805,7 @@ public class APIManager
     final ContentValues values = new ContentValues();
     values.put(APIConstants.PARAMETER_USER_ID, userId);
     final APIResponse response = client.get(APIConstants.URL_USER_PROFILE, values);
-    if (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (response.responseCode == 200 && !response.hasRedirected)
     {
       ProfileResponse profileResponse = gson.fromJson(response.responseString, ProfileResponse.class);
       return profileResponse;
@@ -820,7 +820,7 @@ public class APIManager
   {
     final APIClient client = new APIClient(context, cookie);
     final APIResponse response = client.get(APIConstants.URL_FEED_COUNTS);
-    if (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (response.responseCode == 200 && !response.hasRedirected)
     {
       // final FeedRefreshResponse feedCountUpdate =
       // gson.fromJson(response.responseString,
@@ -853,7 +853,7 @@ public class APIManager
     values.put(APIConstants.PARAMETER_STORY_FEEDID, feedId);
     values.put(APIConstants.PARAMETER_COMMENT_USERID, commentId);
     final APIResponse response = client.post(APIConstants.URL_LIKE_COMMENT, values);
-    return (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected);
+    return (response.responseCode == 200 && !response.hasRedirected);
   }
 
   public Boolean unFavouriteComment(String storyId, String commentId, String feedId)
@@ -864,7 +864,7 @@ public class APIManager
     values.put(APIConstants.PARAMETER_STORY_FEEDID, feedId);
     values.put(APIConstants.PARAMETER_COMMENT_USERID, commentId);
     final APIResponse response = client.post(APIConstants.URL_UNLIKE_COMMENT, values);
-    return (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected);
+    return (response.responseCode == 200 && !response.hasRedirected);
   }
 
   public boolean replyToComment(String storyId, String storyFeedId, String commentUserId, String reply)
@@ -876,14 +876,14 @@ public class APIManager
     values.put(APIConstants.PARAMETER_COMMENT_USERID, commentUserId);
     values.put(APIConstants.PARAMETER_REPLY_TEXT, reply);
     final APIResponse response = client.post(APIConstants.URL_REPLY_TO, values);
-    return (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected);
+    return (response.responseCode == 200 && !response.hasRedirected);
   }
 
   public boolean markMultipleStoriesAsRead(ContentValues values)
   {
     final APIClient client = new APIClient(context, cookie);
     final APIResponse response = client.post(APIConstants.URL_MARK_FEED_STORIES_AS_READ, values);
-    if (!response.isOffline && response.responseCode == HttpStatus.SC_OK && !response.hasRedirected
+    if (!response.isOffline && response.responseCode == 200 && !response.hasRedirected
         && response.responseString.contains("Nothing was marked as read") == false)
     {
       return true;
@@ -904,7 +904,7 @@ public class APIManager
       values.put(APIConstants.PARAMETER_FOLDER, folderName);
     }
     final APIResponse response = client.post(APIConstants.URL_ADD_FEED, values);
-    return (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected);
+    return (response.responseCode == 200 && !response.hasRedirected);
   }
 
   public FeedResult[] searchForFeed(String searchTerm) throws ServerErrorException
@@ -914,7 +914,7 @@ public class APIManager
     values.put(APIConstants.PARAMETER_FEED_SEARCH_TERM, searchTerm);
     final APIResponse response = client.get(APIConstants.URL_FEED_AUTOCOMPLETE, values);
 
-    if (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected)
+    if (response.responseCode == 200 && !response.hasRedirected)
     {
       return fromJson(response.responseString, FeedResult[].class);
     }
@@ -934,7 +934,7 @@ public class APIManager
       values.put(APIConstants.PARAMETER_IN_FOLDER, folderName);
     }
     final APIResponse response = client.post(APIConstants.URL_DELETE_FEED, values);
-    return (response.responseCode == HttpStatus.SC_OK && !response.hasRedirected);
+    return (response.responseCode == 200 && !response.hasRedirected);
   }
 
   private <T> T fromJson(String json, Class<T> classOfT) throws ServerErrorException

@@ -398,13 +398,12 @@ public class DashboardListActivity extends AbstractNewsRobListActivity
   /**
    * id is not used at the moment, except when it contains -99 it will directly go to the article list
    */
-  @Override
   protected void onListItemClick(ListView l, View v, int position, long id)
   {
 
     final boolean goToArticleList = id == -99l;
 
-    Cursor c = (Cursor) getListAdapter().getItem(position);
+    Cursor c = (Cursor) getListView().getAdapter().getItem(position);
 
     String labelName = c.getString(0);
     int frequency = c.getInt(1);

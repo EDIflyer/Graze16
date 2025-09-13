@@ -18,7 +18,7 @@ import java.util.concurrent.Future;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.http.client.ClientProtocolException;
+// ClientProtocolException removed - not needed with OkHttp
 import org.xml.sax.SAXException;
 
 import retrofit2.Response;
@@ -64,7 +64,7 @@ public class OldReaderBackendProvider implements BackendProvider
 
   @Override
   public boolean authenticate(Context context, String email, String password, String captchaToken, String captchaAnswer)
-      throws ClientProtocolException, IOException, AuthenticationFailedException
+      throws IOException, AuthenticationFailedException
   {
     api = new OldReaderManager();
     api.login(email, password);
@@ -154,7 +154,7 @@ public class OldReaderBackendProvider implements BackendProvider
   }
 
   @Override
-  public int fetchNewEntries(EntryManager entryManager, SyncJob job, boolean manualSync) throws ClientProtocolException, IOException,
+  public int fetchNewEntries(EntryManager entryManager, SyncJob job, boolean manualSync) throws IOException,
       NeedsSessionException, SAXException, IllegalStateException, ParserConfigurationException, FactoryConfigurationError, SyncAPIException,
       ServerBadRequestException, AuthenticationExpiredException
   {
@@ -373,7 +373,7 @@ public class OldReaderBackendProvider implements BackendProvider
 
         Response r = api.updateArticles(update);
 
-        if (r.getStatus() == HTTP_OK)
+        if (r.code() == HTTP_OK)
         {
           getEntryManager().removePendingStateMarkers(update.getIds(), column);
           return entries.size();
@@ -390,7 +390,7 @@ public class OldReaderBackendProvider implements BackendProvider
 
         Response r = api.updateArticles(update);
 
-        if (r.getStatus() == HTTP_OK)
+        if (r.code() == HTTP_OK)
         {
           getEntryManager().removePendingStateMarkers(update.getIds(), column);
           return entries.size();

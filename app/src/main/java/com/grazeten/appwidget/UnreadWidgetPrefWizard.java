@@ -120,17 +120,12 @@ abstract class UnreadWidgetPrefWizard extends AbstractWizard
 
         if (widgetLabelEditText.getText().length() == 0)
         {
-          switch (scopeRadioGroup.getCheckedRadioButtonId())
-          {
-            case R.id.scope_label:
+          if (scopeRadioGroup.getCheckedRadioButtonId() == R.id.scope_label) {
               widgetLabelEditText.setText(getSelectedLabelName());
-              break;
-            case R.id.scope_feed:
+          } else if (scopeRadioGroup.getCheckedRadioButtonId() == R.id.scope_feed) {
               widgetLabelEditText.setText(getSelectedFeedName());
-              break;
-            case R.id.scope_reading_list:
+          } else if (scopeRadioGroup.getCheckedRadioButtonId() == R.id.scope_reading_list) {
               widgetLabelEditText.setText("All Articles");
-              break;
           }
         }
       }

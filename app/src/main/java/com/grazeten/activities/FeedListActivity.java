@@ -105,7 +105,7 @@ public class FeedListActivity extends AbstractNewsRobListActivity
   protected void onResume()
   {
     super.onResume();
-    if (!isTaskRoot() && getListAdapter().getCount() == 1)
+    if (!isTaskRoot() && getListView().getAdapter().getCount() == 1)
     {
       Log.d(TAG, "Only 'all articles' found.");
       finish();
@@ -113,12 +113,10 @@ public class FeedListActivity extends AbstractNewsRobListActivity
 
   }
 
-  @Override
   protected void onListItemClick(ListView l, View v, int position, long id)
   {
-    super.onListItemClick(l, v, position, id);
 
-    Cursor c = (Cursor) getListAdapter().getItem(position);
+    Cursor c = (Cursor) getListView().getAdapter().getItem(position);
 
     Long filterFeedId = c.getLong(c.getColumnCount() - 1);
     int frequency = c.getInt(1);
@@ -148,7 +146,7 @@ public class FeedListActivity extends AbstractNewsRobListActivity
   @Override
   void refreshUI()
   {
-    if (!isTaskRoot() && getListAdapter().getCount() == 1)
+    if (!isTaskRoot() && getListView().getAdapter().getCount() == 1)
       finish();
     else
       super.refreshUI();

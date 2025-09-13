@@ -168,7 +168,6 @@ public class ArticleListActivity extends AbstractNewsRobListActivity implements 
     }
   }
 
-  @Override
   protected void onListItemClick(final ListView l, final View v, final int position, final long id)
   {
     onClick(v);
@@ -411,7 +410,7 @@ public class ArticleListActivity extends AbstractNewsRobListActivity implements 
   protected void onResume()
   {
     super.onResume();
-    if (getListAdapter().isEmpty() && !isTaskRoot())
+    if (getListView().getAdapter().isEmpty() && !isTaskRoot())
     {
       Log.d(TAG, "No articles found.");
       finish();
@@ -425,7 +424,7 @@ public class ArticleListActivity extends AbstractNewsRobListActivity implements 
   public String getDefaultStatusBarTitle()
   {
 
-    int c = getListAdapter().getCount();
+    int c = getListView().getAdapter().getCount();
     String count = (c == dbQuery.getLimit() ? c + "+" : c + "");
 
     if (title != null)
@@ -441,7 +440,7 @@ public class ArticleListActivity extends AbstractNewsRobListActivity implements 
   @Override
   protected CharSequence getToastMessage()
   {
-    int c = getListAdapter().getCount();
+    int c = getListView().getAdapter().getCount();
     String count = (c == dbQuery.getLimit() ? c + "+" : c + "");
 
     if (title != null)
@@ -461,7 +460,7 @@ public class ArticleListActivity extends AbstractNewsRobListActivity implements 
   void refreshUI()
   {
     super.refreshUI();
-    if (getListAdapter().getCount() == 0 && !isTaskRoot())
+    if (getListView().getAdapter().getCount() == 0 && !isTaskRoot())
       finish();
   }
 

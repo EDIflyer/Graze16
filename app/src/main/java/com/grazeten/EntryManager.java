@@ -24,8 +24,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
-import org.apache.http.client.ClientProtocolException;
-
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.content.ComponentName;
@@ -714,7 +712,7 @@ public class EntryManager implements SharedPreferences.OnSharedPreferenceChangeL
   }
 
   public void doLogin(final Context context, final String email, final String password, String captchaToken, String captchaAnswer)
-      throws ClientProtocolException, IOException, AuthenticationFailedException
+      throws IOException, AuthenticationFailedException
   {
     boolean success = getSyncInterface(true).authenticate(context, email, password, captchaToken, captchaAnswer);
     proVersion = null; // reset pro version, so that it is evaluated again

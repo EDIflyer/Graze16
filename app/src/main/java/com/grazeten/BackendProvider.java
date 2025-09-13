@@ -8,7 +8,6 @@ import java.util.List;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.http.client.ClientProtocolException;
 import org.xml.sax.SAXException;
 
 import android.app.Activity;
@@ -152,7 +151,7 @@ public interface BackendProvider
   public static final String GRAZERSS_LABEL = "grazerss";
 
   public boolean authenticate(Context context, String email, String password, String captchaToken, String captchaAnswer)
-      throws ClientProtocolException, IOException, AuthenticationFailedException;
+      throws IOException, AuthenticationFailedException;
 
   /**
    * differentialUpdateOfArticlesStates is where the actual exact syncing magic happens
@@ -166,7 +165,7 @@ public interface BackendProvider
   public List<DiscoveredFeed> discoverFeeds(final String query) throws SyncAPIException, IOException, ServerBadRequestException,
       ParserConfigurationException, SAXException, ServerBadRequestException, AuthenticationExpiredException;
 
-  public int fetchNewEntries(final EntryManager entryManager, final SyncJob job, boolean manualSync) throws ClientProtocolException,
+  public int fetchNewEntries(final EntryManager entryManager, final SyncJob job, boolean manualSync) throws
       IOException, NeedsSessionException, SAXException, IllegalStateException, ParserConfigurationException, FactoryConfigurationError,
       SyncAPIException, ServerBadRequestException, AuthenticationExpiredException;
 

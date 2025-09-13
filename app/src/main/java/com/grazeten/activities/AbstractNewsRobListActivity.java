@@ -361,7 +361,7 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
           // force the cursor to be loaded,
           // so that this needn't be done on the UI thread
           newCursor.moveToFirst();
-          newCursor(newCursor, (CursorAdapter) getListAdapter());
+          newCursor(newCursor, (CursorAdapter) getListView().getAdapter());
           runOnUiThread(refreshUIRunnable);
           t.stop();
         }
@@ -715,8 +715,7 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
   @Override
   public boolean onOptionsItemSelected(MenuItem item)
   {
-    switch (item.getItemId()) {
-      case android.R.id.home:
+    if (item.getItemId() == android.R.id.home) {
         Toast.makeText(AbstractNewsRobListActivity.this, "-> Home", Toast.LENGTH_SHORT).show();
         Intent i = new Intent(AbstractNewsRobListActivity.this, DashboardListActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -724,15 +723,15 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
         finish();
         startActivity(i);
         return true;
-      case R.id.menu_subscribe_feed:
+    } else if (item.getItemId() == R.id.menu_subscribe_feed) {
         Intent intent = new Intent().setClass(this, SubscribeFeedActivity.class);
         startActivity(intent);
         return true;
-      case R.id.menu_toggle_theme:
+    } else if (item.getItemId() == R.id.menu_toggle_theme) {
         getEntryManager().toggleTheme();
         reopenIfThemeOrActionBarLocationChanged();
         return true;
-      case R.id.menu_settings:
+    } else if (item.getItemId() == R.id.menu_settings) {
         if (false) {
           Intent intent1 = new Intent();
           intent1.setClassName("com.grazeten", "com.grazeten.activities.ArticleListActivity");
@@ -745,7 +744,7 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
           startActivity(i1);
           return true;
         }
-      case R.id.menu_clear_cache:
+    } else if (item.getItemId() == R.id.menu_clear_cache) {
         showConfirmationDialog("Clear the Cache?", new Runnable() {
           @Override
           public void run() {
@@ -753,7 +752,7 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
           }
         });
         return true;
-      case R.id.menu_logout:
+    } else if (item.getItemId() == R.id.menu_logout) {
         showConfirmationDialog("Logout and Clear Cache?", new Runnable() {
           public void run() {
             Log.d(TAG, "Logging out ...");
@@ -762,7 +761,7 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
           }
         });
         return true;
-      default:
+    } else {
         return super.onOptionsItemSelected(item);
     }
   }
@@ -981,7 +980,7 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
 
   void refreshUI()
   {
-    // ((BaseAdapter) getListAdapter()).notifyDataSetChanged(); // TODO what
+    // ((BaseAdapter) getListView().getAdapter()).notifyDataSetChanged(); // TODO what
     // is this good for?
     updateButtons();
     updateControlPanelTitle();

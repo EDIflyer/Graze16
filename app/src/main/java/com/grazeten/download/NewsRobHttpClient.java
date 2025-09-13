@@ -1,38 +1,11 @@
 package com.grazeten.download;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
-
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.client.params.ClientPNames;
-import org.apache.http.client.params.HttpClientParams;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.RequestWrapper;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
 
 import android.content.Context;
 import android.util.Log;
@@ -40,7 +13,13 @@ import android.util.Log;
 import com.grazeten.NewsRob;
 import com.grazeten.PL;
 
-public class NewsRobHttpClient implements HttpClient
+import okhttp3.ConnectionPool;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+
+public class NewsRobHttpClient
 {
 
   private static final String BOT_USER_AGENT     = "NewsRob (http://newsrob.com) Bot gzip";
@@ -54,7 +33,7 @@ public class NewsRobHttpClient implements HttpClient
   // + " AppleWebKit/528.5+ (KHTML, like Gecko) Version/3.1.2"
   // + " Mobile/5F136 Safari/525.20.1";
   private static final String USER_AGENT         = PRETEND_USER_AGENT + " " + "NewsRob (http://newsrob.com) gzip";
-  private final HttpClient    delegate;
+  private final OkHttpClient    delegate;
   private RuntimeException    mLeakedException   = new IllegalStateException("NewsRobHttpClient created and never closed");
 
   private static Boolean      countingEnabled;
@@ -67,38 +46,33 @@ public class NewsRobHttpClient implements HttpClient
 
   public static NewsRobHttpClient newInstance(boolean followRedirects, Context ctx)
   {
-    HttpParams params = new BasicHttpParams();
+    OkHttpClient.Builder builder = new OkHttpClient.Builder()
+        .connectTimeout(45, TimeUnit.SECONDS)
+        .readTimeout(45, TimeUnit.SECONDS)
+        .writeTimeout(45, TimeUnit.SECONDS)
+        .followRedirects(followRedirects)
+        .followSslRedirects(followRedirects)
+        .connectionPool(new ConnectionPool(5, 5, TimeUnit.MINUTES));
 
-    HttpConnectionParams.setStaleCheckingEnabled(params, true);
-
-    HttpConnectionParams.setConnectionTimeout(params, 45 * 1000);
-    HttpConnectionParams.setSoTimeout(params, 45 * 1000);
-    HttpConnectionParams.setSocketBufferSize(params, 8192);
-    // HttpConnectionParams.setTcpNoDelay(params, true);
-
-    // Don't handle redirects -- return them to the caller. Our code
-    // often wants to re-POST after a redirect, which we must do ourselves.
-    // HttpClientParams.setRedirecting(params, false);
-
-    HttpClientParams.setRedirecting(params, followRedirects);
-    if (followRedirects)
-      params.setIntParameter(ClientPNames.MAX_REDIRECTS, 10);
-
-    // Set the specified user agent and register standard protocols.
-    HttpProtocolParams.setUserAgent(params, USER_AGENT);
-    SchemeRegistry schemeRegistry = new SchemeRegistry();
-    schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-    schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
-    ClientConnectionManager manager = new ThreadSafeClientConnManager(params, schemeRegistry);
-    // We use a factory method to modify superclass initialization
-    // parameters without the funny call-a-static-method dance.
-    return new NewsRobHttpClient(manager, params, ctx);
+    OkHttpClient client = builder.build();
+    return new NewsRobHttpClient(client, ctx);
   }
 
-  private NewsRobHttpClient(ClientConnectionManager ccm, HttpParams params, Context ctx)
+  private NewsRobHttpClient(OkHttpClient client, Context ctx)
   {
     this.context = ctx.getApplicationContext();
-    this.delegate = new DefaultHttpClient(ccm, params);
+    this.delegate = client;
+  }
+
+  // Static factory methods for easier Apache HttpClient compatibility
+  public static NewsRobHttpRequest createHttpGet(String url) throws java.net.URISyntaxException
+  {
+    return NewsRobHttpRequest.createGet(url);
+  }
+
+  public static NewsRobHttpRequest createHttpPost(String url) throws java.net.URISyntaxException
+  {
+    return NewsRobHttpRequest.createPost(url);
   }
 
   @Override
@@ -119,63 +93,41 @@ public class NewsRobHttpClient implements HttpClient
   {
     if (mLeakedException != null)
     {
-      getConnectionManager().shutdown();
+      // OkHttp manages connections internally, no explicit shutdown needed
       mLeakedException = null;
     }
   }
 
-  public HttpParams getParams()
-  {
-    return delegate.getParams();
-  }
-
-  public ClientConnectionManager getConnectionManager()
-  {
-    return delegate.getConnectionManager();
-  }
-
-  public HttpResponse executeZipped(HttpUriRequest req, HttpContext httpContext) throws IOException
-  {
-    modifyRequestToAcceptGzipResponse(req);
-    return this.execute(req, httpContext);
-  }
-
-  public HttpResponse executeZipped(HttpUriRequest req) throws IOException
+  public NewsRobHttpResponse executeZipped(NewsRobHttpRequest req) throws IOException
   {
     modifyRequestToAcceptGzipResponse(req);
     return this.execute(req);
   }
 
-  public HttpResponse execute(HttpUriRequest request) throws IOException
+  public NewsRobHttpResponse execute(NewsRobHttpRequest request) throws IOException
   {
     maintainUserAgent(request);
 
-    HttpResponse resp = delegate.execute(request);
+    Request okHttpRequest = request.toOkHttpRequest();
+    Response response = delegate.newCall(okHttpRequest).execute();
+    NewsRobHttpResponse resp = new NewsRobHttpResponse(response);
     outputResponseDebugInfo(request, resp);
     return resp;
   }
 
-  public HttpResponse execute(HttpUriRequest request, HttpContext httpContext) throws IOException
-  {
-    maintainUserAgent(request);
-
-    HttpResponse resp = delegate.execute(request, httpContext);
-    outputResponseDebugInfo(request, resp);
-    return resp;
-  }
-
-  private void maintainUserAgent(HttpUriRequest request)
+  private void maintainUserAgent(NewsRobHttpRequest request)
   {
     if (request.getURI().getHost().equals("t.co"))
       request.setHeader(USER_AGENT_KEY, BOT_USER_AGENT);
 
   }
 
-  private void outputResponseDebugInfo(HttpUriRequest request, HttpResponse resp) throws IOException
+  private void outputResponseDebugInfo(NewsRobHttpRequest request, NewsRobHttpResponse resp) throws IOException
   {
-    String status = "-> HTTP STATUS: " + resp.getStatusLine().getStatusCode();
-    status += " " + resp.getStatusLine();
-    status += " length=" + resp.getEntity().getContentLength();
+    String status = "-> HTTP STATUS: " + resp.getStatusCode();
+    status += " " + resp.getStatusCode() + " " + resp.getMessage();
+    ResponseBody body = resp.getOkHttpResponse().body();
+    status += " length=" + (body != null ? body.contentLength() : -1);
     if ("1".equals(NewsRob.getDebugProperties(context).getProperty("printCurls", "0")))
     {
       PL.log("Curl= " + NewsRobHttpClient.toCurl(request) + status, context);
@@ -185,127 +137,64 @@ public class NewsRobHttpClient implements HttpClient
       if (NewsRob.isDebuggingEnabled(context))
         PL.log("NewsRobHttpClient: " + request.getURI() + status, context);
     }
-    if (NewsRob.isDebuggingEnabled(context) && resp.getStatusLine().getStatusCode() >= 400)
+    if (NewsRob.isDebuggingEnabled(context) && resp.getStatusCode() >= 400)
     {
-      PL.log("Status " + resp.getStatusLine().getStatusCode() + " for " + request.getURI() + ":", context);
+      PL.log("Status " + resp.getStatusCode() + " for " + request.getURI() + ":", context);
 
       StringBuilder headers = new StringBuilder("  request headers=");
-      for (Header header : request.getAllHeaders())
+      for (String name : request.getHeaders().keySet())
       {
-        headers.append("    " + header.getName() + "=" + header.getValue() + "\n");
-        /*
-         * if (header.getElements().length > 0) for (HeaderElement he : header.getElements()) { PL.log("      " + he.getName() + "=" + he.getValue(), context);
-         * if (he.getParameters().length > 0) for (NameValuePair nvp : he.getParameters()) PL.log("        " + nvp.getName() + "=" + nvp.getValue(), context);
-         * 
-         * }
-         */
+        headers.append("    " + name + "=" + request.getHeaders().get(name) + "\n");
       }
 
       if (false)
         PL.log(headers.toString(), context);
       headers = new StringBuilder("  response headers=");
-      for (Header header : resp.getAllHeaders())
+      for (String name : resp.getOkHttpResponse().headers().names())
       {
-        headers.append("    " + header.getName() + "=" + header.getValue() + "\n");
-        /*
-         * if (header.getElements().length > 0) for (HeaderElement he : header.getElements()) { PL.log("      " + he.getName() + "=" + he.getValue(), context);
-         * if (he.getParameters().length > 0) for (NameValuePair nvp : he.getParameters()) PL.log("        " + nvp.getName() + "=" + nvp.getValue(), context);
-         * 
-         * }
-         */
+        headers.append("    " + name + "=" + resp.getOkHttpResponse().headers().get(name) + "\n");
       }
       PL.log(headers.toString(), context);
 
-      if ("1".equals(NewsRob.getDebugProperties(context).getProperty("dumpPayload", "0")))
-        PL.log("  Payload=" + EntityUtils.toString(resp.getEntity()), context);
+      if ("1".equals(NewsRob.getDebugProperties(context).getProperty("dumpPayload", "0")) && body != null)
+        PL.log("  Payload=" + body.string(), context);
     }
   }
 
-  public HttpResponse execute(HttpHost target, HttpRequest request) throws IOException
-  {
-    return delegate.execute(target, request);
-  }
 
-  public HttpResponse execute(HttpHost target, HttpRequest request, HttpContext context) throws IOException
-  {
-    return delegate.execute(target, request, context);
-  }
-
-  public <T> T execute(HttpUriRequest request, ResponseHandler<? extends T> responseHandler) throws IOException, ClientProtocolException
-  {
-    return delegate.execute(request, responseHandler);
-  }
-
-  public <T> T execute(HttpUriRequest request, ResponseHandler<? extends T> responseHandler, HttpContext context) throws IOException,
-      ClientProtocolException
-  {
-    return delegate.execute(request, responseHandler, context);
-  }
-
-  public <T> T execute(HttpHost target, HttpRequest request, ResponseHandler<? extends T> responseHandler) throws IOException,
-      ClientProtocolException
-  {
-    return delegate.execute(target, request, responseHandler);
-  }
-
-  public <T> T execute(HttpHost target, HttpRequest request, ResponseHandler<? extends T> responseHandler, HttpContext context)
-      throws IOException, ClientProtocolException
-  {
-    return delegate.execute(target, request, responseHandler, context);
-  }
 
   /**
    * Generates a cURL command equivalent to the given request.
    */
-  public static String toCurl(HttpUriRequest request) throws IOException
+  public static String toCurl(NewsRobHttpRequest request) throws IOException
   {
     StringBuilder builder = new StringBuilder();
 
     builder.append("curl ");
 
-    for (Header header : request.getAllHeaders())
+    for (String name : request.getHeaders().keySet())
     {
       builder.append("--header \"");
-      builder.append(header.toString().trim());
+      builder.append(name).append(": ").append(request.getHeaders().get(name));
       builder.append("\" ");
     }
 
     URI uri = request.getURI();
 
-    // If this is a wrapped request, use the URI from the original
-    // request instead. getURI() on the wrapper seems to return a
-    // relative URI. We want an absolute URI.
-    if (request instanceof RequestWrapper)
-    {
-      HttpRequest original = ((RequestWrapper) request).getOriginal();
-      if (original instanceof HttpUriRequest)
-      {
-        uri = ((HttpUriRequest) original).getURI();
-      }
-    }
-
     builder.append("\"");
     builder.append(uri);
     builder.append("\"");
 
-    if (request instanceof HttpEntityEnclosingRequest && !uri.toString().contains("ClientLogin"))
+    if (request.hasBody() && !uri.toString().contains("ClientLogin"))
     {
-      HttpEntityEnclosingRequest entityRequest = (HttpEntityEnclosingRequest) request;
-      HttpEntity entity = entityRequest.getEntity();
-      if (entity != null && entity.isRepeatable())
+      String body = request.getBodyAsString();
+      if (body != null && body.length() < (8192 * 4))
       {
-        if (entity.getContentLength() < (8192 * 4))
-        {
-          ByteArrayOutputStream stream = new ByteArrayOutputStream();
-          entity.writeTo(stream);
-          String entityString = stream.toString();
-
-          builder.append(" --data-ascii \"").append(entityString).append("\"");
-        }
-        else
-        {
-          builder.append(" [TOO MUCH DATA TO INCLUDE]");
-        }
+        builder.append(" --data-ascii \"").append(body).append("\"");
+      }
+      else
+      {
+        builder.append(" [TOO MUCH DATA TO INCLUDE]");
       }
     }
 
@@ -319,7 +208,7 @@ public class NewsRobHttpClient implements HttpClient
    *          the request to modify
    * @see #getUngzippedContent
    */
-  public static void modifyRequestToAcceptGzipResponse(HttpRequest request)
+  public static void modifyRequestToAcceptGzipResponse(NewsRobHttpRequest request)
   {
     request.addHeader("Accept-Encoding", "gzip");
   }
@@ -327,25 +216,44 @@ public class NewsRobHttpClient implements HttpClient
   /**
    * Gets the input stream from a response entity. If the entity is gzipped then this will get a stream over the uncompressed data.
    * 
-   * @param entity
-   *          the entity whose content should be read
+   * @param response
+   *          the response whose content should be read
    * @return the input stream to read from
    * @throws IOException
    */
+  public static InputStream getUngzippedContent(NewsRobHttpResponse response, Context context) throws IOException
+  {
+    ResponseBody body = response.getOkHttpResponse().body();
+    if (body == null) return null;
+    
+    InputStream responseStream = body.byteStream();
+    if (isCountingEnabled(context))
+      responseStream = new CountingInputStream(responseStream, "OUTER", context);
+    if (responseStream == null)
+      return responseStream;
+    String contentEncoding = response.getOkHttpResponse().header("Content-Encoding");
+    if (contentEncoding == null)
+      return responseStream;
+    if (contentEncoding.contains("gzip"))
+      responseStream = new GZIPInputStream(responseStream);
+    if (isCountingEnabled(context))
+      responseStream = new CountingInputStream(responseStream, "INNER ", context);
+    return responseStream;
+  }
+
+  // Compatibility method that takes HttpEntity and returns InputStream
   public static InputStream getUngzippedContent(HttpEntity entity, Context context) throws IOException
   {
+    if (entity == null || entity.getResponseBody() == null) return null;
+    
     InputStream responseStream = entity.getContent();
     if (isCountingEnabled(context))
       responseStream = new CountingInputStream(responseStream, "OUTER", context);
     if (responseStream == null)
       return responseStream;
-    Header header = entity.getContentEncoding();
-    if (header == null)
-      return responseStream;
-    String contentEncoding = header.getValue();
-    if (contentEncoding == null)
-      return responseStream;
-    if (contentEncoding.contains("gzip"))
+    
+    String contentEncoding = entity.getContentType();
+    if (contentEncoding != null && contentEncoding.contains("gzip"))
       responseStream = new GZIPInputStream(responseStream);
     if (isCountingEnabled(context))
       responseStream = new CountingInputStream(responseStream, "INNER ", context);
@@ -360,6 +268,12 @@ public class NewsRobHttpClient implements HttpClient
   }
 
 }
+
+
+
+
+
+
 
 class CountingInputStream extends FilterInputStream
 {

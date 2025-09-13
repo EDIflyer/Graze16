@@ -23,8 +23,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.http.NoHttpResponseException;
-import org.apache.http.client.ClientProtocolException;
+// Apache HttpClient exceptions removed - not needed with OkHttp
+import java.io.IOException;
 import org.xml.sax.SAXException;
 
 import android.app.Notification;
@@ -87,7 +87,7 @@ class FetchUnreadArticlesJob extends SyncJob
   }
 
   @Override
-  public int doRun() throws ClientProtocolException, IllegalStateException, IOException, NeedsSessionException, SAXException,
+  public int doRun() throws IllegalStateException, IOException, NeedsSessionException, SAXException,
       ParserConfigurationException, FactoryConfigurationError, SyncAPIException, ServerBadRequestException, AuthenticationExpiredException
   {
 
@@ -964,7 +964,7 @@ class WebPageDownloadTask implements Callable<Void>
 
           if ((e instanceof DownloadCancelledException)
               || ((cause != null) && ((cause instanceof FileNotFoundException) || (cause instanceof SocketTimeoutException)
-                  || (cause instanceof SocketException) || (cause instanceof NoHttpResponseException) || (cause instanceof UnknownHostException) || (cause instanceof DownloadCancelledException))))
+                  || (cause instanceof SocketException) || (cause instanceof UnknownHostException) || (cause instanceof DownloadCancelledException))))
           {
             Log.d(TAG, "Caught a FNFE");
 

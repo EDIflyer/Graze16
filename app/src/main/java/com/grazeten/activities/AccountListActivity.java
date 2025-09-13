@@ -159,7 +159,7 @@ public class AccountListActivity extends ListActivity
   protected void onListItemClick(ListView l, View v, int position, long id)
   {
     super.onListItemClick(l, v, position, id);
-    final String accountName = (String) getListAdapter().getItem(position);
+    final String accountName = (String) getListView().getAdapter().getItem(position);
     final String s1 = accountName.substring(0, accountName.indexOf('@'));
 
     new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_info).setTitle("Login").setMessage("Login using " + s1 + "?")

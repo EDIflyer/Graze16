@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutionException;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.http.client.ClientProtocolException;
+// ClientProtocolException removed - not needed with OkHttp
 import org.xml.sax.SAXException;
 
 import android.app.Activity;
@@ -51,7 +51,7 @@ public class NewsBlurBackendProvider implements BackendProvider
 
   @Override
   public boolean authenticate(Context context, String userId, String password, String captchaToken, String captchaAnswer)
-      throws ClientProtocolException, IOException, AuthenticationFailedException
+      throws IOException, AuthenticationFailedException
   {
     try
     {
@@ -177,7 +177,7 @@ public class NewsBlurBackendProvider implements BackendProvider
   }
 
   @Override
-  public int fetchNewEntries(EntryManager entryManager, SyncJob job, boolean manualSync) throws ClientProtocolException, IOException,
+  public int fetchNewEntries(EntryManager entryManager, SyncJob job, boolean manualSync) throws IOException,
       NeedsSessionException, SAXException, IllegalStateException, ParserConfigurationException, FactoryConfigurationError, SyncAPIException,
       ServerBadRequestException, AuthenticationExpiredException
   {

@@ -26,16 +26,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.http.HeaderElement;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.ExecutionContext;
-import org.apache.http.protocol.HttpContext;
+
 
 import android.content.Context;
 import android.util.Log;
@@ -405,21 +396,21 @@ public class WebPageDownloadDirector
     {
       Timing t = null;
 
-      HttpGet getAssetRequest = new HttpGet(asset.remoteUrl.toURI());
+      NewsRobHttpRequest getAssetRequest = new NewsRobHttpRequest("GET", asset.remoteUrl.toURI());
       getAssetRequest.setHeader("Referer", pageUrl.toExternalForm());
       if (isDetailedLoggingEnabled)
       {
         PL.log("WPDD: Downloading as part of " + "(" + pageUrl + ") remote:" + asset.remoteUrl.toURI() + " local: " + asset.localName, context);
         t = new Timing("Downloading as part of " + "(" + pageUrl + ") remote:" + asset.remoteUrl.toURI() + " local: " + asset.localName, context);
       }
-      HttpResponse response = httpClient.execute(getAssetRequest);
-      int statusCode = response.getStatusLine().getStatusCode();
+      NewsRobHttpResponse response = httpClient.execute(getAssetRequest);
+      int statusCode = response.getStatusCode();
       if (isDetailedLoggingEnabled)
         PL.log("WPDD: HTTP_STATUS_CODE=" + statusCode, context);
-      if (statusCode == HttpStatus.SC_OK)
+      if (statusCode == 200)
       {
 
-        bis = new BufferedInputStream(response.getEntity().getContent(), BUFFER_SIZE);
+        bis = new BufferedInputStream(NewsRobHttpClient.getUngzippedContent(response, context), BUFFER_SIZE);
         bos = new BufferedOutputStream(fileContext.openFileOutput(asset.localName + "nr"), BUFFER_SIZE);
 
         byte[] buffer = new byte[BUFFER_SIZE];
@@ -441,7 +432,7 @@ public class WebPageDownloadDirector
       }
       else
         Log.w(TAG, asset.remoteUrl + " did not download. Status code=" + statusCode);
-      response.getEntity().consumeContent();
+      // OkHttp automatically handles response cleanup
       if (isDetailedLoggingEnabled && t != null)
         t.stop();
 
@@ -614,13 +605,13 @@ class Downloader
 
     CharSequence result = null;
 
-    HttpResponse response;
-    HttpContext localContext = new BasicHttpContext();
+    NewsRobHttpResponse response;
+    // No equivalent to HttpContext in OkHttp, track redirects differently if needed
 
     try
     {
-      HttpGet loadRequest = new HttpGet(pageUrl.toURI());
-      response = httpClient.executeZipped(loadRequest, localContext);
+      NewsRobHttpRequest loadRequest = new NewsRobHttpRequest("GET", pageUrl.toURI());
+      response = httpClient.executeZipped(loadRequest);
 
     }
     catch (IOException e)
@@ -628,11 +619,11 @@ class Downloader
       throw new DownloadException("Problem during download of " + pageUrl + ".", e);
     }
 
-    int statusCode = response.getStatusLine().getStatusCode();
-    if (statusCode != HttpStatus.SC_OK)
+    int statusCode = response.getStatusCode();
+    if (statusCode != 200)
       throw new WrongStatusException(pageUrl, statusCode);
 
-    String newUri = extractUriFromHttpContext(localContext);
+    String newUri = response.getOkHttpResponse().request().url().toString();
 
     if (!pageUrl.toString().equals(newUri))
     {
@@ -652,17 +643,19 @@ class Downloader
     try
     {
       String charsetName = null;
-      for (HeaderElement he : response.getEntity().getContentType().getElements())
+      String contentType = response.getOkHttpResponse().header("Content-Type");
+      if (contentType != null && contentType.contains("charset="))
       {
-        NameValuePair nvp = he.getParameterByName("charset");
-        if (nvp != null)
+        int charsetIndex = contentType.indexOf("charset=");
+        if (charsetIndex != -1)
         {
-          charsetName = nvp.getValue();
-          break;
+          String charsetPart = contentType.substring(charsetIndex + 8);
+          int endIndex = charsetPart.indexOf(";");
+          charsetName = endIndex != -1 ? charsetPart.substring(0, endIndex).trim() : charsetPart.trim();
         }
       }
-      result = U2.readInputStreamIntoString(NewsRobHttpClient.getUngzippedContent(response.getEntity(), context), charsetName, started, job);
-      response.getEntity().consumeContent();
+      result = U2.readInputStreamIntoString(NewsRobHttpClient.getUngzippedContent(response, context), charsetName, started, job);
+      // OkHttp automatically closes response body
     }
     catch (IOException e)
     {
@@ -674,13 +667,8 @@ class Downloader
     return returnValues;
   }
 
-  private static String extractUriFromHttpContext(HttpContext localContext)
-  {
-    String newHost = ((HttpHost) localContext.getAttribute(ExecutionContext.HTTP_TARGET_HOST)).toURI();
-    String path = ((HttpRequest) localContext.getAttribute(ExecutionContext.HTTP_REQUEST)).getRequestLine().getUri();
-    String newUri = newHost + path;
-    return newUri;
-  }
+  // extractUriFromHttpContext method removed - OkHttp handles redirects automatically
+  // and we can get the final URL from response.getOkHttpResponse().request().url()
 }
 
 class U2

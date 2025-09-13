@@ -27,18 +27,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
+import java.util.Map;
+import okhttp3.FormBody;
+import com.grazeten.download.NewsRobHttpRequest;
+import com.grazeten.download.NewsRobHttpResponse;
+import com.grazeten.download.StatusLine;
+import com.grazeten.download.HttpEntity;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -436,38 +430,34 @@ public class EntriesRetriever implements BackendProvider
     this.context = context.getApplicationContext();
   }
 
-  private String acquireToken(NewsRobHttpClient httpClient) throws ClientProtocolException, IOException, NeedsSessionException
+  private String acquireToken(NewsRobHttpClient httpClient) throws IOException, NeedsSessionException
   {
 
     assertSessionAvailable();
 
-    HttpGet acquireTokenRequest = new HttpGet(getGoogleHost() + "/reader/api/0/token?client=" + CLIENT_NAME);
+    NewsRobHttpRequest acquireTokenRequest;
+    try {
+      acquireTokenRequest = NewsRobHttpClient.createHttpGet(getGoogleHost() + "/reader/api/0/token?client=" + CLIENT_NAME);
+    } catch (java.net.URISyntaxException e) {
+      throw new IOException("Invalid URL", e);
+    }
     setAuthInRequest(acquireTokenRequest);
 
-    HttpResponse response = httpClient.execute(acquireTokenRequest);
-    String token = EntityUtils.toString(response.getEntity());
+    NewsRobHttpResponse response = httpClient.execute(acquireTokenRequest);
+    String token = response.getEntityContent();
 
-    response.getEntity().consumeContent();
+    // Entity automatically handled by OkHttp
     return token;
   }
 
-  private void addParametersIncludingTokenToPostRequest(HttpPost postRequest, List<NameValuePair> nameValuePairs)
+  private void addParametersIncludingTokenToPostRequest(NewsRobHttpRequest postRequest, Map<String, String> nameValuePairs)
   {
     // add token to the parameters, encode them and put them in the post
     // request
 
-    List<NameValuePair> nvps = new ArrayList<NameValuePair>(nameValuePairs.size() + 1);
-    nvps.addAll(nameValuePairs);
-    nvps.add(new BasicNameValuePair("T", token));
-
-    try
-    {
-      postRequest.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
-    }
-    catch (UnsupportedEncodingException e)
-    {
-      e.printStackTrace();
-    }
+    Map<String, String> nvps = new HashMap<>(nameValuePairs);
+    nvps.put("T", token);
+    postRequest.setFormParameters(nvps);
   }
 
   private void assertSessionAvailable() throws NeedsSessionException
@@ -480,7 +470,7 @@ public class EntriesRetriever implements BackendProvider
 
   @Override
   public boolean authenticate(Context context, String email, String password, String captchaToken, String captchaAnswer)
-      throws ClientProtocolException, IOException, AuthenticationFailedException
+      throws IOException, AuthenticationFailedException
   {
 
     getEntryManager().getNewsRobNotificationManager().cancelSyncProblemNotification();
@@ -488,31 +478,36 @@ public class EntriesRetriever implements BackendProvider
     NewsRobHttpClient httpClient = NewsRobHttpClient.newInstance(false, context);
     try
     {
-      HttpPost authenticateRequest = new HttpPost("https://www.google.com/accounts/ClientLogin"); // ?client="
+      NewsRobHttpRequest authenticateRequest;
+      try {
+        authenticateRequest = NewsRobHttpClient.createHttpPost("https://www.google.com/accounts/ClientLogin"); // ?client="
+      } catch (java.net.URISyntaxException e) {
+        throw new IOException("Invalid URL", e);
+      }
       // +
       // CLIENT_NAME);
 
-      List<NameValuePair> keyValuePairs = new ArrayList<NameValuePair>();
-      keyValuePairs.add(new BasicNameValuePair("accountType", "GOOGLE")); // HOSTED_OR_GOOGLE
-      keyValuePairs.add(new BasicNameValuePair("Email", email));
-      keyValuePairs.add(new BasicNameValuePair("Passwd", password));
-      keyValuePairs.add(new BasicNameValuePair("source", CLIENT_NAME));
-      keyValuePairs.add(new BasicNameValuePair("service", "reader"));
+      Map<String, String> keyValuePairs = new HashMap<>();
+      keyValuePairs.put("accountType", "GOOGLE"); // HOSTED_OR_GOOGLE
+      keyValuePairs.put("Email", email);
+      keyValuePairs.put("Passwd", password);
+      keyValuePairs.put("source", CLIENT_NAME);
+      keyValuePairs.put("service", "reader");
       if (captchaToken != null)
       {
-        keyValuePairs.add(new BasicNameValuePair("logintoken", captchaToken));
-        keyValuePairs.add(new BasicNameValuePair("logincaptcha", captchaAnswer));
+        keyValuePairs.put("logintoken", captchaToken);
+        keyValuePairs.put("logincaptcha", captchaAnswer);
       }
 
-      authenticateRequest.setEntity(new UrlEncodedFormEntity(keyValuePairs, HTTP.UTF_8));
-      HttpResponse response = httpClient.execute(authenticateRequest);
+      authenticateRequest.setFormParameters(keyValuePairs);
+      NewsRobHttpResponse response = httpClient.execute(authenticateRequest);
       int statusCode = response.getStatusLine().getStatusCode();
-      String content = EntityUtils.toString(response.getEntity());
+      String content = response.getEntityContent();
 
       switch (statusCode)
       {
-        case HttpStatus.SC_UNAUTHORIZED:
-        case HttpStatus.SC_FORBIDDEN:
+        case 401: // HTTP_UNAUTHORIZED
+        case 403: // HTTP_FORBIDDEN
           Map<String, String> keyValues = U.parseKeyValuePairsFromString(content);
 
           String error = keyValues.get("Error");
@@ -537,18 +532,18 @@ public class EntriesRetriever implements BackendProvider
           }
           throw new AuthenticationFailedException("Authentication failed:\n" + error);
 
-        case HttpStatus.SC_OK:
+        case 200: // HTTP_OK
           break;
         default:
           String msg = "Oh, status code was " + statusCode + " but unexpected.";
           PL.log(msg, context);
           Log.w(TAG, msg);
-          throw new AuthenticationFailedException("Autentication failed:\n" + EntityUtils.toString(response.getEntity()));
+          throw new AuthenticationFailedException("Autentication failed:\n" + response.getEntityContent());
       }
 
       getEntryManager().saveAuthToken(new AuthToken(AuthToken.AuthType.AUTH_STANDALONE, U.parseKeyValuePairsFromString(content).get("Auth")));
 
-      response.getEntity().consumeContent();
+      // Entity automatically handled by OkHttp
       getEntryManager().getNewsRobNotificationManager().cancelSyncProblemNotification();
       return true;
     }
@@ -563,14 +558,14 @@ public class EntriesRetriever implements BackendProvider
    * @throws AuthenticationExpiredException
    * @throws ServerBadRequestException
    */
-  private boolean checkStatusCodeForReloginAndExpiredToken(HttpResponse response, boolean firstTry) throws IOException,
+  private boolean checkStatusCodeForReloginAndExpiredToken(NewsRobHttpResponse response, boolean firstTry) throws IOException,
       AuthenticationExpiredException, ServerBadRequestException
   {
 
     // check for bad token
-    Header googleBadTokenHeader = response.getFirstHeader("X-Reader-Google-Bad-Token");
+    String googleBadTokenHeader = response.getHeader("X-Reader-Google-Bad-Token");
 
-    if ((googleBadTokenHeader != null) && "true".equals(googleBadTokenHeader.getValue()))
+    if ("true".equals(googleBadTokenHeader))
     {
       throw new AuthenticationExpiredException();
     }
@@ -579,11 +574,11 @@ public class EntriesRetriever implements BackendProvider
 
     switch (statusCode)
     {
-      case HttpStatus.SC_BAD_REQUEST:
+      case 400: // HTTP_BAD_REQUEST
         throw new ServerBadRequestException();
-      case HttpStatus.SC_MOVED_TEMPORARILY:
-      case HttpStatus.SC_UNAUTHORIZED:
-      case HttpStatus.SC_FORBIDDEN:
+      case 302: // HTTP_MOVED_TEMPORARILY
+      case 401: // HTTP_UNAUTHORIZED
+      case 403: // HTTP_FORBIDDEN
         EntryManager entryManager = getEntryManager();
         // retry possible?
         String msg = "302 or 401 or 403 or 400:" + response.getStatusLine();
@@ -634,25 +629,28 @@ public class EntriesRetriever implements BackendProvider
     getEntryManager().clearAuthToken();
   }
 
-  private HttpRequestBase createGRRequest(NewsRobHttpClient httpClient, String url) throws IOException
+  private NewsRobHttpRequest createGRRequest(NewsRobHttpClient httpClient, String url) throws IOException
   {
 
     url += (url.indexOf("?") == -1 ? "?" : "&") + "client=" + CLIENT_NAME;
 
-    HttpGet readingListRequest = new HttpGet(url);
-
-    setAuthInRequest(readingListRequest);
+      NewsRobHttpRequest readingListRequest;
+      try {
+        readingListRequest = NewsRobHttpClient.createHttpGet(url);
+      } catch (java.net.URISyntaxException e) {
+        throw new IOException("Invalid URL", e);
+      }    setAuthInRequest(readingListRequest);
 
     Log.d(TAG, "Accessing Google Reader service.");
     return readingListRequest;
   }
 
-  private List<NameValuePair> createNVPForAlterRemoteState(Collection<Entry> entries, String column, String desiredState)
-      throws UnsupportedEncodingException, IOException, ClientProtocolException
+  private Map<String, String> createNVPForAlterRemoteState(Collection<Entry> entries, String column, String desiredState)
+      throws UnsupportedEncodingException, IOException
   {
 
-    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-    nameValuePairs.add(new BasicNameValuePair("client", CLIENT_NAME));
+    Map<String, String> nameValuePairs = new HashMap<>();
+    nameValuePairs.put("client", CLIENT_NAME);
 
     String globalGoogleStateName = null;
     if (DB.Entries.READ_STATE_PENDING.equals(column))
@@ -673,7 +671,7 @@ public class EntriesRetriever implements BackendProvider
       throw new RuntimeException("Assertion failed. globalGoogleStateName could not be set for column !" + column + "!");
     }
 
-    nameValuePairs.add(new BasicNameValuePair("1".equals(desiredState) ? "a" : "r", globalGoogleStateName));
+    nameValuePairs.put("1".equals(desiredState) ? "a" : "r", globalGoogleStateName);
 
     for (Entry entry : entries)
     {
@@ -710,7 +708,7 @@ public class EntriesRetriever implements BackendProvider
         continue;
       }
 
-      nameValuePairs.add(new BasicNameValuePair("i", entry.getAtomId()));
+      nameValuePairs.put("i", entry.getAtomId());
       // nameValuePairs.add(new BasicNameValuePair("s",
       // entry.getFeedAtomId().substring(27)));
 
@@ -814,8 +812,8 @@ public class EntriesRetriever implements BackendProvider
     {
 
       final String queryPath = "/reader/api/0/feed-finder?q=";
-      HttpRequestBase req = createGRRequest(httpClient, getGoogleHost() + queryPath + query);
-      HttpResponse response = executeGRRequest(httpClient, req, true);
+      NewsRobHttpRequest req = createGRRequest(httpClient, getGoogleHost() + queryPath + query);
+      NewsRobHttpResponse response = executeGRRequest(httpClient, req, true);
 
       throwExceptionWhenNotStatusOK(response);
 
@@ -925,11 +923,11 @@ public class EntriesRetriever implements BackendProvider
 
   }
 
-  private HttpResponse executeGRRequest(NewsRobHttpClient httpClient, HttpRequestBase articleRequest, boolean zipped) throws IOException,
+  private NewsRobHttpResponse executeGRRequest(NewsRobHttpClient httpClient, NewsRobHttpRequest articleRequest, boolean zipped) throws IOException,
       AuthenticationExpiredException, ServerBadRequestException
   {
 
-    HttpResponse response = zipped ? httpClient.executeZipped(articleRequest) : httpClient.execute(articleRequest);
+    NewsRobHttpResponse response = zipped ? httpClient.executeZipped(articleRequest) : httpClient.execute(articleRequest);
     /*
      * count++; // LATER if (count == 3) response.setStatusCode(401);
      */
@@ -956,17 +954,22 @@ public class EntriesRetriever implements BackendProvider
 
       String url = getGoogleHost() + "/reader/api/0/stream/items/contents?output=atom&xt=" + GOOGLE_STATE_READ + "&client=" + CLIENT_NAME;
 
-      HttpPost getNewArticlesRequest = new HttpPost(url);
-
-      List<NameValuePair> keyValuePairs = new ArrayList<NameValuePair>();
-      for (String unreadId : atomIds)
-      {
-        keyValuePairs.add(new BasicNameValuePair("i", unreadId));
+      NewsRobHttpRequest getNewArticlesRequest;
+      try {
+        getNewArticlesRequest = NewsRobHttpClient.createHttpPost(url);
+      } catch (java.net.URISyntaxException e) {
+        throw new IOException("Invalid URL", e);
       }
 
-      keyValuePairs.add(new BasicNameValuePair("client", CLIENT_NAME));
+      Map<String, String> keyValuePairs = new HashMap<>();
+      for (String unreadId : atomIds)
+      {
+        keyValuePairs.put("i", unreadId);
+      }
 
-      HttpResponse response;
+      keyValuePairs.put("client", CLIENT_NAME);
+
+      NewsRobHttpResponse response;
       try
       {
         response = submitPostRequest(httpClient, getNewArticlesRequest, keyValuePairs, true);
@@ -992,7 +995,7 @@ public class EntriesRetriever implements BackendProvider
   }
 
   @Override
-  public int fetchNewEntries(final EntryManager entryManager, final SyncJob job, boolean manualSync) throws ClientProtocolException,
+  public int fetchNewEntries(final EntryManager entryManager, final SyncJob job, boolean manualSync) throws
       IOException, NeedsSessionException, SAXException, IllegalStateException, ParserConfigurationException, FactoryConfigurationError,
       SyncAPIException, AuthenticationExpiredException
   {
@@ -1291,8 +1294,8 @@ public class EntriesRetriever implements BackendProvider
     try
     {
 
-      HttpRequestBase req = createGRRequest(httpClient, url);
-      HttpResponse response = executeGRRequest(httpClient, req, true);
+      NewsRobHttpRequest req = createGRRequest(httpClient, url);
+      NewsRobHttpResponse response = executeGRRequest(httpClient, req, true);
 
       throwExceptionWhenNotStatusOK(response);
 
@@ -1391,8 +1394,8 @@ public class EntriesRetriever implements BackendProvider
     try
     {
 
-      HttpRequestBase req = createGRRequest(httpClient, url);
-      HttpResponse response = executeGRRequest(httpClient, req, true);
+      NewsRobHttpRequest req = createGRRequest(httpClient, url);
+      NewsRobHttpResponse response = executeGRRequest(httpClient, req, true);
       throwExceptionWhenNotStatusOK(response);
 
       final List<Long> unreadIds = new ArrayList<Long>((currentCapacity * 80) / 100);
@@ -1590,7 +1593,7 @@ public class EntriesRetriever implements BackendProvider
     parser.parse(is, handler);
   }
 
-  private void processReadingList(final Job job, final FetchContext fetchCtx, HttpResponse response) throws IOException,
+  private void processReadingList(final Job job, final FetchContext fetchCtx, NewsRobHttpResponse response) throws IOException,
       FactoryConfigurationError, ParserConfigurationException, SAXException
   {
 
@@ -1606,7 +1609,7 @@ public class EntriesRetriever implements BackendProvider
     try
     {
 
-      HttpPost editApiRequest = new HttpPost(getGoogleHost() + "/reader/api/0/edit-tag?client=" + CLIENT_NAME);
+      NewsRobHttpRequest editApiRequest = NewsRobHttpClient.createHttpPost(getGoogleHost() + "/reader/api/0/edit-tag?client=" + CLIENT_NAME);
       submitPostRequest(httpClient, editApiRequest, createNVPForAlterRemoteState(entries, column, desiredState), false);
 
       // At this point the submitPost is already done without errors
@@ -1647,9 +1650,9 @@ public class EntriesRetriever implements BackendProvider
 
     String url = getGoogleHost() + "/reader/atom/" + state + "?n=" + n + "&r=n" + urlPostfix;
 
-    HttpRequestBase req = createGRRequest(httpClient, url);
+    NewsRobHttpRequest req = createGRRequest(httpClient, url);
 
-    HttpResponse response = executeGRRequest(httpClient, req, true);
+    NewsRobHttpResponse response = executeGRRequest(httpClient, req, true);
     throwExceptionWhenNotStatusOK(response);
 
     processReadingList(job, fetchCtx, response);
@@ -1693,7 +1696,7 @@ public class EntriesRetriever implements BackendProvider
     }
   }
 
-  private void setAuthInRequest(HttpRequestBase req)
+  private void setAuthInRequest(NewsRobHttpRequest req)
   {
     AuthToken authToken = getAuthToken();
 
@@ -1737,7 +1740,7 @@ public class EntriesRetriever implements BackendProvider
     return futureReadUpdateResult;
   }
 
-  private HttpResponse submitPostRequest(NewsRobHttpClient httpClient, HttpPost postRequest, List<NameValuePair> nameValuePairs, boolean zipped)
+  private NewsRobHttpResponse submitPostRequest(NewsRobHttpClient httpClient, NewsRobHttpRequest postRequest, Map<String, String> nameValuePairs, boolean zipped)
       throws IOException, NeedsSessionException, SyncAPIException, ServerBadRequestException
   {
 
@@ -1752,7 +1755,7 @@ public class EntriesRetriever implements BackendProvider
 
     addParametersIncludingTokenToPostRequest(postRequest, nameValuePairs);
 
-    HttpResponse response = null;
+    NewsRobHttpResponse response = null;
     try
     {
       response = executeGRRequest(httpClient, postRequest, zipped);
@@ -1798,18 +1801,18 @@ public class EntriesRetriever implements BackendProvider
     try
     {
 
-      HttpPost editApiRequest = new HttpPost(getGoogleHost() + "/reader/api/0/subscription/edit");
+      NewsRobHttpRequest editApiRequest = NewsRobHttpClient.createHttpPost(getGoogleHost() + "/reader/api/0/subscription/edit");
       // quickadd
 
-      List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-      nameValuePairs.add(new BasicNameValuePair("client", CLIENT_NAME));
+      Map<String, String> nameValuePairs = new HashMap<>();
+      nameValuePairs.put("client", CLIENT_NAME);
 
-      nameValuePairs.add(new BasicNameValuePair("ac", "subscribe"));
-      nameValuePairs.add(new BasicNameValuePair("s", "feed/" + url2subscribe)); // quickadd
+      nameValuePairs.put("ac", "subscribe");
+      nameValuePairs.put("s", "feed/" + url2subscribe); // quickadd
 
-      HttpResponse resp = submitPostRequest(httpClient, editApiRequest, nameValuePairs, false);
+      NewsRobHttpResponse resp = submitPostRequest(httpClient, editApiRequest, nameValuePairs, false);
 
-      return resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK;
+      return resp.getStatusLine().getStatusCode() == 200;
 
     }
     catch (Exception e)
@@ -1917,10 +1920,10 @@ public class EntriesRetriever implements BackendProvider
     return noOfUpdated;
   }
 
-  private void throwExceptionWhenNotStatusOK(HttpResponse response) throws IOException
+  private void throwExceptionWhenNotStatusOK(NewsRobHttpResponse response) throws IOException
   {
     final int statusCode = response.getStatusLine().getStatusCode();
-    if (HttpStatus.SC_OK != statusCode)
+    if (200 != statusCode)
     {
       throw new IOException("Statuscode should have been 200, but was " + statusCode);
     }
@@ -1940,29 +1943,35 @@ public class EntriesRetriever implements BackendProvider
     {
       Timing t = new Timing("EntriesRetriever.unsubcribeFeed()", context);
 
-      HttpPost editApiRequest = new HttpPost(getGoogleHost() + "/reader/api/0/subscription/edit?client=" + CLIENT_NAME);
-      LinkedList<NameValuePair> nameValuePairs = new LinkedList<NameValuePair>();
+      NewsRobHttpRequest editApiRequest;
+      try {
+        editApiRequest = NewsRobHttpRequest.createPost(getGoogleHost() + "/reader/api/0/subscription/edit?client=" + CLIENT_NAME);
+      } catch (java.net.URISyntaxException e) {
+        throw new IOException("Invalid URL", e);
+      }
+      java.util.Map<String, String> formData = new java.util.HashMap<>();
 
-      nameValuePairs.add(new BasicNameValuePair("s", feedAtomId));
-      nameValuePairs.add(new BasicNameValuePair("ac", "unsubscribe"));
+      formData.put("s", feedAtomId);
+      formData.put("ac", "unsubscribe");
+      editApiRequest.setFormData(formData);
 
-      HttpResponse result;
+      NewsRobHttpResponse result;
       try
       {
-        result = submitPostRequest(httpClient, editApiRequest, nameValuePairs, false);
+        result = submitPostRequest(httpClient, editApiRequest, formData, false);
       }
       catch (ServerBadRequestException e)
       {
         try
         {
-          result = submitPostRequest(httpClient, editApiRequest, nameValuePairs, false);
+          result = submitPostRequest(httpClient, editApiRequest, formData, false);
         }
         catch (ServerBadRequestException e1)
         {
           throw new SyncAPIException("GR believes it received a bad request.");
         }
       }
-      if (HttpStatus.SC_OK == result.getStatusLine().getStatusCode())
+      if (200 == result.getStatusLine().getStatusCode())
       {
         entryManager.removeFeedFromFeeds2Unsubscribe("tag:google.com,2005:reader/" + feedAtomId); // LATER
       }
@@ -2002,8 +2011,8 @@ public class EntriesRetriever implements BackendProvider
     {
 
       final String url = getGoogleHost() + "/reader/api/0/subscription/list";
-      HttpRequestBase req = createGRRequest(httpClient, url);
-      HttpResponse response;
+      NewsRobHttpRequest req = createGRRequest(httpClient, url);
+      NewsRobHttpResponse response;
       try
       {
         response = executeGRRequest(httpClient, req, true);
