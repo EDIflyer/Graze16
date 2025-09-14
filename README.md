@@ -1,8 +1,6 @@
 # Graze16 - GrazeRSS targeting Android 16
 
-![Play Store Logo](https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png)
-
-## [Link to Play Store](https://play.google.com/store/apps/details?id=com.graze16)
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png">](https://play.google.com/store/apps/details?id=com.graze16)
 
 * This is the Graze16 source repository.
 * Graze16 is based on GrazeTEN, without which Graze16 would not exist.
