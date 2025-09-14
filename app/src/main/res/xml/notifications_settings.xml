@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.preference.CheckBoxPreference
+        app:key="settings_notifications_enabled"
+        app:title="@string/settings_notifications_enabled_title"
+        app:summary="@string/settings_notifications_enabled_summary"
+        app:defaultValue="true" />
+
+    <androidx.preference.Preference
+        app:key="settings_notify_with_sound_url"
+        app:title="@string/settings_notify_with_sound_url_title"
+        app:summary="@string/settings_notify_with_sound_url_summary"
+        app:dependency="settings_notifications_enabled" />
+
+    <androidx.preference.CheckBoxPreference
+        app:key="settings_notify_with_led_enabled"
+        app:title="@string/settings_notify_with_led_enabled_title"
+        app:summary="@string/settings_notify_with_led_enabled_summary"
+        app:defaultValue="true"
+        app:dependency="settings_notifications_enabled" />
+        
+    <androidx.preference.CheckBoxPreference
+        app:key="settings_notify_with_vibration_enabled"
+        app:title="@string/settings_notify_with_vibration_enabled_title"
+        app:summary="@string/settings_notify_with_vibration_enabled_summary"
+        app:defaultValue="true"
+        app:dependency="settings_notifications_enabled" />
+
+</androidx.preference.PreferenceScreen>

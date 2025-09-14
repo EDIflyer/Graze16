@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.preference.Preference
+        app:key="sync_category"
+        app:title="@string/settings_automatic_refreshing_category_title"
+        app:summary="Sync settings, refresh intervals, and offline content"
+        app:icon="@android:drawable/ic_popup_sync" />
+
+    <androidx.preference.Preference
+        app:key="cache_category"
+        app:title="@string/settings_local_store_category_title"
+        app:summary="Storage settings and capacity limits"
+        app:icon="@android:drawable/ic_menu_save" />
+
+    <androidx.preference.Preference
+        app:key="ui_category"
+        app:title="@string/settings_ui_title"
+        app:summary="User interface, themes, and display options"
+        app:icon="@android:drawable/ic_menu_preferences" />
+
+    <androidx.preference.Preference
+        app:key="notifications_category"
+        app:title="@string/settings_notifications_title"
+        app:summary="Notification sounds, LED, and vibration settings"
+        app:icon="@android:drawable/ic_popup_reminder" />
+
+    <androidx.preference.Preference
+        app:key="experimental_category"
+        app:title="Work in Progress (Exper.)"
+        app:summary="Experimental features and advanced options"
+        app:icon="@android:drawable/ic_menu_manage" />
+
+    <androidx.preference.Preference
+        app:key="about_category"
+        app:title="@string/about_section_title"
+        app:summary="Version info, license, and project links"
+        app:icon="@android:drawable/ic_menu_info_details" />
+
+</androidx.preference.PreferenceScreen>

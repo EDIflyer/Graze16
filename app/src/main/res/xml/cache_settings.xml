@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.preference.Preference
+        app:title="Cache settings will be implemented here"
+        app:summary="Coming soon..." />
+
+</androidx.preference.PreferenceScreen>

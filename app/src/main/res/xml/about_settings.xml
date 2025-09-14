@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.preference.Preference
+        app:key="about_version_preference"
+        app:title="@string/about_version_title"
+        app:summary="Loading..."
+        app:icon="@drawable/gen_app_icon" />
+        
+    <androidx.preference.Preference
+        app:key="about_license_preference"
+        app:title="@string/about_license_title"
+        app:summary="@string/about_license_summary" />
+        
+    <androidx.preference.Preference
+        app:key="about_github_preference"
+        app:title="@string/about_github_title"
+        app:summary="@string/about_github_summary" />
+
+</androidx.preference.PreferenceScreen>
