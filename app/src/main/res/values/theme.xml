@@ -97,4 +97,16 @@
         <item name="android:tint">@android:color/white</item>
     </style>
     
+    <!-- Settings Activity Themes that show proper action bar -->
+    <style name="AppTheme.Settings.Light" parent="Theme.NewsRob_Light_Normal">
+        <item name="android:windowActionBar">true</item>
+        <item name="android:windowNoTitle">false</item>
+    </style>
+    
+    <style name="AppTheme.Settings.Dark" parent="Theme.NewsRob_Dark_Normal">
+        <item name="android:windowActionBar">true</item>
+        <item name="android:windowNoTitle">false</item>
+    </style>
+    
+    
 </resources>

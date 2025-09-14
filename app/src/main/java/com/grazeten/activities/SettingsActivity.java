@@ -11,8 +11,8 @@ import android.os.Handler;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
-import android.view.View;
-import android.view.WindowInsets;
+
+import java.util.List;
 
 import com.graze16.DashboardListActivity;
 import com.graze16.EntryManager;
@@ -28,37 +28,40 @@ public class SettingsActivity extends PreferenceActivity implements IEntryModelU
   private Handler handler = new Handler();
 
   @Override
+  public void onBuildHeaders(List<Header> target) {
+    // This method is called for PreferenceActivity but we're using the older single-pane approach
+    // Leave empty to use our XML-based approach
+  }
+  
+  @Override
+  protected boolean isValidFragment(String fragmentName) {
+    // Since we're not using fragments, return false
+    return false;
+  }
+
+  @Override
   protected void onCreate(Bundle savedInstanceState)
   {
-    super.onCreate(savedInstanceState);
+    // Set the app theme before creating the activity - but use a settings-specific theme
+    final EntryManager em = EntryManager.getInstance(this);
     
-    // Fix status bar overlap issue for Android API 21+
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-      getWindow().getDecorView().setSystemUiVisibility(
-        android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-        android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-      
-      // Apply window insets to add proper padding for status bar
-      getWindow().getDecorView().setOnApplyWindowInsetsListener(new android.view.View.OnApplyWindowInsetsListener() {
-        @Override
-        public android.view.WindowInsets onApplyWindowInsets(android.view.View v, android.view.WindowInsets insets) {
-          // Get the ListView that contains the preferences
-          android.widget.ListView listView = getListView();
-          if (listView != null) {
-            // Add top padding equal to status bar height
-            listView.setPadding(
-              listView.getPaddingLeft(),
-              insets.getSystemWindowInsetTop(),
-              listView.getPaddingRight(), 
-              listView.getPaddingBottom()
-            );
-          }
-          return insets.consumeSystemWindowInsets();
-        }
-      });
+    // Determine which settings theme to use based on app's day/night setting
+    String colorScheme = em.getSharedPreferences().getString(EntryManager.SETTINGS_UI_THEME, EntryManager.THEME_LIGHT);
+    int settingsThemeId;
+    if (EntryManager.THEME_DARK.equals(colorScheme)) {
+      settingsThemeId = getResources().getIdentifier("AppTheme.Settings.Dark", "style", getPackageName());
+    } else {
+      settingsThemeId = getResources().getIdentifier("AppTheme.Settings.Light", "style", getPackageName());
     }
     
-    final EntryManager em = EntryManager.getInstance(this);
+    if (settingsThemeId != 0) {
+      setTheme(settingsThemeId);
+    } else {
+      // Fallback to regular app theme
+      setTheme(em.getCurrentThemeResourceId());
+    }
+    
+    super.onCreate(savedInstanceState);
 
     addPreferencesFromResource(R.xml.settings);
 

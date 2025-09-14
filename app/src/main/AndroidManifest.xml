@@ -145,7 +145,7 @@
         <activity
             android:name="com.graze16.activities.SettingsActivity"
             android:label="@string/settings_title"
-            android:theme="@android:style/Theme.Black" />
+            android:theme="@style/AppTheme.Settings.Light" />
         <activity
             android:name="com.graze16.activities.ShowGoogleErrorActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
@@ -237,7 +237,7 @@
         </receiver>
         <receiver
             android:name="com.graze16.appwidget.UnreadWidgetProvider"
-            android:label="graze16\nUnread Count"
+            android:label="Graze16\nUnread Count"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
