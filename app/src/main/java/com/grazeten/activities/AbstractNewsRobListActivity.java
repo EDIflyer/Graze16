@@ -892,7 +892,7 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
     super.onPostCreate(savedInstanceState);
     Toolbar toolbar = findViewById(R.id.activity_actionbar);
     setSupportActionBar(toolbar);
-    getSupportActionBar().setTitle("graze16");
+    getSupportActionBar().setTitle("Graze16");
     getSupportActionBar().setHomeAsUpIndicator(R.drawable.gen_logo_32dp);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     toolbar.setTitleTextColor(Color.WHITE);

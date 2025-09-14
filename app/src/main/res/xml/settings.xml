@@ -39,8 +39,8 @@
          <CheckBoxPreference
              android:defaultValue="false"
              android:key="settings_sync_graze16_only_enabled"
-             android:summary="Sync only articles that in a folder/tag called \&apos;graze16\&apos;."
-             android:title="Sync \&apos;graze16\&apos; Only" />
+             android:summary="Sync only articles that in a folder/tag called \&apos;Graze16\&apos;."
+             android:title="Sync \&apos;Graze16\&apos; Only" />
 
         <PreferenceCategory android:title="@string/settings_offline" >
             <com.graze16.preference.ListPreference
@@ -292,6 +292,17 @@
             android:key="settings_hw_acceleration_adv_enabled"
             android:summary="Enable the hardware accelerated drawing of the article detail view."
             android:title="Article Hardware Acceleration" />
+    </PreferenceScreen>
+    
+    <PreferenceScreen android:title="@string/about_section_title" >
+        <Preference
+            android:key="about_license_preference"
+            android:title="@string/about_license_title"
+            android:summary="@string/about_license_summary" />
+        <Preference
+            android:key="about_github_preference"
+            android:title="@string/about_github_title"
+            android:summary="@string/about_github_summary" />
     </PreferenceScreen>
 
 

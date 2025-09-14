@@ -1,6 +1,10 @@
 package com.graze16.activities;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.Preference;
@@ -75,6 +79,29 @@ public class SettingsActivity extends PreferenceActivity implements IEntryModelU
       }
     }
 
+    // Add click listeners for About section preferences
+    Preference aboutLicensePref = findPreference("about_license_preference");
+    if (aboutLicensePref != null) {
+      aboutLicensePref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+          showLicenseDialog();
+          return true;
+        }
+      });
+    }
+    
+    Preference aboutGithubPref = findPreference("about_github_preference");
+    if (aboutGithubPref != null) {
+      aboutGithubPref.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+          openGithubRepository();
+          return true;
+        }
+      });
+    }
+
   }
 
   private void disableSetting(EntryManager em, String keyOfPref)
@@ -142,5 +169,25 @@ public class SettingsActivity extends PreferenceActivity implements IEntryModelU
   public void modelUpdated(String atomId)
   {
 
+  }
+
+  private void showLicenseDialog()
+  {
+    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    builder.setTitle(R.string.license)
+           .setMessage(R.string.license_text)
+           .setIcon(android.R.drawable.ic_dialog_info)
+           .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+             public void onClick(DialogInterface dialog, int which) {
+               dialog.dismiss();
+             }
+           });
+    builder.create().show();
+  }
+
+  private void openGithubRepository()
+  {
+    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/EDIflyer/Graze16"));
+    startActivity(browserIntent);
   }
 }

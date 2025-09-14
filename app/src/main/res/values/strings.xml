@@ -238,10 +238,15 @@ Otherwise you will be asked again for your credentials every two weeks.
 	<string name="dialog_n_articles_will_be_marked_as_read">%s unread articles will be marked as read.</string>
 	<string name="new_version_available_title">Update available</string>
 	<string name="new_version_available_summary">An update of graze16 is available!</string>
-	<string name="license">graze16 License</string>
+	<string name="license">Graze16 License</string>
+	<string name="about_section_title">About</string>
+	<string name="about_license_title">License</string>
+	<string name="about_license_summary">View app license information</string>
+	<string name="about_github_title">GitHub Repository</string>
+	<string name="about_github_summary">Visit the project on GitHub</string>
 	<string name="reject">Reject</string>
 	<string name="agree">Agree</string>
 	<string name="shared">shared</string>
-	<string name="license_text">THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\nTHIRD PARTIES MAY BE USING COOKIES, WEB BEACONS OR OTHER MEANS TO COLLECT DATA TO E.G. TARGET ADS.\n\n\n</string>
+	<string name="license_text">MIT License\n\nCopyright (c) 2020 M. Kamp, T. Tabbal, nayfield, ediflyer et al\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</string>
     <string name="menu_item_show_article_info">Show Info (Support Only)</string>
 </resources>
