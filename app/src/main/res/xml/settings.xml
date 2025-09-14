@@ -296,6 +296,11 @@
     
     <PreferenceScreen android:title="@string/about_section_title" >
         <Preference
+            android:key="about_version_preference"
+            android:title="@string/about_version_title"
+            android:summary="Loading..."
+            android:icon="@drawable/gen_app_icon" />
+        <Preference
             android:key="about_license_preference"
             android:title="@string/about_license_title"
             android:summary="@string/about_license_summary" />

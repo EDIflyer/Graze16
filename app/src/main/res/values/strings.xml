@@ -240,6 +240,7 @@ Otherwise you will be asked again for your credentials every two weeks.
 	<string name="new_version_available_summary">An update of graze16 is available!</string>
 	<string name="license">Graze16 License</string>
 	<string name="about_section_title">About</string>
+	<string name="about_version_title">Graze16</string>
 	<string name="about_license_title">License</string>
 	<string name="about_license_summary">View app license information</string>
 	<string name="about_github_title">GitHub Repository</string>

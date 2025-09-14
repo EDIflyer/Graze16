@@ -4,12 +4,15 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
+import android.view.View;
+import android.view.WindowInsets;
 
 import com.graze16.DashboardListActivity;
 import com.graze16.EntryManager;
@@ -28,6 +31,33 @@ public class SettingsActivity extends PreferenceActivity implements IEntryModelU
   protected void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
+    
+    // Fix status bar overlap issue for Android API 21+
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+      getWindow().getDecorView().setSystemUiVisibility(
+        android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+        android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+      
+      // Apply window insets to add proper padding for status bar
+      getWindow().getDecorView().setOnApplyWindowInsetsListener(new android.view.View.OnApplyWindowInsetsListener() {
+        @Override
+        public android.view.WindowInsets onApplyWindowInsets(android.view.View v, android.view.WindowInsets insets) {
+          // Get the ListView that contains the preferences
+          android.widget.ListView listView = getListView();
+          if (listView != null) {
+            // Add top padding equal to status bar height
+            listView.setPadding(
+              listView.getPaddingLeft(),
+              insets.getSystemWindowInsetTop(),
+              listView.getPaddingRight(), 
+              listView.getPaddingBottom()
+            );
+          }
+          return insets.consumeSystemWindowInsets();
+        }
+      });
+    }
+    
     final EntryManager em = EntryManager.getInstance(this);
 
     addPreferencesFromResource(R.xml.settings);
@@ -77,6 +107,13 @@ public class SettingsActivity extends PreferenceActivity implements IEntryModelU
 
         getPreferenceScreen().removePreference(pref);
       }
+    }
+
+    // Add version information preference
+    Preference aboutVersionPref = findPreference("about_version_preference");
+    if (aboutVersionPref != null) {
+      String versionInfo = getVersionInfo();
+      aboutVersionPref.setSummary(versionInfo);
     }
 
     // Add click listeners for About section preferences
@@ -189,5 +226,22 @@ public class SettingsActivity extends PreferenceActivity implements IEntryModelU
   {
     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/EDIflyer/Graze16"));
     startActivity(browserIntent);
+  }
+
+  private String getVersionInfo()
+  {
+    try {
+      String versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+      String commitId = getShortCommitId();
+      return versionName + "-" + commitId;
+    } catch (Exception e) {
+      return "Unknown version";
+    }
+  }
+
+  private String getShortCommitId()
+  {
+    // Use the git commit hash generated at build time
+    return com.graze16.BuildConfig.GIT_COMMIT_HASH;
   }
 }

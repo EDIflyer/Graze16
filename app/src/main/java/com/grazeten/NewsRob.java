@@ -67,7 +67,7 @@ public class NewsRob extends Application
       Log.e("graze16", "Caught the following exception: ", e);
 
       final StringBuilder message = new StringBuilder(
-          "Sorry!\n\ngraze16 hit a wall. Please send this mail, so that the developer can analyze/fix the issue.\nIf it is not too much to ask, please add to this mail what you just did between the following lines:\n\n-------\n\n\n-------\n");
+          "Sorry!\n\nGraze16 hit a wall. Please send this mail, so that the developer can analyze/fix the issue.\nIf it is not too much to ask, please add to this mail what you just did between the following lines:\n\n-------\n\n\n-------\n");
 
       SettingsRenderer.renderSettings(EntryManager.getInstance(context), message);
 
@@ -212,7 +212,7 @@ public class NewsRob extends Application
         final Intent sendIntent = new Intent(Intent.ACTION_SEND);
         sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         sendIntent.setType("message/rfc822");
-        sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { "android@nayfield.com" });
+        sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { "graze16@ediflyer.net" });
         sendIntent.putExtra(Intent.EXTRA_SUBJECT, "BugReport: " + e.getClass().getSimpleName() + ": " + e.getMessage());
         sendIntent.putExtra(Intent.EXTRA_TEXT, messageBody);
         Log.d(TAG, "Message Body: " + messageBody);
