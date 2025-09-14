@@ -67,7 +67,7 @@ public class NewsRob extends Application
       Log.e("graze16", "Caught the following exception: ", e);
 
       final StringBuilder message = new StringBuilder(
-          "Sorry!\n\nGraze16 hit a wall. Please send this mail, so that the developer can analyze/fix the issue.\nIf it is not too much to ask, please add to this mail what you just did between the following lines:\n\n-------\n\n\n-------\n");
+                    "Sorry!\n\nGraze16 hit a wall. Graze16 is not formally supported, but feel free to send this mail or open a GitHub issue, so that the developer can have a look at this issue.\nPlease add to this mail what you just did between the following lines:\n\n-------\n\n\n-------\n");
 
       SettingsRenderer.renderSettings(EntryManager.getInstance(context), message);
 
