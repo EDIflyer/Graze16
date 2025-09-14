@@ -1,4 +1,4 @@
-package com.grazeten.storage;
+package com.graze16.storage;
 
 import java.io.FileNotFoundException;
 import java.io.OutputStream;

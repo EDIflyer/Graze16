@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />
 
-    <com.grazeten.widget.RelativeLayout
+    <com.graze16.widget.RelativeLayout
         android:id="@+id/show_entry_container"
 
         android:layout_width="fill_parent"
@@ -147,7 +147,7 @@
 
             android:background="@drawable/btn_camera_arrow_right" />
 
-    </com.grazeten.widget.RelativeLayout>
+    </com.graze16.widget.RelativeLayout>
 
     <LinearLayout
         android:id="@+id/title_preview"

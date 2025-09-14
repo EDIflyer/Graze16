@@ -1,4 +1,4 @@
-package com.grazeten.jobs;
+package com.graze16.jobs;
 
 public class SynchronizeModelSucceeded extends ModelUpdateResult
 {

@@ -1,4 +1,4 @@
-package com.grazeten.oldreader;
+package com.graze16.oldreader;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -26,28 +26,28 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.grazeten.ArticleDbState;
-import com.grazeten.AuthenticationFailedException;
-import com.grazeten.BackendProvider;
-import com.grazeten.DB;
-import com.grazeten.DiscoveredFeed;
-import com.grazeten.Entry;
-import com.grazeten.EntryManager;
-import com.grazeten.Feed;
-import com.grazeten.Label;
-import com.grazeten.NeedsSessionException;
-import com.grazeten.NewsRob;
-import com.grazeten.PL;
-import com.grazeten.ReadState;
-import com.grazeten.SyncJob;
-import com.grazeten.activities.LoginActivity;
-import com.grazeten.download.HtmlEntitiesDecoder;
-import com.grazeten.jobs.Job;
-import com.grazeten.oldreader.ItemContentResponse.Item;
-import com.grazeten.oldreader.ItemContentResponse.Item.Link;
-import com.grazeten.oldreader.SubscriptionResponse.Subscriptions;
-import com.grazeten.oldreader.UpdateArticlesRequest.MarkType;
-import com.grazeten.util.Timing;
+import com.graze16.ArticleDbState;
+import com.graze16.AuthenticationFailedException;
+import com.graze16.BackendProvider;
+import com.graze16.DB;
+import com.graze16.DiscoveredFeed;
+import com.graze16.Entry;
+import com.graze16.EntryManager;
+import com.graze16.Feed;
+import com.graze16.Label;
+import com.graze16.NeedsSessionException;
+import com.graze16.NewsRob;
+import com.graze16.PL;
+import com.graze16.ReadState;
+import com.graze16.SyncJob;
+import com.graze16.activities.LoginActivity;
+import com.graze16.download.HtmlEntitiesDecoder;
+import com.graze16.jobs.Job;
+import com.graze16.oldreader.ItemContentResponse.Item;
+import com.graze16.oldreader.ItemContentResponse.Item.Link;
+import com.graze16.oldreader.SubscriptionResponse.Subscriptions;
+import com.graze16.oldreader.UpdateArticlesRequest.MarkType;
+import com.graze16.util.Timing;
 
 public class OldReaderBackendProvider implements BackendProvider
 {

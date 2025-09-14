@@ -1,6 +1,6 @@
-package com.grazeten.jobs;
+package com.graze16.jobs;
 
-import com.grazeten.Entry;
+import com.graze16.Entry;
 
 public class EntryUpdateSucceeded extends ModelUpdateResult
 {

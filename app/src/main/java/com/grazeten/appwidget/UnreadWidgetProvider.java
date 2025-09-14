@@ -1,4 +1,4 @@
-package com.grazeten.appwidget;
+package com.graze16.appwidget;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -11,13 +11,13 @@ import android.os.IBinder;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import com.grazeten.DBQuery;
-import com.grazeten.EntryManager;
-import com.grazeten.PL;
-import com.grazeten.R;
-import com.grazeten.activities.ArticleListActivity;
-import com.grazeten.activities.UIHelper;
-import com.grazeten.util.Timing;
+import com.graze16.DBQuery;
+import com.graze16.EntryManager;
+import com.graze16.PL;
+import com.graze16.R;
+import com.graze16.activities.ArticleListActivity;
+import com.graze16.activities.UIHelper;
+import com.graze16.util.Timing;
 
 public class UnreadWidgetProvider extends AppWidgetProvider
 {

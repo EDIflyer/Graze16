@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = 'com.grazeten'
+    namespace = 'com.graze16'
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.grazeten"
+        applicationId = "com.graze16"
         minSdkVersion = 21
         targetSdkVersion = 36
         versionCode = 316

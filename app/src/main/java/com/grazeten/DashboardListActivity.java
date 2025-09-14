@@ -1,4 +1,4 @@
-package com.grazeten;
+package com.graze16;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -19,11 +19,11 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import com.grazeten.activities.AbstractNewsRobListActivity;
-import com.grazeten.activities.ArticleListActivity;
-import com.grazeten.activities.FeedListActivity;
-import com.grazeten.activities.SettingsActivity;
-import com.grazeten.activities.UIHelper;
+import com.graze16.activities.AbstractNewsRobListActivity;
+import com.graze16.activities.ArticleListActivity;
+import com.graze16.activities.FeedListActivity;
+import com.graze16.activities.SettingsActivity;
+import com.graze16.activities.UIHelper;
 
 public class DashboardListActivity extends AbstractNewsRobListActivity
 {

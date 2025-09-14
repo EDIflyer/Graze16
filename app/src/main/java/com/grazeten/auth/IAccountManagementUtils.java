@@ -1,4 +1,4 @@
-package com.grazeten.auth;
+package com.graze16.auth;
 
 import java.io.IOException;
 import java.util.List;

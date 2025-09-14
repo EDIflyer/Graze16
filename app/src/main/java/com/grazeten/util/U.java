@@ -1,4 +1,4 @@
-package com.grazeten.util;
+package com.graze16.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,8 +26,8 @@ import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.view.Display;
 
-import com.grazeten.PL;
-import com.grazeten.download.HtmlEntitiesDecoder;
+import com.graze16.PL;
+import com.graze16.download.HtmlEntitiesDecoder;
 
 public class U
 {

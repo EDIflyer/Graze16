@@ -1,4 +1,4 @@
-package com.grazeten.util;
+package com.graze16.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,7 +23,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
-import com.grazeten.PL;
+import com.graze16.PL;
 
 public class PreviewGenerator
 {

@@ -1,4 +1,4 @@
-package com.grazeten.util;
+package com.graze16.util;
 
 /*
  * Copyright (C) 2007 The Android Open Source Project

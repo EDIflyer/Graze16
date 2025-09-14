@@ -6,45 +6,45 @@
     </style>
     
     <style name="Theme.NewsRob_Light_Normal" parent="@android:style/Theme.Light">
-      <item name="com.grazeten:startColor">#123</item>
-      <item name="com.grazeten:endColor">#456</item>
-      <item name="com.grazeten:lightTextColor">#fff</item>
-      <item name="com.grazeten:articleHeaderTextColor">#333</item>
-      <item name="com.grazeten:articleSnippetTextColor">#777</item>
-      <item name="com.grazeten:feedTitleTextColor">#777</item>
-      <item name="com.grazeten:sharedByTextColor">#777</item>
-      <item name="com.grazeten:dividerColor">#bbb</item>
-      <item name="com.grazeten:controlPanelDividerColor">#bbb</item>
-      <item name="com.grazeten:controlPanelBottomDividerColor">#0f00</item>
+      <item name="com.graze16:startColor">#123</item>
+      <item name="com.graze16:endColor">#456</item>
+      <item name="com.graze16:lightTextColor">#fff</item>
+      <item name="com.graze16:articleHeaderTextColor">#333</item>
+      <item name="com.graze16:articleSnippetTextColor">#777</item>
+      <item name="com.graze16:feedTitleTextColor">#777</item>
+      <item name="com.graze16:sharedByTextColor">#777</item>
+      <item name="com.graze16:dividerColor">#bbb</item>
+      <item name="com.graze16:controlPanelDividerColor">#bbb</item>
+      <item name="com.graze16:controlPanelBottomDividerColor">#0f00</item>
       <item name="webViewBackgroundColorLight">#fff</item>
-      <item name="com.grazeten:countBackground">@com.grazeten:drawable/count_background</item>
+      <item name="com.graze16:countBackground">@com.graze16:drawable/count_background</item>
     </style>
     
     <style name="Theme.NewsRob_Dark_Normal" parent="@android:style/Theme.Black">
-      <item name="com.grazeten:startColor">#789</item>
-      <item name="com.grazeten:endColor">#0ab</item>
-      <item name="com.grazeten:lightTextColor">#999</item>
-      <item name="com.grazeten:articleHeaderTextColor">#999</item>
-      <item name="com.grazeten:articleSnippetTextColor">#777</item>
-      <item name="com.grazeten:feedTitleTextColor">#777</item>
-      <item name="com.grazeten:sharedByTextColor">#777</item>
+      <item name="com.graze16:startColor">#789</item>
+      <item name="com.graze16:endColor">#0ab</item>
+      <item name="com.graze16:lightTextColor">#999</item>
+      <item name="com.graze16:articleHeaderTextColor">#999</item>
+      <item name="com.graze16:articleSnippetTextColor">#777</item>
+      <item name="com.graze16:feedTitleTextColor">#777</item>
+      <item name="com.graze16:sharedByTextColor">#777</item>
       <item name="webViewBackgroundColorLight">#bbb</item>
-      <item name="com.grazeten:dividerColor">#333</item>
-      <item name="com.grazeten:controlPanelDividerColor">#999</item>
-      <item name="com.grazeten:controlPanelBottomDividerColor">#0999</item>
-      <item name="com.grazeten:countBackground">@com.grazeten:drawable/count_background_dark</item>
+      <item name="com.graze16:dividerColor">#333</item>
+      <item name="com.graze16:controlPanelDividerColor">#999</item>
+      <item name="com.graze16:controlPanelBottomDividerColor">#0999</item>
+      <item name="com.graze16:countBackground">@com.graze16:drawable/count_background_dark</item>
     </style>
     
     <style name="TitleBarSeparator">
       <item name="android:layout_width">1px</item>
       <item name="android:layout_height">fill_parent</item>
-      <item name="android:background">?com.grazeten:controlPanelDividerColor</item> <!--  TODO  -->
+      <item name="android:background">?com.graze16:controlPanelDividerColor</item> <!--  TODO  -->
     </style>
     
     <style name="ControlPanelSeparator">
       <item name="android:layout_width">fill_parent</item>
       <item name="android:layout_height">1px</item>
-      <item name="android:background">?com.grazeten:controlPanelBottomDividerColor</item> <!--  TODO  -->
+      <item name="android:background">?com.graze16:controlPanelBottomDividerColor</item> <!--  TODO  -->
     </style>
     
     <style name="TitleBarText" parent="@android:style/TextAppearance.Medium">

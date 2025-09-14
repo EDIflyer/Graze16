@@ -1,4 +1,4 @@
-package com.grazeten.download;
+package com.graze16.download;
 
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -6,10 +6,10 @@ import java.util.concurrent.Callable;
 
 import android.content.Context;
 
-import com.grazeten.PL;
-import com.grazeten.jobs.Job;
-import com.grazeten.util.Timing;
-import com.grazeten.util.U;
+import com.graze16.PL;
+import com.graze16.jobs.Job;
+import com.graze16.util.Timing;
+import com.graze16.util.U;
 
 public class DownloadImageTask implements Callable<Asset>
 {

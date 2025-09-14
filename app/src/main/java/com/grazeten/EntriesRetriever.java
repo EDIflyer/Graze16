@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.grazeten;
+package com.graze16;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,10 +29,10 @@ import javax.xml.parsers.SAXParserFactory;
 
 import java.util.Map;
 import okhttp3.FormBody;
-import com.grazeten.download.NewsRobHttpRequest;
-import com.grazeten.download.NewsRobHttpResponse;
-import com.grazeten.download.StatusLine;
-import com.grazeten.download.HttpEntity;
+import com.graze16.download.NewsRobHttpRequest;
+import com.graze16.download.NewsRobHttpResponse;
+import com.graze16.download.StatusLine;
+import com.graze16.download.HttpEntity;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -42,15 +42,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.grazeten.DB.TempTable;
-import com.grazeten.activities.LoginActivity;
-import com.grazeten.auth.AccountManagementUtils;
-import com.grazeten.auth.IAccountManagementUtils;
-import com.grazeten.download.NewsRobHttpClient;
-import com.grazeten.jobs.Job;
-import com.grazeten.util.SimpleStringExtractorHandler;
-import com.grazeten.util.Timing;
-import com.grazeten.util.U;
+import com.graze16.DB.TempTable;
+import com.graze16.activities.LoginActivity;
+import com.graze16.auth.AccountManagementUtils;
+import com.graze16.auth.IAccountManagementUtils;
+import com.graze16.download.NewsRobHttpClient;
+import com.graze16.jobs.Job;
+import com.graze16.util.SimpleStringExtractorHandler;
+import com.graze16.util.Timing;
+import com.graze16.util.U;
 
 public class EntriesRetriever implements BackendProvider
 {
@@ -711,8 +711,8 @@ public class EntriesRetriever implements BackendProvider
   /*
    * (non-Javadoc)
    * 
-   * @see com.grazeten.SyncInterface#differentialUpdateOfArticlesStates(com.grazeten .EntryManager, com.grazeten.jobs.Job, java.lang.String, java.lang.String,
-   * com.grazeten.ArticleDbState)
+   * @see com.graze16.SyncInterface#differentialUpdateOfArticlesStates(com.graze16 .EntryManager, com.graze16.jobs.Job, java.lang.String, java.lang.String,
+   * com.graze16.ArticleDbState)
    */
   @Override
   public void differentialUpdateOfArticlesStates(final EntryManager entryManager, Job job, String stream, String excludeState,
@@ -777,7 +777,7 @@ public class EntriesRetriever implements BackendProvider
   /*
    * (non-Javadoc)
    * 
-   * @see com.grazeten.SyncInterface#discoverFeeds(java.lang.String)
+   * @see com.graze16.SyncInterface#discoverFeeds(java.lang.String)
    */
   @Override
   public List<DiscoveredFeed> discoverFeeds(final String query) throws SyncAPIException, IOException, AuthenticationExpiredException,
@@ -1011,7 +1011,7 @@ public class EntriesRetriever implements BackendProvider
 
       if (getEntryManager().isGrazeRssOnlySyncingEnabled())
       {
-        job.setJobDescription("Fetching 'GrazeTEN' articles.");
+        job.setJobDescription("Fetching 'graze16' articles.");
         requestArticlesFromGoogleReader(job, fetchCtx, httpClient, NEWSROB_LABEL, entryManager.getNewsRobSettings().getStorageCapacity(),
             otUrlParameter + (entryManager.shouldOnlyUnreadArticlesBeDownloaded() ? "&" + EXCLUDE_READ : "")); // +
         // (true
@@ -1770,7 +1770,7 @@ public class EntriesRetriever implements BackendProvider
   /*
    * (non-Javadoc)
    * 
-   * @see com.grazeten.SyncInterface#submitSubscribe(java.lang.String)
+   * @see com.graze16.SyncInterface#submitSubscribe(java.lang.String)
    */
   @Override
   public boolean submitSubscribe(String url2subscribe) throws SyncAPIException
@@ -1912,7 +1912,7 @@ public class EntriesRetriever implements BackendProvider
   /*
    * (non-Javadoc)
    * 
-   * @see com.grazeten.SyncInterface#unsubscribeFeed(java.lang.String)
+   * @see com.graze16.SyncInterface#unsubscribeFeed(java.lang.String)
    */
   @Override
   public void unsubscribeFeed(String feedAtomId) throws IOException, NeedsSessionException, SyncAPIException

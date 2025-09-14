@@ -1,4 +1,4 @@
-package com.grazeten;
+package com.graze16;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -41,25 +41,25 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
 
-import com.grazeten.BackendProvider.AuthenticationExpiredException;
-import com.grazeten.BackendProvider.ServerBadRequestException;
-import com.grazeten.BackendProvider.SyncAPIException;
-import com.grazeten.EntryManager.SyncJobStatus;
-import com.grazeten.activities.UIHelper;
-import com.grazeten.download.DownloadCancelledException;
-import com.grazeten.download.DownloadContext;
-import com.grazeten.download.DownloadException;
-import com.grazeten.download.DownloadTimedOutException;
-import com.grazeten.download.WebPageDownloadDirector;
-import com.grazeten.jobs.Job;
-import com.grazeten.jobs.ModelUpdateResult;
-import com.grazeten.jobs.SynchronizeModelFailed;
-import com.grazeten.jobs.SynchronizeModelSucceeded;
-import com.grazeten.storage.IStorageAdapter;
-import com.grazeten.util.PreviewGenerator;
-import com.grazeten.util.SDK9Helper;
-import com.grazeten.util.Timing;
-import com.grazeten.util.U;
+import com.graze16.BackendProvider.AuthenticationExpiredException;
+import com.graze16.BackendProvider.ServerBadRequestException;
+import com.graze16.BackendProvider.SyncAPIException;
+import com.graze16.EntryManager.SyncJobStatus;
+import com.graze16.activities.UIHelper;
+import com.graze16.download.DownloadCancelledException;
+import com.graze16.download.DownloadContext;
+import com.graze16.download.DownloadException;
+import com.graze16.download.DownloadTimedOutException;
+import com.graze16.download.WebPageDownloadDirector;
+import com.graze16.jobs.Job;
+import com.graze16.jobs.ModelUpdateResult;
+import com.graze16.jobs.SynchronizeModelFailed;
+import com.graze16.jobs.SynchronizeModelSucceeded;
+import com.graze16.storage.IStorageAdapter;
+import com.graze16.util.PreviewGenerator;
+import com.graze16.util.SDK9Helper;
+import com.graze16.util.Timing;
+import com.graze16.util.U;
 
 class DeleteArticlesJob extends SyncJob
 {
@@ -166,7 +166,7 @@ public class SynchronizationService extends Service
 
   public static final String   EXTRA_MANUAL_SYNC         = "manual_sync";
 
-  private static final String  PREF_KEY_LAST_STARTED     = "com.grazeten.synchronization.lastStarted";
+  private static final String  PREF_KEY_LAST_STARTED     = "com.graze16.synchronization.lastStarted";
 
   private static WakeLock      wl;
   private Handler              handler;
@@ -245,7 +245,7 @@ public class SynchronizationService extends Service
 
       if (false)
       {
-        WifiLock wiFiLock = wifiManager.createWifiLock("GrazeTENSync");
+        WifiLock wiFiLock = wifiManager.createWifiLock("graze16Sync");
         wiFiLock.acquire();
       }
       PL.log(this, "doSync invoked. (1)", null, getApplicationContext());

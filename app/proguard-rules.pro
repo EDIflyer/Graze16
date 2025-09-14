@@ -20,8 +20,8 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-# Keep all classes in com.grazeten package
--keep class com.grazeten.** { *; }
+# Keep all classes in com.graze16 package
+-keep class com.graze16.** { *; }
 
 # Keep Gson classes
 -keep class com.google.gson.** { *; }

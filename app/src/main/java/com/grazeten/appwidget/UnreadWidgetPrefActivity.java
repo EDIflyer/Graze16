@@ -1,4 +1,4 @@
-package com.grazeten.appwidget;
+package com.graze16.appwidget;
 
 import android.app.Activity;
 import android.appwidget.AppWidgetManager;
@@ -6,16 +6,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
-import com.grazeten.DBQuery;
-import com.grazeten.DashboardListActivity;
-import com.grazeten.EntryManager;
-import com.grazeten.PL;
-import com.grazeten.R;
-import com.grazeten.activities.AbstractNewsRobListActivity;
-import com.grazeten.activities.ArticleListActivity;
-import com.grazeten.activities.FeedListActivity;
-import com.grazeten.appwidget.UnreadWidgetPrefWizard.Scope;
-import com.grazeten.appwidget.UnreadWidgetPrefWizard.StartingActivity;
+import com.graze16.DBQuery;
+import com.graze16.DashboardListActivity;
+import com.graze16.EntryManager;
+import com.graze16.PL;
+import com.graze16.R;
+import com.graze16.activities.AbstractNewsRobListActivity;
+import com.graze16.activities.ArticleListActivity;
+import com.graze16.activities.FeedListActivity;
+import com.graze16.appwidget.UnreadWidgetPrefWizard.Scope;
+import com.graze16.appwidget.UnreadWidgetPrefWizard.StartingActivity;
 
 public class UnreadWidgetPrefActivity extends Activity
 {

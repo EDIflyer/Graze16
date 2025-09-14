@@ -30,7 +30,7 @@
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
 
     <application
-        android:name="com.grazeten.NewsRob"
+        android:name="com.graze16.NewsRob"
         android:description="@string/app_description"
         android:icon="@drawable/gen_app_icon"
         android:label="@string/app_name"
@@ -55,7 +55,7 @@
         -->
 
         <activity
-            android:name="com.grazeten.DashboardListActivity"
+            android:name="com.graze16.DashboardListActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:clearTaskOnLaunch="true"
             android:configChanges="orientation|keyboardHidden|keyboard"
@@ -68,7 +68,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.grazeten.activities.ArticleListActivity"
+            android:name="com.graze16.activities.ArticleListActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:clearTaskOnLaunch="true"
             android:configChanges="orientation|keyboardHidden|keyboard"
@@ -82,21 +82,21 @@
 
         </activity>
         <activity
-            android:name="com.grazeten.activities.FeedListActivity"
+            android:name="com.graze16.activities.FeedListActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:clearTaskOnLaunch="true"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:exported="true"
             android:label="@string/feed_list_label" />
         <activity
-            android:name="com.grazeten.activities.ShowArticleActivity"
+            android:name="com.graze16.activities.ShowArticleActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:exported="true"
             android:label="@string/show_article"
             android:launchMode="singleTop" >
             <intent-filter>
-                <action android:name="com.grazeten.VIEW" />
+                <action android:name="com.graze16.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -113,7 +113,7 @@
 
         </activity>
         <activity
-            android:name="com.grazeten.activities.AccountListActivity"
+            android:name="com.graze16.activities.AccountListActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:clearTaskOnLaunch="true"
             android:configChanges="orientation|keyboardHidden|keyboard"
@@ -121,14 +121,14 @@
         </activity>
         
         <activity
-            android:name="com.grazeten.feedly.FeedlyLoginActivity"
+            android:name="com.graze16.feedly.FeedlyLoginActivity"
             android:label="Feedly Login"
             android:launchMode="singleTask" >
         </activity>
 
         <!--
             <activity
-            android:name="com.grazeten.activities.DebugActivity"
+            android:name="com.graze16.activities.DebugActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:clearTaskOnLaunch="true"> <intent-filter> <action
             android:name="android.settings.ADD_ACCOUNT_SETTINGS" />
@@ -137,38 +137,38 @@
         -->
 
         <activity
-            android:name="com.grazeten.activities.LoginActivity"
+            android:name="com.graze16.activities.LoginActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:label="@string/login"
             android:launchMode="singleTask"
             android:theme="@android:style/Theme.Light" />
         <activity
-            android:name="com.grazeten.activities.SettingsActivity"
+            android:name="com.graze16.activities.SettingsActivity"
             android:label="@string/settings_title"
             android:theme="@android:style/Theme.Black" />
         <activity
-            android:name="com.grazeten.activities.ShowGoogleErrorActivity"
+            android:name="com.graze16.activities.ShowGoogleErrorActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:label="@string/show_google_error_activity_label"
             android:launchMode="singleTask" />
         <activity
-            android:name="com.grazeten.activities.ShowArticleInfoActivity"
+            android:name="com.graze16.activities.ShowArticleInfoActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:label="@string/show_entry_info"
             android:theme="@android:style/Theme.Dialog" />
         <activity
-            android:name="com.grazeten.activities.ShowMessageActivity"
+            android:name="com.graze16.activities.ShowMessageActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:label="Show Message"
-            android:process="com.grazeten.message.show"
+            android:process="com.graze16.message.show"
             android:theme="@android:style/Theme.Dialog" />
         <activity
-            android:name="com.grazeten.activities.ManageFeedActivity"
+            android:name="com.graze16.activities.ManageFeedActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:label="@string/menu_item_manage_feed"
             android:theme="@android:style/Theme.Dialog" />
         <activity
-            android:name="com.grazeten.activities.SubscribeFeedActivity"
+            android:name="com.graze16.activities.SubscribeFeedActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:exported="true"
             android:label="Subscribe to Feed" >
@@ -186,7 +186,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.grazeten.appwidget.UnreadWidgetPrefActivity"
+            android:name="com.graze16.appwidget.UnreadWidgetPrefActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:label="Configure Unread Widget"
             android:theme="@android:style/Theme.Dialog"
@@ -196,7 +196,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.grazeten.locale.MockEditSettingsActivity"
+            android:name="com.graze16.locale.MockEditSettingsActivity"
             android:icon="@drawable/grazerss_logo_32x32"
             android:label="@string/app_name"
             android:exported="true" >
@@ -206,18 +206,18 @@
         </activity>
 
         <receiver
-            android:name="com.grazeten.locale.FireReceiver"
+            android:name="com.graze16.locale.FireReceiver"
             android:exported="true" >
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
-                <action android:name="com.grazeten.SYNC" />
-                <action android:name="com.grazeten.UP_SYNC" />
-                <action android:name="com.grazeten.CANCEL_SYNC" />
+                <action android:name="com.graze16.SYNC" />
+                <action android:name="com.graze16.UP_SYNC" />
+                <action android:name="com.graze16.CANCEL_SYNC" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.grazeten.WakeupAndSynchronizeReceiver" />
+        <receiver android:name="com.graze16.WakeupAndSynchronizeReceiver" />
         <receiver
-            android:name="com.grazeten.BootReceiver"
+            android:name="com.graze16.BootReceiver"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -226,7 +226,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.grazeten.PackageChangedReceiver"
+            android:name="com.graze16.PackageChangedReceiver"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REPLACED" />
@@ -236,15 +236,15 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.grazeten.appwidget.UnreadWidgetProvider"
-            android:label="GrazeTEN\nUnread Count"
+            android:name="com.graze16.appwidget.UnreadWidgetProvider"
+            android:label="graze16\nUnread Count"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
             <!--
                 <intent-filter> <action
-                android:name="com.grazeten.MODEL_UPDATED" />
+                android:name="com.graze16.MODEL_UPDATED" />
                 </intent-filter>
             -->
             <meta-data
@@ -253,18 +253,18 @@
         </receiver>
 
         <!--
-            <provider android:name="com.grazeten.search.SearchProvider"
+            <provider android:name="com.graze16.search.SearchProvider"
             android:authorities="articles" android:syncable="false" />
         -->
 
         <provider
-            android:name="com.grazeten.AssetContentProvider"
-            android:authorities="com.grazeten.assets" />
+            android:name="com.graze16.AssetContentProvider"
+            android:authorities="com.graze16.assets" />
 
         <service
-            android:name="com.grazeten.SynchronizationService"
+            android:name="com.graze16.SynchronizationService"
             android:enabled="true" />
-        <service android:name="com.grazeten.appwidget.UnreadWidgetProvider$UpdateService" />
+        <service android:name="com.graze16.appwidget.UnreadWidgetProvider$UpdateService" />
     </application>
 
 </manifest>

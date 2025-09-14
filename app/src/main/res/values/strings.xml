@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">GrazeTEN</string>
+	<string name="app_name">graze16</string>
 	<string name="app_description">A multi-platform offline\nnews client for Android</string>
     <string name="article_list">Article List</string>
     <string name="feed_list">Feed List</string>
@@ -17,7 +17,7 @@
   <string name="menu_item_search">Search</string>
 	
 	
-	<string name="dashboard_label">GrazeTEN</string>
+	<string name="dashboard_label">graze16</string>
 	<string name="feed_list_label">Feeds</string>
 	<string name="article_list_label">Articles</string>
    
@@ -59,7 +59,7 @@
 	<string name="enter_email_password">
 Login to &lt;b>$SERVICE$&lt;/b> needed
 &lt;p>&lt;p>
-GrazeTEN will connect to &lt;b>$SERVICE$&lt;/b>. Therefore your username and password is needed.&lt;p>&lt;p>
+graze16 will connect to &lt;b>$SERVICE$&lt;/b>. Therefore your username and password is needed.&lt;p>&lt;p>
 You can decide if your password should be stored on this device.
 Otherwise you will be asked again for your credentials every sync.&lt;p>&lt;p>
 If you haven\'t used &lt;b>$SERVICE$&lt;/b> before, please visit $SERVICE_URL$ and set up an account. 
@@ -89,7 +89,7 @@ Otherwise you will be asked again for your credentials every two weeks.
 	<string name="settings_automatic_refreshing_title">Auto Synchronization</string>
 	<string name="settings_automatic_refreshing_summary">Enable automatic synchronization.</string>
 	<string name="settings_automatic_refresh_interval_title">Synchronization Interval</string>
-	<string name="settings_automatic_refresh_interval_summary">How often should GrazeTEN sync and download content?</string>
+	<string name="settings_automatic_refresh_interval_summary">How often should graze16 sync and download content?</string>
 
     <string name="settings_capacities">Capacities</string>
 	<string name="settings_global_download_pref_title">Download Content Default</string>
@@ -107,7 +107,7 @@ Otherwise you will be asked again for your credentials every two weeks.
     <string name="settings_display_title">Display</string>
    
     <string name="settings_ui_theme_title">Theme</string>
-    <string name="settings_ui_theme_summary">Select the color scheme of GrazeTEN.</string>
+    <string name="settings_ui_theme_summary">Select the color scheme of graze16.</string>
    
     <string name="settings_ui_sort_newest_first_title">Newest On The Top</string>
     <string name="settings_ui_sort_newest_first_summary">Default Sort Order in Article List: Newest on the top?</string>
@@ -167,7 +167,7 @@ Otherwise you will be asked again for your credentials every two weeks.
    	<string name="ui_theme_title">Theme</string>
    	<string name="ui_theme_summary">Theme</string>
    	
-   	<string name="oom_message"><b>Sorry!</b>\n\nThere was not enough memory to complete the operation.\n\nYou already closed the app (force closed), now press OK and GrazeTEN will be restarted. Please try again then what you just did.\nIt should work now.\n\nSorry for the inconvenience.\n\nIf this should happen on a regular basis and you can reproduce it, I would like to hear about it: travis@tabbal.net.\n</string>
+   	<string name="oom_message"><b>Sorry!</b>\n\nThere was not enough memory to complete the operation.\n\nYou already closed the app (force closed), now press OK and graze16 will be restarted. Please try again then what you just did.\nIt should work now.\n\nSorry for the inconvenience.\n\nIf this should happen on a regular basis and you can reproduce it, I would like to hear about it: travis@tabbal.net.\n</string>
    	 
     <string name="advise_sdcard_read_only_title">SD card inaccessible</string>
     <string name="advise_sdcard_read_only">
@@ -179,9 +179,9 @@ Otherwise you will be asked again for your credentials every two weeks.
          - SD card is almost full\n
          - SD card is read-only\n\n
         <u>Impact:</u>\n
-        Until the SD card is accessible again GrazeTEN cannot synchronize or display downloaded articles.\n\n
+        Until the SD card is accessible again graze16 cannot synchronize or display downloaded articles.\n\n
         <u>Resolution:</u>\n
-        Make the SD card accessible to continue using GrazeTEN or set <i>Storage Provider</i> to <i>Phone Memory</i> in the settings.\n
+        Make the SD card accessible to continue using graze16 or set <i>Storage Provider</i> to <i>Phone Memory</i> in the settings.\n
     </string>
  
 	<string name="settings_local_store_category_title">Local Cache</string>
@@ -198,12 +198,12 @@ Otherwise you will be asked again for your credentials every two weeks.
 	<string name="storage_provider_summary">The storage provider for the downloaded content.</string>
 	
 	
-	<string name="google_error_label">The server has sent a response that GrazeTEN
+	<string name="google_error_label">The server has sent a response that graze16
 		cannot parse (yet).</string>
 	<string name="show_google_error_activity_label">Show Server Error</string>
 	<string name="synchronization_is_scheduled">Next synchronization\n starts in three minutes.
 	</string>
-	<string name="check_market_for_new_version">A new version of GrazeTEN is available!</string>
+	<string name="check_market_for_new_version">A new version of graze16 is available!</string>
 	<string name="synchronization_running_notification_title">Update Running</string>
 	<string name="synchronization_running_notification_summary">An update is running.</string>
 	<string name="fast_synchronization_running_notification_title">Uploading Changes</string>
@@ -237,8 +237,8 @@ Otherwise you will be asked again for your credentials every two weeks.
 	<string name="google_account_email_summary">Change by logging out You will be prompted for the new account when refreshing.</string>
 	<string name="dialog_n_articles_will_be_marked_as_read">%s unread articles will be marked as read.</string>
 	<string name="new_version_available_title">Update available</string>
-	<string name="new_version_available_summary">An update of GrazeTEN is available!</string>
-	<string name="license">GrazeTEN License</string>
+	<string name="new_version_available_summary">An update of graze16 is available!</string>
+	<string name="license">graze16 License</string>
 	<string name="reject">Reject</string>
 	<string name="agree">Agree</string>
 	<string name="shared">shared</string>

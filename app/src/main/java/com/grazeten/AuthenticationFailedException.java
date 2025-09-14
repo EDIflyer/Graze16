@@ -1,4 +1,4 @@
-package com.grazeten;
+package com.graze16;
 
 public class AuthenticationFailedException extends Exception
 {

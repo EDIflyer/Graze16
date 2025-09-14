@@ -1,4 +1,4 @@
-package com.grazeten.activities;
+package com.graze16.activities;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
@@ -16,14 +16,14 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.grazeten.BackendProvider;
-import com.grazeten.EntryManager;
-import com.grazeten.R;
-import com.grazeten.auth.AccountManagementUtils;
-import com.grazeten.auth.IAccountManagementUtils;
-import com.grazeten.auth.IAuthenticationCallback;
-import com.grazeten.util.SDK9Helper;
-import com.grazeten.util.U;
+import com.graze16.BackendProvider;
+import com.graze16.EntryManager;
+import com.graze16.R;
+import com.graze16.auth.AccountManagementUtils;
+import com.graze16.auth.IAccountManagementUtils;
+import com.graze16.auth.IAuthenticationCallback;
+import com.graze16.util.SDK9Helper;
+import com.graze16.util.U;
 
 import java.io.IOException;
 

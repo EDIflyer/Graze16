@@ -12,6 +12,6 @@
     android:centerY="-0.1" />
 </shape>
 <!-- 
-    android:startColor="?com.grazeten:startColor"
-    android:endColor="?com.grazeten:endColor"
+    android:startColor="?com.graze16:startColor"
+    android:endColor="?com.graze16:endColor"
  -->

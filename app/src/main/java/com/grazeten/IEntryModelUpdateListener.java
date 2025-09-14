@@ -1,6 +1,6 @@
-package com.grazeten;
+package com.graze16;
 
-import com.grazeten.jobs.ModelUpdateResult;
+import com.graze16.jobs.ModelUpdateResult;
 
 public interface IEntryModelUpdateListener
 {

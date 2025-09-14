@@ -1,4 +1,4 @@
-package com.grazeten.activities;
+package com.graze16.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -9,9 +9,9 @@ import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.grazeten.EntryManager;
-import com.grazeten.Feed;
-import com.grazeten.R;
+import com.graze16.EntryManager;
+import com.graze16.Feed;
+import com.graze16.R;
 
 public class ManageFeedActivity extends Activity
 {

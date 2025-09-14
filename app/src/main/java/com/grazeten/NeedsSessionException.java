@@ -1,4 +1,4 @@
-package com.grazeten;
+package com.graze16;
 
 @SuppressWarnings("serial")
 public class NeedsSessionException extends Exception

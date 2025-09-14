@@ -1,4 +1,4 @@
-package com.grazeten.feedly;
+package com.graze16.feedly;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,8 +12,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-import com.grazeten.BackendProvider.AuthToken;
-import com.grazeten.EntryManager;
+import com.graze16.BackendProvider.AuthToken;
+import com.graze16.EntryManager;
 
 public class FeedlyManager implements FeedlyKey
 {
@@ -205,7 +205,7 @@ public class FeedlyManager implements FeedlyKey
   {
     try {
       String ranked = newestFirst ? "newest" : "oldest";
-      Response<StreamContentResponse> response = api.getStreamContent(getAuthHeader(), "user/" + userId + "/category/grazeten", maxItems, ranked, true, lastUpdate, continuation).execute();
+      Response<StreamContentResponse> response = api.getStreamContent(getAuthHeader(), "user/" + userId + "/category/graze16", maxItems, ranked, true, lastUpdate, continuation).execute();
       return response.body();
     } catch (Exception e) {
       return null;

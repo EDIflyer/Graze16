@@ -1,4 +1,4 @@
-package com.grazeten.activities;
+package com.graze16.activities;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -7,13 +7,13 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 
-import com.grazeten.DashboardListActivity;
-import com.grazeten.EntryManager;
-import com.grazeten.IEntryModelUpdateListener;
-import com.grazeten.R;
-import com.grazeten.jobs.ModelUpdateResult;
-import com.grazeten.preference.ListPreference;
-import com.grazeten.util.SDKVersionUtil;
+import com.graze16.DashboardListActivity;
+import com.graze16.EntryManager;
+import com.graze16.IEntryModelUpdateListener;
+import com.graze16.R;
+import com.graze16.jobs.ModelUpdateResult;
+import com.graze16.preference.ListPreference;
+import com.graze16.util.SDKVersionUtil;
 
 public class SettingsActivity extends PreferenceActivity implements IEntryModelUpdateListener
 {

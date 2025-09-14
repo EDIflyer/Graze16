@@ -1,4 +1,4 @@
-package com.grazeten.oldreader;
+package com.graze16.oldreader;
 
 public class LoginResp extends ResponseBase
 {

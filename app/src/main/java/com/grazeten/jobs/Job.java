@@ -1,6 +1,6 @@
-package com.grazeten.jobs;
+package com.graze16.jobs;
 
-import com.grazeten.EntryManager;
+import com.graze16.EntryManager;
 
 public abstract class Job
 {

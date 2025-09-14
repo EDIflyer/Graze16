@@ -1,9 +1,9 @@
-package com.grazeten.util;
+package com.graze16.util;
 
 import android.content.Context;
 
-import com.grazeten.NewsRob;
-import com.grazeten.PL;
+import com.graze16.NewsRob;
+import com.graze16.PL;
 
 public class Timing
 {

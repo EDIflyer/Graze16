@@ -1,4 +1,4 @@
-package com.grazeten;
+package com.graze16;
 
 import java.io.File;
 import java.net.URLEncoder;
@@ -8,8 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.grazeten.storage.AbstractStorageAdapter;
-import com.grazeten.util.U;
+import com.graze16.storage.AbstractStorageAdapter;
+import com.graze16.util.U;
 
 public class Entry
 {

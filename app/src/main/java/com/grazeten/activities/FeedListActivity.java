@@ -1,4 +1,4 @@
-package com.grazeten.activities;
+package com.graze16.activities;
 
 import java.util.List;
 
@@ -15,11 +15,11 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.grazeten.DBQuery;
-import com.grazeten.Entry;
-import com.grazeten.Feed;
-import com.grazeten.R;
-import com.grazeten.ReadState;
+import com.graze16.DBQuery;
+import com.graze16.Entry;
+import com.graze16.Feed;
+import com.graze16.R;
+import com.graze16.ReadState;
 
 public class FeedListActivity extends AbstractNewsRobListActivity
 {
@@ -281,7 +281,7 @@ public class FeedListActivity extends AbstractNewsRobListActivity
     if (item.getItemId() == MENU_ITEM_REFRESH_CONTENT_ID)
     {
       Toast.makeText(getApplicationContext(),
-          "The article's content is being removed. GrazeTEN will try to re-download it during the next sync.", Toast.LENGTH_LONG).show();
+          "The article's content is being removed. graze16 will try to re-download it during the next sync.", Toast.LENGTH_LONG).show();
 
       final List<Entry> entries = getEntryManager().findArticlesForFeedId(feedId);
 

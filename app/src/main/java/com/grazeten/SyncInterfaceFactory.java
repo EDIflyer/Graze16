@@ -1,4 +1,4 @@
-package com.grazeten;
+package com.graze16;
 
 import java.lang.reflect.Constructor;
 
@@ -13,8 +13,8 @@ public class SyncInterfaceFactory
 
   public static BackendProvider getSyncInterface(Context context)
   {
-    SharedPreferences sharedPreferences = context.getSharedPreferences("com.grazeten_preferences", Context.MODE_PRIVATE);
-    String className = sharedPreferences.getString(EntryManager.SETTINGS_SERVICE_PROVIDER, "com.grazeten.NewsBlurBackendProvider");
+    SharedPreferences sharedPreferences = context.getSharedPreferences("com.graze16_preferences", Context.MODE_PRIVATE);
+    String className = sharedPreferences.getString(EntryManager.SETTINGS_SERVICE_PROVIDER, "com.graze16.NewsBlurBackendProvider");
 
     Log.d(TAG, "Attempting to load sync class: " + className);
 

@@ -1,4 +1,4 @@
-package com.grazeten.activities;
+package com.graze16.activities;
 
 import android.app.Activity;
 import android.os.Bundle;

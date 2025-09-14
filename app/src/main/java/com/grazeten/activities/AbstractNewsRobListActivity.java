@@ -1,4 +1,4 @@
-package com.grazeten.activities;
+package com.graze16.activities;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import com.grazeten.DashboardListActivity;
+import com.graze16.DashboardListActivity;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -40,26 +40,26 @@ import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import android.widget.ListView;
 
-import com.grazeten.BackendProvider;
-import com.grazeten.DBQuery;
-import com.grazeten.DashboardListActivity;
-import com.grazeten.EntryManager;
-import com.grazeten.IEntryModelUpdateListener;
-import com.grazeten.NewsRob;
-import com.grazeten.PL;
-import com.grazeten.R;
-import com.grazeten.SyncInterfaceFactory;
-import com.grazeten.jobs.ClearModelSucceeded;
-import com.grazeten.jobs.EntryUpdateSucceeded;
-import com.grazeten.jobs.Job;
-import com.grazeten.jobs.ModelUpdateResult;
-import com.grazeten.jobs.SynchronizeModelSucceeded;
-import com.grazeten.storage.SdCardStorageAdapter;
-import com.grazeten.util.FlurryUtil;
-import com.grazeten.util.GoogleAdsUtil;
-import com.grazeten.util.SDK11Helper;
-import com.grazeten.util.Timing;
-import com.grazeten.util.U;
+import com.graze16.BackendProvider;
+import com.graze16.DBQuery;
+import com.graze16.DashboardListActivity;
+import com.graze16.EntryManager;
+import com.graze16.IEntryModelUpdateListener;
+import com.graze16.NewsRob;
+import com.graze16.PL;
+import com.graze16.R;
+import com.graze16.SyncInterfaceFactory;
+import com.graze16.jobs.ClearModelSucceeded;
+import com.graze16.jobs.EntryUpdateSucceeded;
+import com.graze16.jobs.Job;
+import com.graze16.jobs.ModelUpdateResult;
+import com.graze16.jobs.SynchronizeModelSucceeded;
+import com.graze16.storage.SdCardStorageAdapter;
+import com.graze16.util.FlurryUtil;
+import com.graze16.util.GoogleAdsUtil;
+import com.graze16.util.SDK11Helper;
+import com.graze16.util.Timing;
+import com.graze16.util.U;
 
 public abstract class AbstractNewsRobListActivity extends AppCompatActivity
     implements IEntryModelUpdateListener, View.OnLongClickListener
@@ -641,7 +641,7 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
     super.onCreate(savedInstanceState);
 
     /*
-     * if ("com.grazeten.VIEW".equals(getIntent().getAction())) { Intent i = new Intent(this, ShowArticleActivity.class); i.putExtra("atomId",
+     * if ("com.graze16.VIEW".equals(getIntent().getAction())) { Intent i = new Intent(this, ShowArticleActivity.class); i.putExtra("atomId",
      * getIntent().getDataString()); startActivity(i); finish(); } else {
      */
 
@@ -839,7 +839,7 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
     } else if (item.getItemId() == R.id.menu_settings) {
         if (false) {
           Intent intent1 = new Intent();
-          intent1.setClassName("com.grazeten", "com.grazeten.activities.ArticleListActivity");
+          intent1.setClassName("com.graze16", "com.graze16.activities.ArticleListActivity");
           intent1.putExtra("FEED_URL", "xxx"); // http://www.spiegel.de/schlagzeilen/index.rss
           startActivity(intent1);
           return true;
@@ -892,7 +892,7 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
     super.onPostCreate(savedInstanceState);
     Toolbar toolbar = findViewById(R.id.activity_actionbar);
     setSupportActionBar(toolbar);
-    getSupportActionBar().setTitle("GrazeTEN");
+    getSupportActionBar().setTitle("graze16");
     getSupportActionBar().setHomeAsUpIndicator(R.drawable.gen_logo_32dp);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     toolbar.setTitleTextColor(Color.WHITE);

@@ -1,4 +1,4 @@
-package com.grazeten.activities;
+package com.graze16.activities;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;
@@ -29,18 +29,18 @@ import android.widget.ListView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
-import com.grazeten.DB;
-import com.grazeten.DBQuery;
-import com.grazeten.Entry;
-import com.grazeten.EntryManager;
-import com.grazeten.Feed;
-import com.grazeten.IEntryModelUpdateListener;
-import com.grazeten.NewsRob;
-import com.grazeten.R;
-import com.grazeten.ReadState;
-import com.grazeten.util.Timing;
-import com.grazeten.util.U;
-import com.grazeten.widget.SwipeRelativeLayout;
+import com.graze16.DB;
+import com.graze16.DBQuery;
+import com.graze16.Entry;
+import com.graze16.EntryManager;
+import com.graze16.Feed;
+import com.graze16.IEntryModelUpdateListener;
+import com.graze16.NewsRob;
+import com.graze16.R;
+import com.graze16.ReadState;
+import com.graze16.util.Timing;
+import com.graze16.util.U;
+import com.graze16.widget.SwipeRelativeLayout;
 
 public class ArticleListActivity extends AbstractNewsRobListActivity implements IEntryModelUpdateListener, View.OnClickListener
 {

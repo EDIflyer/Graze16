@@ -1,4 +1,4 @@
-package com.grazeten.util;
+package com.graze16.util;
 
 import android.app.Activity;
 import android.util.DisplayMetrics;
@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 
 import com.google.ads.AdViewListener;
 import com.google.ads.GoogleAdView;
-import com.grazeten.EntryManager;
-import com.grazeten.NewsRob;
-import com.grazeten.PL;
-import com.grazeten.R;
-import com.grazeten.activities.AbstractNewsRobListActivity;
+import com.graze16.EntryManager;
+import com.graze16.NewsRob;
+import com.graze16.PL;
+import com.graze16.R;
+import com.graze16.activities.AbstractNewsRobListActivity;
 
 public class GoogleAdsUtil
 {

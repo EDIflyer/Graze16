@@ -1,4 +1,4 @@
-package com.grazeten.oldreader;
+package com.graze16.oldreader;
 
 import java.util.List;
 

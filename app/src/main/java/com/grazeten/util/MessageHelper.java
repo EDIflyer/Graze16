@@ -1,4 +1,4 @@
-package com.grazeten.util;
+package com.graze16.util;
 
 import java.io.File;
 import java.io.IOException;

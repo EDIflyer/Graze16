@@ -1,4 +1,4 @@
-package com.grazeten.util;
+package com.graze16.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.util.concurrent.RejectedExecutionException;
 
 import android.content.Context;
 
-import com.grazeten.PL;
+import com.graze16.PL;
 
 public class SingleValueStore
 {

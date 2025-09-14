@@ -1,4 +1,4 @@
-package com.grazeten.widget;
+package com.graze16.widget;
 
 import static java.lang.Math.abs;
 import android.content.Context;
@@ -12,7 +12,7 @@ import android.view.GestureDetector.OnGestureListener;
 import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 
-import com.grazeten.R;
+import com.graze16.R;
 
 public class SwipeRelativeLayout extends RelativeLayout implements OnGestureListener
 {

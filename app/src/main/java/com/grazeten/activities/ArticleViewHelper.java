@@ -1,4 +1,4 @@
-package com.grazeten.activities;
+package com.graze16.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,14 +16,14 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.grazeten.Entry;
-import com.grazeten.EntryManager;
-import com.grazeten.NewsRob;
-import com.grazeten.PL;
-import com.grazeten.R;
-import com.grazeten.ReadState;
-import com.grazeten.util.U;
-import com.grazeten.widget.SwipeRelativeLayout;
+import com.graze16.Entry;
+import com.graze16.EntryManager;
+import com.graze16.NewsRob;
+import com.graze16.PL;
+import com.graze16.R;
+import com.graze16.ReadState;
+import com.graze16.util.U;
+import com.graze16.widget.SwipeRelativeLayout;
 
 class ArticleViewHelper
 {
@@ -129,7 +129,7 @@ class ArticleViewHelper
             selectedEntry.getFeedId()));
         return true;
       case ArticleViewHelper.MENU_ITEM_REFRESH_CONTENT_ID:
-        Toast.makeText(owningActivity, "The article's content is being removed. GrazeTEN will try to re-download it during the next sync.",
+        Toast.makeText(owningActivity, "The article's content is being removed. graze16 will try to re-download it during the next sync.",
             Toast.LENGTH_LONG).show();
         new Thread(new Runnable()
         {
@@ -248,7 +248,7 @@ class ArticleViewHelper
     }
     message.append("\n\n");
     message.append(selectedEntry.getContent());
-    message.append("\n\nSend via <b>GrazeTEN</b>\n</div></body></html>");
+    message.append("\n\nSend via <b>graze16</b>\n</div></body></html>");
     message = new StringBuilder(
         "<html><body><p>Hello<img src=\'http://www.spiegel.de/static/sys/v9/spiegelonline_logo.png\'/> world.</body></html>");
     shareArticleSendIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(String.valueOf(message)));

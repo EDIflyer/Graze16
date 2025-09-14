@@ -1,4 +1,4 @@
-package com.grazeten.feedly;
+package com.graze16.feedly;
 
 public class ExchangeCodeResponse
 {

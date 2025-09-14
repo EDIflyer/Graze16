@@ -38,7 +38,7 @@
 		android:layout_marginBottom="7dp"
 		android:layout_marginRight="8dp"
 
-		android:background="?com.grazeten:countBackground"
-		android:textColor="?com.grazeten:lightTextColor" />
+		android:background="?com.graze16:countBackground"
+		android:textColor="?com.graze16:lightTextColor" />
 
 </LinearLayout>

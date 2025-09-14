@@ -1,4 +1,4 @@
-package com.grazeten;
+package com.graze16;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,12 +10,12 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
-import com.grazeten.storage.IStorageAdapter;
+import com.graze16.storage.IStorageAdapter;
 
 // LATER ... Make the add here too?
 public class AssetContentProvider extends ContentProvider
 {
-  public static final Uri     CONTENT_URI = Uri.parse("content://com.grazeten.assets");
+  public static final Uri     CONTENT_URI = Uri.parse("content://com.graze16.assets");
   private static final String TAG         = AssetContentProvider.class.getName();
   private IStorageAdapter     fileContextAdapter;
 

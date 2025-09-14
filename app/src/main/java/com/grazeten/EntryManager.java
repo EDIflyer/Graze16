@@ -1,4 +1,4 @@
-package com.grazeten;
+package com.graze16;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,31 +57,31 @@ import android.widget.Toast;
 import com.google.ads.AdSenseSpec;
 import com.google.ads.AdSenseSpec.AdType;
 import com.google.ads.AdSenseSpec.ExpandDirection;
-import com.grazeten.BackendProvider.AuthToken;
-import com.grazeten.BackendProvider.AuthToken.AuthType;
-import com.grazeten.BackendProvider.StateChange;
-import com.grazeten.DB.Entries;
-import com.grazeten.DB.EntryLabelAssociations;
-import com.grazeten.DB.TempTable;
-import com.grazeten.appwidget.UnreadWidgetProvider;
-import com.grazeten.appwidget.WidgetPreferences;
-import com.grazeten.auth.AccountManagementUtils;
-import com.grazeten.auth.IAccountManagementUtils;
-import com.grazeten.download.WebPageDownloadDirector;
-import com.grazeten.jobs.Job;
-import com.grazeten.jobs.ModelUpdateResult;
-import com.grazeten.jobs.SwitchStorageProviderFailed;
-import com.grazeten.jobs.SwitchStorageProviderResult;
-import com.grazeten.locale.FireReceiver;
-import com.grazeten.locale.MockEditSettingsActivity;
-import com.grazeten.storage.IStorageAdapter;
-import com.grazeten.storage.PhoneMemoryStorageAdapter;
-import com.grazeten.storage.SdCardStorageAdapter;
-import com.grazeten.util.Base64;
-import com.grazeten.util.SDK9Helper;
-import com.grazeten.util.SDKVersionUtil;
-import com.grazeten.util.SingleValueStore;
-import com.grazeten.util.Timing;
+import com.graze16.BackendProvider.AuthToken;
+import com.graze16.BackendProvider.AuthToken.AuthType;
+import com.graze16.BackendProvider.StateChange;
+import com.graze16.DB.Entries;
+import com.graze16.DB.EntryLabelAssociations;
+import com.graze16.DB.TempTable;
+import com.graze16.appwidget.UnreadWidgetProvider;
+import com.graze16.appwidget.WidgetPreferences;
+import com.graze16.auth.AccountManagementUtils;
+import com.graze16.auth.IAccountManagementUtils;
+import com.graze16.download.WebPageDownloadDirector;
+import com.graze16.jobs.Job;
+import com.graze16.jobs.ModelUpdateResult;
+import com.graze16.jobs.SwitchStorageProviderFailed;
+import com.graze16.jobs.SwitchStorageProviderResult;
+import com.graze16.locale.FireReceiver;
+import com.graze16.locale.MockEditSettingsActivity;
+import com.graze16.storage.IStorageAdapter;
+import com.graze16.storage.PhoneMemoryStorageAdapter;
+import com.graze16.storage.SdCardStorageAdapter;
+import com.graze16.util.Base64;
+import com.graze16.util.SDK9Helper;
+import com.graze16.util.SDKVersionUtil;
+import com.graze16.util.SingleValueStore;
+import com.graze16.util.Timing;
 
 /**
  * Entry Manager is the public interface to entries. The views go through the Entry Manager to query for Entries.
@@ -126,10 +126,10 @@ public class EntryManager implements SharedPreferences.OnSharedPreferenceChangeL
 
   public static final int     LAST_VERSION_CHECK_INTERVAL_MINUTES                  = 24 * 60;
 
-  public static final String  LEGACY_PACKAGE_NAME                                  = "com.grazeten.threetosix";
+  public static final String  LEGACY_PACKAGE_NAME                                  = "com.graze16.threetosix";
   public static final String  MARKET_PACKAGE_NAME                                  = "com.android.vending";
   private static final int    MAX_ARTICLES_IN_ARTICLE_LIST                         = 250;
-  public static final String  PRO_PACKAGE_NAME                                     = "com.grazeten.pro";
+  public static final String  PRO_PACKAGE_NAME                                     = "com.graze16.pro";
   private static final String SETTING_SWIPE_ARTICLE_DETAIL_VIEW                    = "settings_swipe_article_detail_view";
 
   private static final String SETTING_SWIPE_ARTICLE_LIST                           = "settings_swipe_article_list";
@@ -153,7 +153,7 @@ public class EntryManager implements SharedPreferences.OnSharedPreferenceChangeL
   static final String         SETTINGS_GLOBAL_DOWNLOAD_PREF_KEY                    = "settings_global_download_pref";
 
   private static final String SETTINGS_GOOGLE_USER_ID                              = "settings_google_user_id";
-  private static final String SETTINGS_GR_UPDATED_KEY                              = "com.grazeten.gr_updated";
+  private static final String SETTINGS_GR_UPDATED_KEY                              = "com.graze16.gr_updated";
   private static final String SETTINGS_LAST_READ_SYNC_KEY                          = "settings_last_read_sync";
   private static final String SETTINGS_LAST_STAR_SYNC_KEY                          = "settings_last_star_sync";
   static final String         SETTINGS_HIDE_READ_ITEMS                             = "settings_hide_read_items";
@@ -167,7 +167,7 @@ public class EntryManager implements SharedPreferences.OnSharedPreferenceChangeL
 
   public static final String  SETTINGS_INCREMENTAL_SYNC_ENABLED                    = "settings_incremental_syncing_enabled";
 
-  static final String         SETTINGS_INSTALLED_AT                                = "com.grazeten.installed_at";
+  static final String         SETTINGS_INSTALLED_AT                                = "com.graze16.installed_at";
 
   public static final String  SETTINGS_KEEP_NOTES                                  = "settings_keep_notes";
   public static final String  SETTINGS_KEEP_SHARED                                 = "settings_keep_shared";
@@ -266,7 +266,7 @@ public class EntryManager implements SharedPreferences.OnSharedPreferenceChangeL
       Cipher cipher = Cipher.getInstance("DES");
       cipher.init(Cipher.ENCRYPT_MODE, getSecretKey());
 
-      encryptedPassword = new String(com.grazeten.util.Base64.encodeBytes((cipher.doFinal(clearTextPassword.getBytes("UTF-8")))));
+      encryptedPassword = new String(com.graze16.util.Base64.encodeBytes((cipher.doFinal(clearTextPassword.getBytes("UTF-8")))));
 
     }
     catch (Exception e)
@@ -356,7 +356,7 @@ public class EntryManager implements SharedPreferences.OnSharedPreferenceChangeL
     isMarkAllReadPossibleCache = new HashMap<DBQuery, Boolean>();
     contentCountCache = new HashMap<DBQuery, Integer>();
 
-    sharedPreferences = context.getSharedPreferences("com.grazeten_preferences", Context.MODE_PRIVATE);
+    sharedPreferences = context.getSharedPreferences("com.graze16_preferences", Context.MODE_PRIVATE);
 
     newsRobSettings = new NewsRobSettings(this, sharedPreferences);
     ctx = context;
@@ -1487,7 +1487,7 @@ public class EntryManager implements SharedPreferences.OnSharedPreferenceChangeL
   public final int getThemeResourceId(String colorScheme)
   {
     String key = "Theme.NewsRob_" + colorScheme + "_Normal";
-    return ctx.getResources().getIdentifier(key, "style", "com.grazeten");
+    return ctx.getResources().getIdentifier(key, "style", "com.graze16");
   }
 
   public int getUnreadArticleCount()
@@ -1796,7 +1796,7 @@ public class EntryManager implements SharedPreferences.OnSharedPreferenceChangeL
   {
     if (proVersion == null)
     {
-      final int checkSignature = ctx.getPackageManager().checkSignatures("com.grazeten", EntryManager.PRO_PACKAGE_NAME);
+      final int checkSignature = ctx.getPackageManager().checkSignatures("com.graze16", EntryManager.PRO_PACKAGE_NAME);
 
       proVersion = (checkSignature == PackageManager.SIGNATURE_MATCH) || (checkSignature == PackageManager.SIGNATURE_NEITHER_SIGNED);
 
@@ -3038,7 +3038,7 @@ public class EntryManager implements SharedPreferences.OnSharedPreferenceChangeL
 
             Intent i = new Intent();
             i.setAction("org.adw.launcher.counter.SEND");
-            i.putExtra("PNAME", "com.grazeten");
+            i.putExtra("PNAME", "com.graze16");
             i.putExtra("COUNT", getUnreadArticleCount());
             ctx.sendBroadcast(i);
             PL.log("EntryManager.updateWidgets sent notification to ADW.", ctx);

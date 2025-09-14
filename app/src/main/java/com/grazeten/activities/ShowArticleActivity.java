@@ -1,4 +1,4 @@
-package com.grazeten.activities;
+package com.graze16.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -46,27 +46,27 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.grazeten.AssetContentProvider;
-import com.grazeten.DBQuery;
-import com.grazeten.Entry;
-import com.grazeten.EntryManager;
-import com.grazeten.Feed;
-import com.grazeten.IEntryModelUpdateListener;
-import com.grazeten.NewsRob;
-import com.grazeten.PL;
-import com.grazeten.R;
-import com.grazeten.ReadState;
-import com.grazeten.jobs.ModelUpdateResult;
-import com.grazeten.util.FlurryUtil;
-import com.grazeten.util.GoogleAdsUtil;
-import com.grazeten.util.MessageHelper;
-import com.grazeten.util.SDK11Helper;
-import com.grazeten.util.SDKVersionUtil;
-import com.grazeten.util.Timing;
-import com.grazeten.util.U;
-import com.grazeten.util.WebViewHelper6;
-import com.grazeten.util.WebViewHelper8;
-import com.grazeten.widget.RelativeLayout;
+import com.graze16.AssetContentProvider;
+import com.graze16.DBQuery;
+import com.graze16.Entry;
+import com.graze16.EntryManager;
+import com.graze16.Feed;
+import com.graze16.IEntryModelUpdateListener;
+import com.graze16.NewsRob;
+import com.graze16.PL;
+import com.graze16.R;
+import com.graze16.ReadState;
+import com.graze16.jobs.ModelUpdateResult;
+import com.graze16.util.FlurryUtil;
+import com.graze16.util.GoogleAdsUtil;
+import com.graze16.util.MessageHelper;
+import com.graze16.util.SDK11Helper;
+import com.graze16.util.SDKVersionUtil;
+import com.graze16.util.Timing;
+import com.graze16.util.U;
+import com.graze16.util.WebViewHelper6;
+import com.graze16.util.WebViewHelper8;
+import com.graze16.widget.RelativeLayout;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -636,7 +636,7 @@ public class ShowArticleActivity extends Activity implements IEntryModelUpdateLi
     backgroundColorDark = Color.argb(255, 11, 11, 11);
 
     int position = i.getExtras().getInt(UIHelper.EXTRA_KEY_POSITION);
-    if ("com.grazeten.VIEW".equals(i.getAction()))
+    if ("com.graze16.VIEW".equals(i.getAction()))
     {
       contentCursor = getEntryManager().getArticleAsCursor(i.getDataString());
     }
@@ -948,7 +948,7 @@ public class ShowArticleActivity extends Activity implements IEntryModelUpdateLi
       return;
     }
 
-    setContentView(com.grazeten.R.layout.show_article);
+    setContentView(com.graze16.R.layout.show_article);
 
     googleAdsUtil = new GoogleAdsUtil(getEntryManager());
 

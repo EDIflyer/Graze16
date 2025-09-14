@@ -1,4 +1,4 @@
-package com.grazeten.activities;
+package com.graze16.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -26,13 +26,13 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.grazeten.EntryManager;
-import com.grazeten.LoginWithCaptchaRequiredException;
-import com.grazeten.R;
-import com.grazeten.SyncInterfaceFactory;
-import com.grazeten.auth.AccountManagementUtils;
-import com.grazeten.auth.IAccountManagementUtils;
-import com.grazeten.util.U;
+import com.graze16.EntryManager;
+import com.graze16.LoginWithCaptchaRequiredException;
+import com.graze16.R;
+import com.graze16.SyncInterfaceFactory;
+import com.graze16.auth.AccountManagementUtils;
+import com.graze16.auth.IAccountManagementUtils;
+import com.graze16.util.U;
 
 import java.util.ArrayList;
 import java.util.Collection;

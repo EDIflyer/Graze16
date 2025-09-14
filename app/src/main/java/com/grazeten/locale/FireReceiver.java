@@ -1,11 +1,11 @@
-package com.grazeten.locale;
+package com.graze16.locale;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.grazeten.EntryManager;
-import com.grazeten.PL;
+import com.graze16.EntryManager;
+import com.graze16.PL;
 
 public final class FireReceiver extends BroadcastReceiver
 {
@@ -15,12 +15,12 @@ public final class FireReceiver extends BroadcastReceiver
   {
     EntryManager entryManager = EntryManager.getInstance(context);
     PL.log("FireReceiver with intent action: " + intent.getAction(), context);
-    if ("com.grazeten.CANCEL_SYNC".equals(intent.getAction()))
+    if ("com.graze16.CANCEL_SYNC".equals(intent.getAction()))
     {
       entryManager.cancel();
       PL.log("Externally triggered cancel.", context);
     }
-    else if ("com.grazeten.UP_SYNC".equals(intent.getAction()))
+    else if ("com.graze16.UP_SYNC".equals(intent.getAction()))
     {
       entryManager.requestSynchronization(true);
       PL.log("Externally triggered refresh (up sync only).", context);

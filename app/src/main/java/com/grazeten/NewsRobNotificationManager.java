@@ -1,4 +1,4 @@
-package com.grazeten;
+package com.graze16;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,12 +10,12 @@ import android.net.Uri;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import com.grazeten.activities.ArticleListActivity;
-import com.grazeten.activities.UIHelper;
-import com.grazeten.jobs.Job;
-import com.grazeten.jobs.ModelUpdateResult;
-import com.grazeten.locale.FireReceiver;
-import com.grazeten.util.U;
+import com.graze16.activities.ArticleListActivity;
+import com.graze16.activities.UIHelper;
+import com.graze16.jobs.Job;
+import com.graze16.jobs.ModelUpdateResult;
+import com.graze16.locale.FireReceiver;
+import com.graze16.util.U;
 
 import java.util.Date;
 
@@ -61,15 +61,15 @@ public class NewsRobNotificationManager implements IEntryModelUpdateListener
     Intent i = new Intent(Intent.ACTION_VIEW, uri);
     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-//    Notification n = new Notification(R.drawable.gen_auto_notification_icon, "GrazeTEN has been updated", new Date().getTime());
-//    n.setLatestEventInfo(context, "GrazeTEN has been updated", "Tap to open release notes.", PendingIntent.getActivity(context, 0, i, 0));
+//    Notification n = new Notification(R.drawable.gen_auto_notification_icon, "graze16 has been updated", new Date().getTime());
+//    n.setLatestEventInfo(context, "graze16 has been updated", "Tap to open release notes.", PendingIntent.getActivity(context, 0, i, 0));
 //    n.flags |= Notification.FLAG_AUTO_CANCEL;
 
     Notification.Builder builder = new Notification.Builder(context)
       .setSmallIcon(R.drawable.gen_auto_notification_icon)
-      .setTicker("GrazeTEN has been updated")
+      .setTicker("graze16 has been updated")
       .setWhen(new Date().getTime())
-      .setContentTitle("GrazeTEN has been updated")
+      .setContentTitle("graze16 has been updated")
       .setContentText("Tap to open release notes.")
       .setContentIntent(PendingIntent.getActivity(context, 0, i, 
         android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S ? PendingIntent.FLAG_IMMUTABLE : 0));

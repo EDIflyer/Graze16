@@ -1,4 +1,4 @@
-package com.grazeten.activities;
+package com.graze16.activities;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -26,10 +26,10 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import com.grazeten.DiscoveredFeed;
-import com.grazeten.EntryManager;
-import com.grazeten.R;
-import com.grazeten.BackendProvider.SyncAPIException;
+import com.graze16.DiscoveredFeed;
+import com.graze16.EntryManager;
+import com.graze16.R;
+import com.graze16.BackendProvider.SyncAPIException;
 
 public class SubscribeFeedActivity extends Activity
 {

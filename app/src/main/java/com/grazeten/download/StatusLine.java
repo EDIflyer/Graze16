@@ -1,4 +1,4 @@
-package com.grazeten.download;
+package com.graze16.download;
 
 // Compatibility class for Apache HttpClient StatusLine API
 public class StatusLine

@@ -1,4 +1,4 @@
-package com.grazeten;
+package com.graze16;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,9 +15,9 @@ import android.os.StatFs;
 import android.view.Display;
 import android.view.WindowManager;
 
-import com.grazeten.jobs.Job;
-import com.grazeten.storage.IStorageAdapter;
-import com.grazeten.util.Timing;
+import com.graze16.jobs.Job;
+import com.graze16.storage.IStorageAdapter;
+import com.graze16.util.Timing;
 
 public class SettingsRenderer
 {
@@ -194,7 +194,7 @@ public class SettingsRenderer
     {
       throw new IllegalStateException(ctx.getPackageName() + " was not found when quering the Package Manager.", e);
     }
-    final int checkSignature = ctx.getPackageManager().checkSignatures("com.grazeten", EntryManager.PRO_PACKAGE_NAME);
+    final int checkSignature = ctx.getPackageManager().checkSignatures("com.graze16", EntryManager.PRO_PACKAGE_NAME);
     boolean proVersion = checkSignature == PackageManager.SIGNATURE_MATCH || checkSignature == PackageManager.SIGNATURE_NEITHER_SIGNED;
     return packageInfo.versionName + (proVersion ? " Pro" : "");
   }

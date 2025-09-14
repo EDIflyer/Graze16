@@ -1,4 +1,4 @@
-package com.grazeten;
+package com.graze16;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

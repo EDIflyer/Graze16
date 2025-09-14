@@ -1,4 +1,4 @@
-package com.grazeten.download;
+package com.graze16.download;
 
 @SuppressWarnings("serial")
 public class DownloadTimedOutException extends Exception

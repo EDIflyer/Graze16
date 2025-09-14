@@ -1,4 +1,4 @@
-package com.grazeten.widget;
+package com.graze16.widget;
 
 import static java.lang.Math.abs;
 import android.content.Context;

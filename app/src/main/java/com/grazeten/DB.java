@@ -1,4 +1,4 @@
-package com.grazeten;
+package com.graze16;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,11 +19,11 @@ import android.database.sqlite.SQLiteStatement;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.grazeten.BackendProvider.StateChange;
-import com.grazeten.search.SearchProvider;
-import com.grazeten.util.SQLiteOpenHelper;
-import com.grazeten.util.Timing;
-import com.grazeten.util.U;
+import com.graze16.BackendProvider.StateChange;
+import com.graze16.search.SearchProvider;
+import com.graze16.util.SQLiteOpenHelper;
+import com.graze16.util.Timing;
+import com.graze16.util.U;
 
 public class DB extends SQLiteOpenHelper
 {
@@ -706,13 +706,13 @@ public class DB extends SQLiteOpenHelper
     // 1.6 version
     /*
      * StringBuilder sb = new StringBuilder("SELECT _id, title AS " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", feed_title AS " +
-     * SearchManager.SUGGEST_COLUMN_TEXT_2 + ", atom_id AS " + SearchManager.SUGGEST_COLUMN_INTENT_DATA + ", \"com.grazeten.VIEW\" AS " +
+     * SearchManager.SUGGEST_COLUMN_TEXT_2 + ", atom_id AS " + SearchManager.SUGGEST_COLUMN_INTENT_DATA + ", \"com.graze16.VIEW\" AS " +
      * SearchManager.SUGGEST_COLUMN_INTENT_ACTION + ", \"" + SearchManager.SUGGEST_NEVER_MAKE_SHORTCUT + "\" AS " + SearchManager.SUGGEST_COLUMN_SHORTCUT_ID +
      * " FROM entries_view WHERE ");
      */
 
     StringBuilder sb = new StringBuilder("SELECT _id, title AS " + SearchManager.SUGGEST_COLUMN_TEXT_1 + ", feed_title AS "
-        + SearchManager.SUGGEST_COLUMN_TEXT_2 + ", atom_id AS " + SearchManager.SUGGEST_COLUMN_INTENT_DATA + ", \"com.grazeten.VIEW\" AS "
+        + SearchManager.SUGGEST_COLUMN_TEXT_2 + ", atom_id AS " + SearchManager.SUGGEST_COLUMN_INTENT_DATA + ", \"com.graze16.VIEW\" AS "
         + SearchManager.SUGGEST_COLUMN_INTENT_ACTION + " FROM entries_view WHERE ");
     sb.append(processFullTextQueryString(query) + " LIMIT 10");
     // if (readOnlyDB == null)

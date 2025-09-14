@@ -1,4 +1,4 @@
-package com.grazeten.jobs;
+package com.graze16.jobs;
 
 public abstract class ModelUpdateFailed extends ModelUpdateResult
 {
