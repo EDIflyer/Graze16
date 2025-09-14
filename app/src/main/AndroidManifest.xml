@@ -145,7 +145,7 @@
         <activity
             android:name="com.graze16.activities.SettingsActivity"
             android:label="@string/settings_title"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+            android:theme="@style/AppTheme.Settings" />
         <activity
             android:name="com.graze16.activities.ShowGoogleErrorActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"

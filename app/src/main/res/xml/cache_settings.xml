@@ -1,8 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.preference.Preference
-        app:title="Cache settings will be implemented here"
-        app:summary="Coming soon..." />
+    <!-- Storage Settings from original settings.xml -->
+    <androidx.preference.ListPreference
+        android:key="settings_storage_provider"
+        app:title="Storage Provider"
+        app:summary="Where to store downloaded articles"
+        app:entries="@array/storage_provider_labels"
+        app:entryValues="@array/storage_provider_values"
+        app:defaultValue="phone" />
+
+    <androidx.preference.PreferenceCategory app:title="Storage Capacities">
+        <androidx.preference.ListPreference
+            android:key="settings_entry_manager_entries_capacity"
+            app:title="Article Capacity"
+            app:summary="Maximum number of articles to store"
+            app:entries="@array/storage_capacity_labels"
+            app:entryValues="@array/storage_capacity_values"
+            app:defaultValue="100" />
+            
+        <androidx.preference.ListPreference
+            android:key="settings_keep_starred"
+            app:title="Keep Starred"
+            app:summary="Number of starred articles to keep"
+            app:entries="@array/keep_labels"
+            app:entryValues="@array/keep_values"
+            app:defaultValue="20" />
+            
+        <androidx.preference.ListPreference
+            android:key="settings_keep_shared"
+            app:title="Keep Shared"
+            app:summary="Number of shared articles to keep"
+            app:entries="@array/keep_labels"
+            app:entryValues="@array/keep_values"
+            app:defaultValue="5" />
+            
+        <androidx.preference.ListPreference
+            android:key="settings_keep_notes"
+            app:title="Keep Notes"
+            app:summary="Number of articles with notes to keep"
+            app:entries="@array/keep_labels"
+            app:entryValues="@array/keep_values"
+            app:defaultValue="5" />
+    </androidx.preference.PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

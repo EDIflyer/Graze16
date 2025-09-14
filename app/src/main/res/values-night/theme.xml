@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- This file is intentionally mostly empty - SettingsActivity determines theme programmatically -->
+    <!-- Night theme for proper dark mode colors -->
+    <style name="AppTheme.Settings" parent="Theme.AppCompat">
+        <item name="colorPrimary">@android:color/darker_gray</item>
+        <item name="colorPrimaryDark">@android:color/black</item>
+        <item name="colorAccent">@android:color/holo_blue_light</item>
+        <item name="android:colorBackground">@android:color/black</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
 </resources>

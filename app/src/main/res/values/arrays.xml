@@ -232,4 +232,19 @@
     <item>On Demand</item>
     <item>Off</item>
   </string-array>
+
+  <string-array
+    name="cache_purge_frequency_options">
+    <item>Never</item>
+    <item>Daily</item>
+    <item>Weekly</item>
+    <item>Monthly</item>
+  </string-array>
+  <string-array
+    name="cache_purge_frequency_values">
+    <item>0</item>
+    <item>1</item>
+    <item>7</item>
+    <item>30</item>
+  </string-array>
 </resources>

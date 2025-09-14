@@ -92,10 +92,26 @@ public class SettingsActivity extends AppCompatActivity implements IEntryModelUp
         }
         
         private void setupCategoryClickListeners() {
-            Preference aboutPref = findPreference("about_category");
-            if (aboutPref != null) {
-                aboutPref.setOnPreferenceClickListener(preference -> {
-                    navigateToFragment(new AboutSettingsFragment(), "About");
+            Preference syncPref = findPreference("sync_category");
+            if (syncPref != null) {
+                syncPref.setOnPreferenceClickListener(preference -> {
+                    navigateToFragment(new SyncSettingsFragment(), "Synchronization");
+                    return true;
+                });
+            }
+            
+            Preference cachePref = findPreference("cache_category");
+            if (cachePref != null) {
+                cachePref.setOnPreferenceClickListener(preference -> {
+                    navigateToFragment(new CacheSettingsFragment(), "Local Cache");
+                    return true;
+                });
+            }
+            
+            Preference uiPref = findPreference("ui_category");
+            if (uiPref != null) {
+                uiPref.setOnPreferenceClickListener(preference -> {
+                    navigateToFragment(new UISettingsFragment(), "User Interface");
                     return true;
                 });
             }
@@ -104,6 +120,22 @@ public class SettingsActivity extends AppCompatActivity implements IEntryModelUp
             if (notificationsPref != null) {
                 notificationsPref.setOnPreferenceClickListener(preference -> {
                     navigateToFragment(new NotificationsSettingsFragment(), "Notifications");
+                    return true;
+                });
+            }
+            
+            Preference experimentalPref = findPreference("experimental_category");
+            if (experimentalPref != null) {
+                experimentalPref.setOnPreferenceClickListener(preference -> {
+                    navigateToFragment(new ExperimentalSettingsFragment(), "Work in Progress (Exper.)");
+                    return true;
+                });
+            }
+            
+            Preference aboutPref = findPreference("about_category");
+            if (aboutPref != null) {
+                aboutPref.setOnPreferenceClickListener(preference -> {
+                    navigateToFragment(new AboutSettingsFragment(), "About");
                     return true;
                 });
             }
@@ -164,9 +196,27 @@ public class SettingsActivity extends AppCompatActivity implements IEntryModelUp
         }
         
         private void showLicenseDialog() {
+            String licenseText = "MIT License\n\n" +
+                "Copyright (c) 2020 M. Kamp, T. Tabbal, nayfield, ediflyer et al\n\n" +
+                "Permission is hereby granted, free of charge, to any person obtaining a copy " +
+                "of this software and associated documentation files (the \"Software\"), to deal " +
+                "in the Software without restriction, including without limitation the rights " +
+                "to use, copy, modify, merge, publish, distribute, sublicense, and/or sell " +
+                "copies of the Software, and to permit persons to whom the Software is " +
+                "furnished to do so, subject to the following conditions:\n\n" +
+                "The above copyright notice and this permission notice shall be included in all " +
+                "copies or substantial portions of the Software.\n\n" +
+                "THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR " +
+                "IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, " +
+                "FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE " +
+                "AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER " +
+                "LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, " +
+                "OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE " +
+                "SOFTWARE.";
+            
             new AlertDialog.Builder(getActivity())
                 .setTitle("License")
-                .setMessage("This app is licensed under the Apache License 2.0")
+                .setMessage(licenseText)
                 .setPositiveButton("OK", null)
                 .show();
         }
@@ -183,6 +233,38 @@ public class SettingsActivity extends AppCompatActivity implements IEntryModelUp
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.notifications_settings, rootKey);
+        }
+    }
+
+    // Sync Settings Fragment
+    public static class SyncSettingsFragment extends PreferenceFragmentCompat {
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            setPreferencesFromResource(R.xml.sync_settings, rootKey);
+        }
+    }
+
+    // Cache Settings Fragment
+    public static class CacheSettingsFragment extends PreferenceFragmentCompat {
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            setPreferencesFromResource(R.xml.cache_settings, rootKey);
+        }
+    }
+
+    // UI Settings Fragment
+    public static class UISettingsFragment extends PreferenceFragmentCompat {
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            setPreferencesFromResource(R.xml.ui_settings, rootKey);
+        }
+    }
+
+    // Experimental Settings Fragment
+    public static class ExperimentalSettingsFragment extends PreferenceFragmentCompat {
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            setPreferencesFromResource(R.xml.experimental_settings, rootKey);
         }
     }
 }

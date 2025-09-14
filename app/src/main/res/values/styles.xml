@@ -32,4 +32,11 @@
     <!-- Light theme with no action bar (alias for existing style) -->
     <style name="AppTheme.Light.NoActionBar" parent="AppTheme.NoActionBar" />
 
+    <!-- Settings theme - use standard dark theme -->
+    <style name="AppTheme.Settings" parent="Theme.AppCompat">
+        <item name="colorPrimary">@android:color/darker_gray</item>
+        <item name="colorPrimaryDark">@android:color/black</item>
+        <item name="colorAccent">@android:color/holo_blue_light</item>
+    </style>
+
 </resources>

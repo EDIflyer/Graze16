@@ -1,8 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.preference.Preference
-        app:title="UI settings will be implemented here"
-        app:summary="Coming soon..." />
+    <!-- UI Settings from original settings.xml -->
+    <androidx.preference.CheckBoxPreference
+        android:key="settings_sync_in_progress_enabled"
+        app:title="Sync Progress Indicator"
+        app:summary="Show sync progress in status bar"
+        app:defaultValue="false" />
+
+    <androidx.preference.ListPreference
+        android:key="settings_ui_mark_all_read_confirmation_threshold2"
+        app:title="Mark All Read Confirmation"
+        app:summary="When to show confirmation for mark all read"
+        app:entries="@array/ui_mark_all_read_confirmation_threshold_labels"
+        app:entryValues="@array/ui_mark_all_read_confirmation_threshold_values"
+        app:defaultValue="0" />
+
+    <androidx.preference.ListPreference
+        android:key="settings_ui_action_bar"
+        app:title="Action Bar Location"
+        app:summary="Where should the action bar be shown?"
+        app:entries="@array/settings_ui_action_bar_labels"
+        app:entryValues="@array/settings_ui_action_bar_values"
+        app:defaultValue="top" />
+
+    <androidx.preference.PreferenceCategory app:title="Article Detail View">
+        <androidx.preference.CheckBoxPreference
+            android:key="settings_swipe_article_detail_view"
+            app:title="Swipe Navigation"
+            app:summary="Swipe left/right to navigate between articles"
+            app:defaultValue="true" />
+            
+        <androidx.preference.CheckBoxPreference
+            android:key="settings_hovering_zoom_controls_enabled"
+            app:title="Hovering Zoom Controls"
+            app:summary="Show floating zoom buttons"
+            app:defaultValue="false" />
+            
+        <androidx.preference.CheckBoxPreference
+            android:key="settings_hovering_buttons_navigation_enabled"
+            app:title="Hovering Navigation Buttons"
+            app:summary="Show floating navigation buttons"
+            app:defaultValue="true" />
+            
+        <androidx.preference.CheckBoxPreference
+            android:key="settings_text_reflow_on_zoom_enabled"
+            app:title="Text Reflow on Zoom"
+            app:summary="Reflow text when zooming"
+            app:defaultValue="false" />
+            
+        <androidx.preference.CheckBoxPreference
+            android:key="settings_volume_control_navigation_enabled"
+            app:title="Volume Button Navigation"
+            app:summary="Use volume buttons to navigate articles"
+            app:defaultValue="true" />
+            
+        <androidx.preference.CheckBoxPreference
+            android:key="settings_vibrate_first_last_enabled"
+            app:title="Vibrate on First/Last"
+            app:summary="Vibrate when reaching first/last article"
+            app:defaultValue="true" />
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory app:title="WebView Settings">
+        <androidx.preference.ListPreference
+            android:key="settings_ui_text_size"
+            app:title="Text Size"
+            app:summary="Text size for article content"
+            app:entries="@array/text_size_labels"
+            app:entryValues="@array/text_size_values"
+            app:defaultValue="NORMAL" />
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory app:title="Lists">
+        <androidx.preference.CheckBoxPreference
+            android:key="settings_ui_rich_articles_enabled"
+            app:title="Rich Article List"
+            app:summary="Show articles with snippet and preview thumbnail"
+            app:defaultValue="true" />
+            
+        <androidx.preference.CheckBoxPreference
+            android:key="settings_swipe_article_list"
+            app:title="Swipe in Article List"
+            app:summary="Swipe gestures in article lists"
+            app:defaultValue="true" />
+            
+        <androidx.preference.CheckBoxPreference
+            android:key="settings_ui_sort_newest_first"
+            app:title="Sort Newest First"
+            app:summary="Show newest articles at the top"
+            app:defaultValue="true" />
+    </androidx.preference.PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

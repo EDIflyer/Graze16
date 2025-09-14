@@ -1,8 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.preference.Preference
-        app:title="Sync settings will be implemented here"
-        app:summary="Coming soon..." />
+    <androidx.preference.ListPreference
+        android:key="settings_service_provider"
+        app:title="Service Provider"
+        app:summary="Select your RSS service provider"
+        app:entries="@array/service_provider_labels"
+        app:entryValues="@array/service_provider_values"
+        app:defaultValue="com.graze16.NewsBlurBackendProvider" />
+        
+    <androidx.preference.ListPreference
+        android:key="settings_sync_type"
+        app:title="Sync Type"
+        app:summary="Choose what articles to keep and sync"
+        app:entries="@array/sync_type_labels"
+        app:entryValues="@array/sync_type_values"
+        app:defaultValue="unread_articles_only" />
+        
+    <androidx.preference.ListPreference
+        android:key="settings_automatic_refreshing_enabled2"
+        app:title="Automatic Refreshing"
+        app:summary="Enable automatic background sync"
+        app:entries="@array/sync_options_labels"
+        app:entryValues="@array/sync_options_values"
+        app:defaultValue="yes" />
+        
+    <androidx.preference.ListPreference
+        android:key="settings_automatic_refresh_interval"
+        app:title="Refresh Interval"
+        app:summary="How often to check for new articles"
+        app:entries="@array/interval_labels"
+        app:entryValues="@array/interval_values_minutes"
+        app:defaultValue="60" />
+
+    <androidx.preference.CheckBoxPreference
+        android:key="settings_always_exact_sync"
+        app:title="Always Use Exact Syncing"
+        app:summary="Unselect if you only use graze16 on one device, but not the webapp or other apps."
+        app:defaultValue="true" />
+        
+    <androidx.preference.CheckBoxPreference
+        android:key="settings_sync_graze16_only_enabled"
+        app:title="Sync 'Graze16' Only"
+        app:summary="Sync only articles that in a folder/tag called 'Graze16'."
+        app:defaultValue="false" />
+
+    <androidx.preference.PreferenceCategory app:title="Offline Settings">
+        <androidx.preference.ListPreference
+            android:key="storage_asset_download"
+            app:title="Download Content"
+            app:summary="What content to download for offline reading"
+            app:entries="@array/sync_options_labels"
+            app:entryValues="@array/sync_options_values"
+            app:defaultValue="yes" />
+            
+        <androidx.preference.ListPreference
+            android:key="settings_global_download_pref"
+            app:title="Global Download Preference"
+            app:summary="Default content type to download"
+            app:entries="@array/global_download_pref_labels"
+            app:entryValues="@array/global_download_pref_values"
+            app:defaultValue="2" />
+    </androidx.preference.PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>
