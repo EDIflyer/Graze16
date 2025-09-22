@@ -17,7 +17,7 @@
         app:key="ui_category"
         app:title="@string/settings_ui_title"
         app:summary="User interface, themes, and display options"
-        app:icon="@android:drawable/ic_menu_preferences" />
+        app:icon="@android:drawable/ic_menu_view" />
 
     <androidx.preference.Preference
         app:key="notifications_category"

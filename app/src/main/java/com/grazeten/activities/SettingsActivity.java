@@ -91,6 +91,16 @@ public class SettingsActivity extends AppCompatActivity implements IEntryModelUp
             setupCategoryClickListeners();
         }
         
+        @Override
+        public void onResume() {
+            super.onResume();
+            // Ensure the action bar title is set correctly when returning to main settings
+            SettingsActivity activity = (SettingsActivity) getActivity();
+            if (activity != null && activity.getSupportActionBar() != null) {
+                activity.getSupportActionBar().setTitle(R.string.settings_title);
+            }
+        }
+        
         private void setupCategoryClickListeners() {
             Preference syncPref = findPreference("sync_category");
             if (syncPref != null) {
@@ -189,7 +199,7 @@ public class SettingsActivity extends AppCompatActivity implements IEntryModelUp
             try {
                 PackageManager pm = getActivity().getPackageManager();
                 PackageInfo pInfo = pm.getPackageInfo(getActivity().getPackageName(), 0);
-                return "Version " + pInfo.versionName + " (" + pInfo.versionCode + ")";
+                return "Version " + pInfo.versionName + " (" + com.graze16.BuildConfig.GIT_COMMIT_HASH + ")";
             } catch (PackageManager.NameNotFoundException e) {
                 return "Version information unavailable";
             }
@@ -241,6 +251,39 @@ public class SettingsActivity extends AppCompatActivity implements IEntryModelUp
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.sync_settings, rootKey);
+            updateListPreferenceSummaries();
+        }
+        
+        private void updateListPreferenceSummaries() {
+            updateListPreferenceSummary("settings_service_provider");
+            updateListPreferenceSummary("settings_sync_type");
+            updateListPreferenceSummary("settings_automatic_refreshing_enabled2");
+            updateListPreferenceSummary("settings_automatic_refresh_interval");
+            updateListPreferenceSummary("storage_asset_download");
+            updateListPreferenceSummary("settings_global_download_pref");
+        }
+        
+        private void updateListPreferenceSummary(String key) {
+            androidx.preference.ListPreference pref = (androidx.preference.ListPreference) findPreference(key);
+            if (pref != null) {
+                CharSequence entry = pref.getEntry();
+                if (entry != null) {
+                    pref.setSummary(entry);
+                }
+                pref.setOnPreferenceChangeListener((preference, newValue) -> {
+                    androidx.preference.ListPreference listPref = (androidx.preference.ListPreference) preference;
+                    CharSequence[] entries = listPref.getEntries();
+                    CharSequence[] entryValues = listPref.getEntryValues();
+                    
+                    if (entries != null && entryValues != null) {
+                        int index = listPref.findIndexOfValue(newValue.toString());
+                        if (index >= 0 && index < entries.length) {
+                            listPref.setSummary(entries[index]);
+                        }
+                    }
+                    return true;
+                });
+            }
         }
     }
 
@@ -249,6 +292,38 @@ public class SettingsActivity extends AppCompatActivity implements IEntryModelUp
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.cache_settings, rootKey);
+            updateListPreferenceSummaries();
+        }
+        
+        private void updateListPreferenceSummaries() {
+            updateListPreferenceSummary("settings_storage_provider");
+            updateListPreferenceSummary("settings_entry_manager_entries_capacity");
+            updateListPreferenceSummary("settings_keep_starred");
+            updateListPreferenceSummary("settings_keep_shared");
+            updateListPreferenceSummary("settings_keep_notes");
+        }
+        
+        private void updateListPreferenceSummary(String key) {
+            androidx.preference.ListPreference pref = (androidx.preference.ListPreference) findPreference(key);
+            if (pref != null) {
+                CharSequence entry = pref.getEntry();
+                if (entry != null) {
+                    pref.setSummary(entry);
+                }
+                pref.setOnPreferenceChangeListener((preference, newValue) -> {
+                    androidx.preference.ListPreference listPref = (androidx.preference.ListPreference) preference;
+                    CharSequence[] entries = listPref.getEntries();
+                    CharSequence[] entryValues = listPref.getEntryValues();
+                    
+                    if (entries != null && entryValues != null) {
+                        int index = listPref.findIndexOfValue(newValue.toString());
+                        if (index >= 0 && index < entries.length) {
+                            listPref.setSummary(entries[index]);
+                        }
+                    }
+                    return true;
+                });
+            }
         }
     }
 
