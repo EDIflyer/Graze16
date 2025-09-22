@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Sync progress spinner - white variant for dark theme
+Scaled to match sync icon size (32dp)
+-->
+<animated-rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/spinner_white_16"
+    android:pivotX="50%"
+    android:pivotY="50%" />

@@ -240,9 +240,82 @@ public class SettingsActivity extends AppCompatActivity implements IEntryModelUp
 
     // Notifications Settings Fragment
     public static class NotificationsSettingsFragment extends PreferenceFragmentCompat {
+        private static final int RINGTONE_PICKER_REQUEST = 1001;
+        
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.notifications_settings, rootKey);
+            
+            Preference soundPref = findPreference("settings_notify_with_sound_url");
+            if (soundPref != null) {
+                soundPref.setOnPreferenceClickListener(preference -> {
+                    openRingtonePicker();
+                    return true;
+                });
+                updateSoundPreferenceSummary();
+            }
+        }
+        
+        private void openRingtonePicker() {
+            Intent intent = new Intent(android.media.RingtoneManager.ACTION_RINGTONE_PICKER);
+            intent.putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_TYPE, android.media.RingtoneManager.TYPE_NOTIFICATION);
+            intent.putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Notification Sound");
+            intent.putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+            intent.putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true);
+            
+            // Get current ringtone URI
+            android.content.SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String currentUri = prefs.getString("settings_notify_with_sound_url", android.provider.Settings.System.DEFAULT_NOTIFICATION_URI.toString());
+            if (currentUri != null && !currentUri.isEmpty()) {
+                intent.putExtra(android.media.RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, android.net.Uri.parse(currentUri));
+            }
+            
+            startActivityForResult(intent, RINGTONE_PICKER_REQUEST);
+        }
+        
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            if (requestCode == RINGTONE_PICKER_REQUEST && resultCode == android.app.Activity.RESULT_OK) {
+                android.net.Uri ringtoneUri = data.getParcelableExtra(android.media.RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+                
+                // Save the selected ringtone
+                android.content.SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity());
+                android.content.SharedPreferences.Editor editor = prefs.edit();
+                if (ringtoneUri != null) {
+                    editor.putString("settings_notify_with_sound_url", ringtoneUri.toString());
+                } else {
+                    editor.putString("settings_notify_with_sound_url", ""); // Silent
+                }
+                editor.apply();
+                
+                updateSoundPreferenceSummary();
+            }
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+        
+        private void updateSoundPreferenceSummary() {
+            Preference soundPref = findPreference("settings_notify_with_sound_url");
+            if (soundPref != null && getActivity() != null) {
+                android.content.SharedPreferences prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String uriString = prefs.getString("settings_notify_with_sound_url", android.provider.Settings.System.DEFAULT_NOTIFICATION_URI.toString());
+                
+                if (uriString == null || uriString.isEmpty()) {
+                    soundPref.setSummary("Silent");
+                } else {
+                    try {
+                        android.net.Uri ringtoneUri = android.net.Uri.parse(uriString);
+                        android.media.Ringtone ringtone = android.media.RingtoneManager.getRingtone(getActivity(), ringtoneUri);
+                        if (ringtone != null) {
+                            String title = ringtone.getTitle(getActivity());
+                            soundPref.setSummary(title != null ? title : "Default notification sound");
+                        } else {
+                            soundPref.setSummary("Default notification sound");
+                        }
+                    } catch (Exception e) {
+                        soundPref.setSummary("Default notification sound");
+                    }
+                }
+            }
         }
     }
 
@@ -340,6 +413,35 @@ public class SettingsActivity extends AppCompatActivity implements IEntryModelUp
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.experimental_settings, rootKey);
+            updateListPreferenceSummaries();
+        }
+        
+        private void updateListPreferenceSummaries() {
+            updateListPreferenceSummary("settings_mobilizer");
+            updateListPreferenceSummary("settings_plugins");
+        }
+        
+        private void updateListPreferenceSummary(String key) {
+            androidx.preference.ListPreference pref = (androidx.preference.ListPreference) findPreference(key);
+            if (pref != null) {
+                CharSequence entry = pref.getEntry();
+                if (entry != null) {
+                    pref.setSummary(entry);
+                }
+                pref.setOnPreferenceChangeListener((preference, newValue) -> {
+                    androidx.preference.ListPreference listPref = (androidx.preference.ListPreference) preference;
+                    CharSequence[] entries = listPref.getEntries();
+                    CharSequence[] entryValues = listPref.getEntryValues();
+                    
+                    if (entries != null && entryValues != null) {
+                        int index = listPref.findIndexOfValue(newValue.toString());
+                        if (index >= 0 && index < entries.length) {
+                            listPref.setSummary(entries[index]);
+                        }
+                    }
+                    return true;
+                });
+            }
         }
     }
 }

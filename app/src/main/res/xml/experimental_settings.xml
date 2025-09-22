@@ -2,29 +2,32 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Experimental Settings from original settings.xml -->
-    <androidx.preference.CheckBoxPreference
-        android:key="enable_webgl"
-        app:title="Enable WebGL"
-        app:summary="Use hardware acceleration for image rendering (experimental)"
-        app:defaultValue="false" />
+    <androidx.preference.ListPreference
+        android:defaultValue="gwt"
+        android:entries="@array/settings_mobilizer_labels"
+        android:entryValues="@array/settings_mobilizer_values"
+        android:key="settings_mobilizer"
+        app:title="Mobilizer"
+        app:summary="The service that renders the simplified web pages." />
+
+    <androidx.preference.ListPreference
+        android:defaultValue="OFF"
+        android:entries="@array/settings_plugins_labels"
+        android:entryValues="@array/settings_plugins_values"
+        android:key="settings_plugins"
+        app:title="Browser Plug-Ins"
+        app:summary="Enable Plug-Ins in the embedded browser." />
 
     <androidx.preference.CheckBoxPreference
-        android:key="enable_prefetch"
-        app:title="Prefetch pages"
-        app:summary="Preload next/previous pages for faster navigation (uses more bandwidth)"
-        app:defaultValue="false" />
+        android:defaultValue="true"
+        android:key="settings_hw_acceleration_lists_enabled"
+        app:title="Lists Hardware Acceleration"
+        app:summary="Enable the hardware accelerated drawing of lists." />
 
     <androidx.preference.CheckBoxPreference
-        android:key="enable_experimental_parser"
-        app:title="Experimental parser"
-        app:summary="Use new parsing engine (may be unstable)"
-        app:defaultValue="false" />
-
-    <androidx.preference.CheckBoxPreference
-        android:key="debug_mode"
-        app:title="Debug mode"
-        app:summary="Enable debug logging and additional information"
-        app:defaultValue="false" />
+        android:defaultValue="true"
+        android:key="settings_hw_acceleration_adv_enabled"
+        app:title="Article Hardware Acceleration"
+        app:summary="Enable the hardware accelerated drawing of the article detail view." />
 
 </androidx.preference.PreferenceScreen>

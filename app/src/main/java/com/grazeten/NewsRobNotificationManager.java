@@ -261,7 +261,7 @@ public class NewsRobNotificationManager implements IEntryModelUpdateListener
     // cancelAllNotifications();
     cancelSyncProblemNotification();
 
-    // set during notification
+    // set during notification - only check the sync progress setting
     if (EntryManager.getInstance(context).isSyncInProgressNotificationEnabled())
     {
       sendSynchronizationRunningNotification(fastSyncOnly);

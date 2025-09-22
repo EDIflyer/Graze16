@@ -119,12 +119,17 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
   private ImageButton markAllReadButton;
   private ImageButton showHideButton;
   private ImageButton toggleOrderButton;
+  private ImageButton customSyncButton;
 
   private int                 currentTheme;
   private String              currentActionBarLocation;
+  
+  private Menu                currentMenu;
+  private ObjectAnimator      syncIconAnimator;
 
   private View                progressIndicator;
   private ProgressBar         progressBar;
+  private String             lastSyncResult = "";
   private TextView            progressDescription;
   private LinearLayout progressContainer;
 
@@ -132,51 +137,38 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
 
   protected void activateProgressIndicator()
   {
+    Log.d("SYNC_DEBUG", "activateProgressIndicator called");
     if (shouldActionBarBeHidden())
     {
+      PL.log("Action bar is hidden, returning", this);
       return;
     }
 
+    // Based on user requirements: ONLY animate the action bar refresh icon,
+    // do NOT show center-screen progress indicators
+    
+    // Hide all center-screen progress indicators
     if (progressIndicator != null)
     {
-      progressIndicator.setVisibility(View.VISIBLE);
+      progressIndicator.setVisibility(View.GONE);
     }
-    else
+    
+    View dataUpdateProgress = findViewById(R.id.data_update_progress);
+    if (dataUpdateProgress != null)
     {
-      // If control panel progress indicator isn't available, show the main data update progress
-      View dataUpdateProgress = findViewById(R.id.data_update_progress);
-      if (dataUpdateProgress != null)
-      {
-        dataUpdateProgress.setVisibility(View.VISIBLE);
-      }
+      dataUpdateProgress.setVisibility(View.GONE);
     }
 
-    // Show progress container if available
+    // Hide progress container
     if (progressContainer != null)
     {
-      progressContainer.setVisibility(View.VISIBLE);
+      progressContainer.setVisibility(View.INVISIBLE);
     }
 
-    // Update refresh button to show as active sync
-    if (refreshButton != null && progressIndicator == null)
-    {
-      // When using menu-based system without control panel, change refresh icon to indicate syncing
-      refreshButton.setImageResource(android.R.drawable.ic_popup_sync);
-      refreshButton.setEnabled(false); // Disable to prevent multiple sync requests
-      
-      // Create a continuous rotation animation
-      ObjectAnimator rotationAnimator = ObjectAnimator.ofFloat(refreshButton, "rotation", 0f, 360f);
-      rotationAnimator.setDuration(1000);
-      rotationAnimator.setRepeatCount(ObjectAnimator.INFINITE);
-      rotationAnimator.setRepeatMode(ObjectAnimator.RESTART);
-      rotationAnimator.start();
-      refreshButton.setTag(rotationAnimator); // Store animator reference for later cancellation
-    }
-    else if (refreshButton != null)
-    {
-      refreshButton.setVisibility(View.GONE);
-    }
+    // ONLY animate the sync menu icon in the action bar
+    animateSyncMenuItem(true);
 
+    // Update progress information for when progress container becomes visible
     String status = "Background Operation In Progress";
     Job runningJob = entryManager.getCurrentRunningJob();
 
@@ -188,27 +180,71 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
         int[] progress = runningJob.getProgress();
         int currentArticle = progress[0];
         int allArticles = progress[1];
-        progressBar.setMax(allArticles);
-        progressBar.setProgress(currentArticle);
-        progressBar.setIndeterminate(false);
-        progressBar.setVisibility(View.VISIBLE);
+        if (progressBar != null) {
+          progressBar.setMax(allArticles);
+          progressBar.setProgress(currentArticle);
+          progressBar.setIndeterminate(false);
+        }
         status = runningJob.getJobDescription() + " (" + currentArticle + "/" + allArticles + ")";
       }
       else
       {
+        if (progressBar != null) {
+          progressBar.setMax(0);
+          progressBar.setProgress(0);
+          progressBar.setIndeterminate(true);
+        }
+      }
+    }
+    else
+    {
+      if (progressBar != null) {
         progressBar.setMax(0);
         progressBar.setProgress(0);
         progressBar.setIndeterminate(true);
+      }
+    }
+    
+    if (progressDescription != null) {
+      progressDescription.setText(status);
+    }
+
+    if (runningJob != null)
+    {
+      status = runningJob.getJobDescription();
+      if (runningJob.isProgressMeassurable())
+      {
+        int[] progress = runningJob.getProgress();
+        int currentArticle = progress[0];
+        int allArticles = progress[1];
+        // Don't show center-screen progress bar - only action bar animation
+        // progressBar.setMax(allArticles);
+        // progressBar.setProgress(currentArticle);
+        // progressBar.setIndeterminate(false);
+        // progressBar.setVisibility(View.VISIBLE);
+        status = runningJob.getJobDescription() + " (" + currentArticle + "/" + allArticles + ")";
+      }
+      else
+      {
+        // Don't configure center-screen progress bar
+        // progressBar.setMax(0);
+        // progressBar.setProgress(0);
+        // progressBar.setIndeterminate(true);
       }
 
     }
     else
     {
-      progressBar.setMax(0);
-      progressBar.setProgress(0);
-      progressBar.setIndeterminate(true);
+      // Don't configure center-screen progress bar
+      // progressBar.setMax(0);
+      // progressBar.setProgress(0);
+      // progressBar.setIndeterminate(true);
     }
-    progressDescription.setText(status);
+    
+    // Don't hide progress bar and description - they're needed for the progress container
+    // The progressBar and progressDescription are the same elements used in the progress container
+    
+    // progressDescription.setText(status); -- This is now set above
 
     /*
      * 
@@ -242,10 +278,6 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
       if (progressIndicator != null)
       {
         progressIndicator.setVisibility(View.GONE);
-        if (refreshButton != null)
-        {
-          refreshButton.setVisibility(View.VISIBLE);
-        }
       }
       else
       {
@@ -255,31 +287,17 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
         {
           dataUpdateProgress.setVisibility(View.INVISIBLE);
         }
-        
-        // Restore refresh button to normal state  
-        if (refreshButton != null)
-        {
-          // Cancel any ObjectAnimator animation
-          ObjectAnimator animator = (ObjectAnimator) refreshButton.getTag();
-          if (animator != null) {
-            animator.cancel();
-          }
-          refreshButton.animate().cancel(); // Stop any ViewPropertyAnimator animation
-          refreshButton.setRotation(0); // Reset rotation to 0
-          refreshButton.setImageResource(R.drawable.ic_sync_white_32dp);
-          refreshButton.setEnabled(true);
-        }
       }
     }
 
-    // Hide progress container
-    if (progressContainer != null)
-    {
-      progressContainer.setVisibility(View.GONE);
-    }
+    // Stop animating the sync menu icon
+    animateSyncMenuItem(false);
 
+    // Don't automatically hide progress container - let user control it
+    // Only hide when sync actually completes (handled in modelUpdateFinished)
+    
     setTitle(getDefaultStatusBarTitle());
-    hideProgressBar();
+    // Don't call hideProgressBar() here - keep it visible until user dismisses or sync completes
   }
 
   abstract protected DBQuery getDbQuery();
@@ -335,14 +353,14 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
       return;
     }
     PL.log("AbstractNewsRobList.hideProgressBar2(" + progressContainer + ") visibility=" + progressContainer.getVisibility(), this);
-    if (progressContainer.getVisibility() == View.GONE)
+    if (progressContainer.getVisibility() == View.INVISIBLE)
     {
       return;
     }
 
     Animation outAnimation = AnimationUtils.loadAnimation(this, R.anim.push_up_out);
     progressContainer.startAnimation(outAnimation);
-    progressContainer.setVisibility(View.GONE);
+    progressContainer.setVisibility(View.INVISIBLE);
 
     PL.log("AbstractNewsRobList.hideProgressBar3(" + progressContainer + ") visibility=" + progressContainer.getVisibility(), this);
   }
@@ -441,6 +459,7 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
 
   public void modelUpdateFinished(final ModelUpdateResult result)
   {
+    Log.d("SYNC_DEBUG", "modelUpdateFinished called");
     handler.post(new Runnable()
     {
 
@@ -448,6 +467,10 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
       {
         updateButtons();
         deactivateProgressIndicator();
+        
+        // Don't automatically hide progress bar when sync completes
+        // User must manually dismiss it by clicking the sync button again
+        // hideProgressBar();
 
         if (result instanceof SynchronizeModelSucceeded)
         {
@@ -455,9 +478,10 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
 
           if (succeeded.getNoOfEntriesUpdated() > 0)
           {
+            lastSyncResult = "Sync complete - " + succeeded.getNoOfEntriesUpdated() + " articles updated";
             refreshUI();
             Toast.makeText(AbstractNewsRobListActivity.this, 
-                "Sync complete - " + succeeded.getNoOfEntriesUpdated() + " articles updated",
+                lastSyncResult,
                 Toast.LENGTH_SHORT).show();
             // Toast.makeText(AbstractNewsRobListActivity.this,
             // succeeded.getMessage(),
@@ -465,8 +489,9 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
           }
           else
           {
+            lastSyncResult = "Sync complete - no new articles";
             Toast.makeText(AbstractNewsRobListActivity.this, 
-                "Sync complete - no new articles",
+                lastSyncResult,
                 Toast.LENGTH_SHORT).show();
           }
         }
@@ -497,7 +522,16 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
 
   public void modelUpdateStarted(boolean fastSyncOnly)
   {
+    Log.d("SYNC_DEBUG", "modelUpdateStarted called with fastSyncOnly=" + fastSyncOnly);
     runOnUiThread(refreshUIRunnable);
+    
+    // Ensure progress container is updated when sync starts
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        updateProgressContainer();
+      }
+    });
 
     if (!fastSyncOnly && EntryManager.ACTION_BAR_TOP.equals(entryManager.getActionBarLocation())
         && (View.VISIBLE != progressContainer.getVisibility()) && !entryManager.hasProgressReportBeenOpened())
@@ -615,6 +649,7 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
   @Override
   protected void onCreate(Bundle savedInstanceState)
   {
+    Log.d("SYNC_DEBUG", "AbstractNewsRobListActivity.onCreate() called");
     getEntryManager();
 
     boolean isHwAccelerationEnabled = EntryManager.getInstance(this).isHardwareAccelerationListsEnabled();
@@ -705,6 +740,9 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
     super.onCreateOptionsMenu(menu);
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.menu_main, menu);
+    
+    // Store menu reference for sync icon animation
+    currentMenu = menu;
     
     // Set the correct initial icon for show/hide toggle
     MenuItem showHideItem = menu.findItem(R.id.menu_show_hide);
@@ -811,9 +849,14 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
         }
         return true;
     } else if (item.getItemId() == R.id.menu_sync) {
-        // Trigger sync functionality
-        requestRefresh();
-        Toast.makeText(this, "Syncing articles...", Toast.LENGTH_SHORT).show();
+        if (getEntryManager().isModelCurrentlyUpdated()) {
+            // During sync, clicking should toggle sync progress details
+            toggleProgressBarVisibility();
+        } else {
+            // Start sync
+            requestRefresh();
+            Toast.makeText(this, "Syncing articles...", Toast.LENGTH_SHORT).show();
+        }
         return true;
     } else if (item.getItemId() == R.id.menu_mark_all_read) {
         // Trigger mark all read functionality
@@ -989,6 +1032,8 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
   @Override
   public boolean onPrepareOptionsMenu(Menu menu)
   {
+    // Ensure menu reference is available for sync animation
+    currentMenu = menu;
 //    boolean canRefresh = getEntryManager().canRefresh();
 //
 //    if (EntryManager.ACTION_BAR_GONE.equals(getEntryManager().getActionBarLocation()))
@@ -1032,6 +1077,7 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
   @Override
   protected void onResume()
   {
+    Log.d("SYNC_DEBUG", "AbstractNewsRobListActivity.onResume() called");
     NewsRob.lastActivity = this;
 
     super.onResume();
@@ -1041,6 +1087,7 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
       UIHelper.resumeWebViews(this);
     }
 
+    Log.d("SYNC_DEBUG", "Registering EntryManager listener");
     getEntryManager().addListener(this);
     if (!reopenIfThemeOrActionBarLocationChanged())
     {
@@ -1090,6 +1137,9 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
     updateButtons();
     updateControlPanelTitle();
     refreshProgressBar();
+    
+    // Update progress container if it's visible
+    updateProgressContainer();
   }
 
   private boolean reopenIfThemeOrActionBarLocationChanged()
@@ -1240,7 +1290,10 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
 
   private boolean shouldActionBarBeHidden()
   {
-    return EntryManager.ACTION_BAR_GONE.equals(getEntryManager().getActionBarLocation());
+    String actionBarLocation = getEntryManager().getActionBarLocation();
+    boolean hidden = EntryManager.ACTION_BAR_GONE.equals(actionBarLocation);
+    Log.d("SYNC_DEBUG", "Action bar location=" + actionBarLocation + ", hidden=" + hidden);
+    return hidden;
   }
 
   protected boolean shouldMarkAllReadButtonBeEnabled()
@@ -1316,16 +1369,141 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
 
   protected void showProgressBar()
   {
+    Log.d("SYNC_DEBUG", "showProgressBar() called, shouldActionBarBeHidden=" + shouldActionBarBeHidden());
     if (shouldActionBarBeHidden())
     {
+      Log.d("SYNC_DEBUG", "Action bar is hidden, not showing progress bar");
       return;
     }
 
     getEntryManager().updateProgressReportBeenOpened();
 
-    Animation inAnimation = AnimationUtils.loadAnimation(this, R.anim.push_up_in);
+    Log.d("SYNC_DEBUG", "Making progress container visible and starting animation");
+    
+    // Set visibility first
     progressContainer.setVisibility(View.VISIBLE);
-    progressContainer.startAnimation(inAnimation);
+    
+    // Force layout measurement by requesting layout
+    progressContainer.requestLayout();
+    
+    // Post a runnable to ensure layout is complete before animation
+    progressContainer.post(new Runnable() {
+      @Override
+      public void run() {
+        // Debug layout positioning after layout is complete
+        int[] location = new int[2];
+        progressContainer.getLocationOnScreen(location);
+        Log.d("SYNC_DEBUG", "Progress container screen position after layout: x=" + location[0] + ", y=" + location[1]);
+        Log.d("SYNC_DEBUG", "Progress container dimensions after layout: width=" + progressContainer.getWidth() + ", height=" + progressContainer.getHeight());
+        
+        // Bring to front to ensure it's above other views
+        progressContainer.bringToFront();
+        
+        // Start animation after layout is complete
+        Animation inAnimation = AnimationUtils.loadAnimation(AbstractNewsRobListActivity.this, R.anim.push_up_in);
+        progressContainer.startAnimation(inAnimation);
+        
+        Log.d("SYNC_DEBUG", "Animation started after layout completion");
+      }
+    });
+    
+    Log.d("SYNC_DEBUG", "Progress container visibility=" + progressContainer.getVisibility());
+    
+    // Force immediate update of the progress container with current sync status
+    updateProgressContainer();
+    
+    // Also force a UI refresh to ensure latest job info is displayed
+    refreshUI();
+  }
+  
+  private void updateProgressContainer()
+  {
+    if (progressContainer == null || progressContainer.getVisibility() != View.VISIBLE) {
+      return;
+    }
+    
+    String status = "Background Operation In Progress";
+    Job runningJob = entryManager.getCurrentRunningJob();
+    
+    // Try both approaches: direct findViewById on container and global fields
+    ProgressBar containerProgressBar = progressContainer.findViewById(R.id.progress_bar);
+    TextView containerStatusText = progressContainer.findViewById(R.id.status_text);
+    
+    // Also use global fields as backup (they should point to same views)
+    if (containerProgressBar == null) {
+      containerProgressBar = progressBar;
+    }
+    if (containerStatusText == null) {
+      containerStatusText = progressDescription;
+    }
+    
+    // Check if we're sync is actually running
+    boolean isModelUpdating = entryManager.isModelCurrentlyUpdated();
+    
+    if (runningJob != null)
+    {
+      String jobDesc = runningJob.getJobDescription();
+      if (jobDesc != null && !jobDesc.isEmpty()) {
+        status = jobDesc;
+      }
+      
+      if (runningJob.isProgressMeassurable())
+      {
+        int[] progress = runningJob.getProgress();
+        int currentArticle = progress[0];
+        int allArticles = progress[1];
+        
+        if (containerProgressBar != null) {
+          containerProgressBar.setMax(allArticles);
+          containerProgressBar.setProgress(currentArticle);
+          containerProgressBar.setIndeterminate(false);
+          containerProgressBar.setVisibility(View.VISIBLE);
+        }
+        
+        status = jobDesc + " (" + currentArticle + "/" + allArticles + ")";
+      }
+      else
+      {
+        if (containerProgressBar != null) {
+          containerProgressBar.setMax(0);
+          containerProgressBar.setProgress(0);
+          containerProgressBar.setIndeterminate(true);
+          containerProgressBar.setVisibility(View.VISIBLE);
+        }
+      }
+    }
+    else if (isModelUpdating)
+    {
+      // Even without a specific job, show sync progress
+      status = "Syncing articles...";
+      if (containerProgressBar != null) {
+        containerProgressBar.setMax(0);
+        containerProgressBar.setProgress(0);
+        containerProgressBar.setIndeterminate(true);
+        containerProgressBar.setVisibility(View.VISIBLE);
+      }
+    }
+    else
+    {
+      // No sync running - show completion status but keep progress bar visible
+      status = lastSyncResult.isEmpty() ? "Ready for sync" : lastSyncResult;
+      if (containerProgressBar != null) {
+        if (lastSyncResult.isEmpty()) {
+          // No sync has run yet - hide the progress bar
+          containerProgressBar.setVisibility(View.INVISIBLE);
+        } else {
+          // Show a completed progress bar instead of hiding it
+          containerProgressBar.setMax(100);
+          containerProgressBar.setProgress(100);
+          containerProgressBar.setIndeterminate(false);
+          containerProgressBar.setVisibility(View.VISIBLE);
+        }
+      }
+    }
+    
+    if (containerStatusText != null) {
+      containerStatusText.setText(status);
+    }
   }
 
   /**
@@ -1385,13 +1563,87 @@ public abstract class AbstractNewsRobListActivity extends AppCompatActivity
 
   protected void toggleProgressBarVisibility()
   {
+    Log.d("SYNC_DEBUG", "toggleProgressBarVisibility called");
     if (progressContainer.getVisibility() == View.VISIBLE)
     {
+      Log.d("SYNC_DEBUG", "Progress bar is visible, hiding it");
       hideProgressBar();
     }
     else
     {
+      Log.d("SYNC_DEBUG", "Progress bar is hidden, showing it");
       showProgressBar();
+    }
+  }
+  
+  private void animateSyncMenuItem(boolean animate)
+  {
+    Log.d("SYNC_DEBUG", "animateSyncMenuItem called with animate=" + animate);
+    if (currentMenu == null) {
+      Log.d("SYNC_DEBUG", "currentMenu is null, trying to force menu creation");
+      // Try to force menu creation by calling invalidateOptionsMenu
+      runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          invalidateOptionsMenu();
+        }
+      });
+      return;
+    }
+    
+    MenuItem syncItem = currentMenu.findItem(R.id.menu_sync);
+    if (syncItem == null) {
+      Log.d("SYNC_DEBUG", "syncItem is null");
+      return;
+    }
+    
+    Log.d("SYNC_DEBUG", "Found syncItem, proceeding with animation=" + animate);
+    
+    if (animate) {
+      // Create a custom ImageButton to replace the menu item - like the original refreshButton
+      if (customSyncButton == null) {
+        customSyncButton = new ImageButton(this);
+        customSyncButton.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+        customSyncButton.setScaleType(ImageButton.ScaleType.CENTER);
+        
+        // Set size to match menu item (48dp for proper touch target)
+        int size = (int) (48 * getResources().getDisplayMetrics().density); // 48dp in pixels
+        android.view.ViewGroup.LayoutParams params = new android.view.ViewGroup.LayoutParams(size, size);
+        customSyncButton.setLayoutParams(params);
+        
+        // Add padding to center the icon properly
+        int padding = (int) (8 * getResources().getDisplayMetrics().density); // 8dp padding
+        customSyncButton.setPadding(padding, padding, padding, padding);
+        
+        // Add click listener to toggle progress bar during sync
+        customSyncButton.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            Log.d("SYNC_DEBUG", "Custom sync button clicked during animation");
+            // Toggle progress bar visibility when user taps during sync
+            toggleProgressBarVisibility();
+          }
+        });
+      }
+      
+      // Use proper spinner drawable based on theme (sized to match sync icon)
+      boolean isLightTheme = getEntryManager().isLightColorSchemeSelected();
+      int spinnerDrawable = isLightTheme ? R.drawable.progress_sync_black : R.drawable.progress_sync_white;
+      customSyncButton.setImageResource(spinnerDrawable);
+      
+      // Replace the menu item with our custom animated button
+      syncItem.setActionView(customSyncButton);
+      
+      // The animated-rotate drawable will handle the smooth spinning automatically
+      // No need for manual ObjectAnimator - this eliminates the jumpiness
+      
+    } else {
+      // Stop animation and restore normal menu item
+      // No manual animation cleanup needed since animated-rotate handles it
+      
+      // Remove custom action view and restore normal menu item
+      syncItem.setActionView(null);
+      syncItem.setEnabled(true);
     }
   }
 
